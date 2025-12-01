@@ -1,11 +1,17 @@
 <div align="center">
-  <img src="/assets/logo.png" width="120" height="120"><br>
+  <img src="/.github/assets/logo.png" width="120" height="120"><br>
   <i>Building the Future Through Innovation</i>
 </div>
 
 <br>
 
-### Welcome to Rentverse Ecosystem by LA team
+# Will be rewritten and revamp by ClaRity
+### Team Members:
+- 1. Amir Hafizi
+- 2. Nik Muhammad Haziq
+- 3. Muhammad 'Adli
+
+### Welcome to Rentverse Ecosystem by ClaRity
 We are a dynamic team specializing in modern property rental technology solutions. Our comprehensive RentVerse platform revolutionizes the property rental industry through cutting-edge web technologies, AI-powered services, and user-centric design.
 
 Our expertise spans full-stack web development, machine learning, and cloud computing, all focused on creating the ultimate property rental ecosystem that connects property owners with tenants seamlessly.
