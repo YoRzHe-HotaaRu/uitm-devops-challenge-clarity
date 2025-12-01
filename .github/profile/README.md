@@ -5,8 +5,8 @@
 
 <br>
 
-### Will be rewritten and revamp by ClaRity
-# Team Members:
+# Will be rewritten and revamp by ClaRity
+### Team Members:
 - 1. Amir Hafizi
 - 2. Nik Muhammad Haziq
 - 3. Muhammad 'Adli
