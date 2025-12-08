@@ -109,6 +109,16 @@ poetry run scrapy crawl fazwazrent -a region=kuala-lumpur -a property_type=condo
 
 ---
 
+scrape all properties in Malaysia:
+```bash
+poetry run scrapy crawl fazwazrent -a region=johor
+
+```
+
+```bash
+poetry run scrapy crawl fazwazrent -a region=kuala-lumpur
+```
+
 ## Available Property Types
 
 | Type | Command Value |
