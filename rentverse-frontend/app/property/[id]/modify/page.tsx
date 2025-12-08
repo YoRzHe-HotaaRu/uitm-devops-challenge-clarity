@@ -7,6 +7,7 @@ import ButtonCircle from '@/components/ButtonCircle'
 import { ArrowLeft } from 'lucide-react'
 import { usePropertyTypes } from '@/hooks/usePropertyTypes'
 import useAuthStore from '@/stores/authStore'
+import { createApiUrl } from '@/utils/apiConfig'
 
 interface Property {
   id: string
@@ -103,7 +104,7 @@ function ModifyPropertyPage() {
           return
         }
 
-        const response = await fetch(`https://rentverse-be.jokoyuliyanto.my.id/api/properties/${propertyId}`, {
+        const response = await fetch(createApiUrl(`properties/${propertyId}`), {
           method: 'GET',
           headers: {
             'accept': 'application/json',

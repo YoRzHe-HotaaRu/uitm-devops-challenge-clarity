@@ -224,6 +224,74 @@ class PDFGenerationService {
   }
 
   /**
+   * Create a simple placeholder PDF when Puppeteer/Chrome is not available
+   * @param {Object} lease
+   * @returns {Object} { buffer: Buffer, isHtml: boolean }
+   */
+  createPlaceholderPDF(lease) {
+    console.log('📄 Creating placeholder PDF...');
+
+    // Create a simple HTML template for the placeholder
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Rental Agreement - ${lease.property.title}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+          }
+          h1 { color: #333; }
+          .section { margin-bottom: 30px; }
+          .label { font-weight: bold; }
+          .value { margin-left: 10px; }
+        </style>
+      </head>
+      <body>
+        <h1>🏠 Rental Agreement (Placeholder)</h1>
+        <div class="section">
+          <p><span class="label">Property:</span><span class="value">${lease.property.title}</span></p>
+          <p><span class="label">Address:</span><span class="value">${lease.property.address}, ${lease.property.city}</span></p>
+          <p><span class="label">Tenant:</span><span class="value">${lease.tenant.name}</span></p>
+          <p><span class="label">Landlord:</span><span class="value">${lease.landlord.name}</span></p>
+          <p><span class="label">Start Date:</span><span class="value">${new Date(lease.startDate).toLocaleDateString()}</span></p>
+          <p><span class="label">End Date:</span><span class="value">${new Date(lease.endDate).toLocaleDateString()}</span></p>
+          <p><span class="label">Monthly Rent:</span><span class="value">RM ${lease.rentAmount.toFixed(2)}</span></p>
+        </div>
+        <div class="section">
+          <h2>📝 Note</h2>
+          <p>This is a placeholder document. The actual rental agreement PDF could not be generated because:</p>
+          <ul>
+            <li>Chrome/Chromium is not installed on the server</li>
+            <li>Or Puppeteer could not launch the browser</li>
+          </ul>
+          <p><strong>To enable PDF generation:</strong></p>
+          <ol>
+            <li>Install Chrome or Chromium on the server</li>
+            <li>Or set CHROME_PATH environment variable</li>
+            <li>Restart the backend server</li>
+          </ol>
+        </div>
+        <div class="section">
+          <p><small>Generated on: ${new Date().toLocaleString()}</small></p>
+          <p><small>Lease ID: ${lease.id}</small></p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Return HTML as buffer with a flag indicating it's HTML
+    return {
+      buffer: Buffer.from(html, 'utf-8'),
+      isHtml: true,
+      extension: 'html',
+    };
+  }
+
+  /**
    * Generate accessible PDF URL from Cloudinary public_id
    * @param {string} publicId
    * @param {string} resourceType
@@ -246,9 +314,10 @@ class PDFGenerationService {
    * Save PDF to local storage and return server URL
    * @param {Buffer} pdfBuffer
    * @param {string} fileName
+   * @param {string} extension - File extension (default: pdf)
    * @returns {Promise<Object>}
    */
-  async saveToLocalStorage(pdfBuffer, fileName) {
+  async saveToLocalStorage(pdfBuffer, fileName, extension = 'pdf') {
     const fs = require('fs');
     const path = require('path');
 
@@ -264,14 +333,14 @@ class PDFGenerationService {
       .replace(/[-T:.Z]/g, '')
       .slice(0, 14);
     const shortId = uuidv4().split('-')[0];
-    const uniqueFileName = `${fileName}-${timestamp}-${shortId}.pdf`;
+    const uniqueFileName = `${fileName}-${timestamp}-${shortId}.${extension}`;
     const filePath = path.join(uploadsDir, uniqueFileName);
 
-    // Save PDF to local file
+    // Save file to local file
     fs.writeFileSync(filePath, pdfBuffer);
 
     // Generate server URL using the correct route path
-    const serverUrl = `${process.env.BASE_URL || 'http://localhost:3005'}/api/files/pdfs/${uniqueFileName}`;
+    const serverUrl = `${process.env.BASE_URL || 'http://localhost:3000'}/api/files/pdfs/${uniqueFileName}`;
 
     return {
       fileName: uniqueFileName,
@@ -400,49 +469,60 @@ class PDFGenerationService {
       // 5. Generate PDF menggunakan Puppeteer
       console.log('🌐 Launching browser for PDF generation...');
 
-      const chromePath = this.getChromePath();
-      const launchOptions = {
-        headless: 'new',
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--no-first-run',
-          '--no-zygote',
-          '--disable-gpu',
-        ],
-      };
+      let pdfBuffer;
+      let fileExtension = 'pdf';
+      try {
+        const chromePath = this.getChromePath();
+        const launchOptions = {
+          headless: 'new',
+          args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--disable-gpu',
+          ],
+        };
 
-      if (chromePath) {
-        launchOptions.executablePath = chromePath;
+        if (chromePath) {
+          launchOptions.executablePath = chromePath;
+        }
+
+        const browser = await puppeteer.launch(launchOptions);
+        const page = await browser.newPage();
+
+        await page.setContent(html, {
+          waitUntil: 'networkidle0',
+          timeout: 30000,
+        });
+
+        console.log('📄 Generating PDF...');
+        pdfBuffer = await page.pdf({
+          format: 'A4',
+          printBackground: true,
+          margin: {
+            top: '20px',
+            bottom: '20px',
+            left: '20px',
+            right: '20px',
+          },
+          preferCSSPageSize: true,
+        });
+
+        await browser.close();
+        console.log(
+          `✅ PDF generated successfully! Size: ${Math.round(pdfBuffer.length / 1024)} KB`
+        );
+      } catch (browserError) {
+        console.warn('⚠️  Puppeteer/Chrome not available, creating placeholder PDF:', browserError.message);
+        // Create a simple placeholder PDF using basic text if Puppeteer fails
+        const placeholder = this.createPlaceholderPDF(lease);
+        pdfBuffer = placeholder.buffer;
+        fileExtension = placeholder.extension || 'html';
+        console.log(`📝 Using ${fileExtension.toUpperCase()} placeholder`);
       }
-
-      const browser = await puppeteer.launch(launchOptions);
-      const page = await browser.newPage();
-
-      await page.setContent(html, {
-        waitUntil: 'networkidle0',
-        timeout: 30000,
-      });
-
-      console.log('📄 Generating PDF...');
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: {
-          top: '20px',
-          bottom: '20px',
-          left: '20px',
-          right: '20px',
-        },
-        preferCSSPageSize: true,
-      });
-
-      await browser.close();
-      console.log(
-        `✅ PDF generated successfully! Size: ${Math.round(pdfBuffer.length / 1024)} KB`
-      );
 
       // 6. Save PDF locally with Cloudinary as backup
       console.log('💾 Saving PDF locally...');
@@ -451,7 +531,7 @@ class PDFGenerationService {
       let uploadResult;
       try {
         // Primary: Save to local storage
-        uploadResult = await this.saveToLocalStorage(pdfBuffer, fileName);
+        uploadResult = await this.saveToLocalStorage(pdfBuffer, fileName, fileExtension);
         console.log('✅ PDF saved to local storage successfully!');
       } catch (localStorageError) {
         console.warn(

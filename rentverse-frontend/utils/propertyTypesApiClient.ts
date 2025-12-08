@@ -1,6 +1,7 @@
 import type { PropertyTypesResponse } from '@/types/property'
+import { getApiUrl } from './apiConfig'
 
-const BASE_URL = 'https://rentverse-be.jokoyuliyanto.my.id/api'
+const BASE_URL = getApiUrl()
 
 export class PropertyTypesApiClient {
   private static getAuthToken(): string | null {
