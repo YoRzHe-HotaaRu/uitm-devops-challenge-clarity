@@ -36,11 +36,13 @@ const MapViewer = memo(function MapViewer({
                                             onMapClick,
                                             interactive = true,
                                           }: MapViewerProps) {
+  console.log('MapViewer rendering, markers:', markers.length)
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<maptilersdk.Map | null>(null)
   const markersRef = useRef<maptilersdk.Marker[]>([])
   const isMapLoaded = useRef(false)
   const isInitializing = useRef(false)
+  const isMounted = useRef(false)
 
   // Initialize API key once
   useEffect(() => {
@@ -60,6 +62,7 @@ const MapViewer = memo(function MapViewer({
     if (!mapContainer.current || map.current || isInitializing.current) return
 
     isInitializing.current = true
+    isMounted.current = true
 
     try {
       console.log('Initializing map with center:', [center.lng, center.lat])
@@ -80,11 +83,46 @@ const MapViewer = memo(function MapViewer({
         isMapLoaded.current = true
         isInitializing.current = false
 
-        if (map.current && onMapLoad) {
+        if (map.current && onMapLoad && isMounted.current) {
           onMapLoad(map.current)
         }
 
-        // Markers will be added by the markers useEffect when markers prop changes
+        // Add markers immediately when map loads (if we have them)
+        if (markers.length > 0 && isMounted.current) {
+          console.log('Map loaded, adding markers directly:', markers.length)
+          const mapInstance = map.current
+          const currentMarkers = markers
+
+          // Clear existing markers first
+          clearMarkers()
+
+          currentMarkers.forEach((markerData, index) => {
+            console.log(`Creating marker ${index}:`, markerData)
+
+            const marker = new maptilersdk.Marker({
+              color: markerData.color || '#3B82F6',
+            })
+              .setLngLat([markerData.lng, markerData.lat])
+              .addTo(mapInstance)
+
+            // Add popup if provided
+            if (markerData.popup) {
+              const popup = new maptilersdk.Popup({
+                offset: 25,
+                closeButton: true,
+                closeOnClick: true,
+                maxWidth: '320px',
+                anchor: 'bottom'
+              }).setHTML(markerData.popup)
+
+              marker.setPopup(popup)
+            }
+
+            markersRef.current.push(marker)
+          })
+
+          console.log('Total markers added on load:', markersRef.current.length)
+        }
       })
 
       // Handle map click event
@@ -99,9 +137,16 @@ const MapViewer = memo(function MapViewer({
     } catch (error) {
       console.error('Error initializing map:', error)
       isInitializing.current = false
+      isMounted.current = false
     }
 
     return () => {
+      // In development mode, React double-renders. Skip cleanup if component will re-mount.
+      if (process.env.NODE_ENV === 'development' && isMounted.current) {
+        console.log('Development mode: skipping cleanup to prevent map destruction')
+        return
+      }
+
       console.log('Cleaning up map')
       clearMarkers()
       if (map.current) {
@@ -110,6 +155,7 @@ const MapViewer = memo(function MapViewer({
         map.current = null
         isMapLoaded.current = false
         isInitializing.current = false
+        isMounted.current = false
       }
     }
   }, []) // Empty dependency array - initialize only once
@@ -125,9 +171,23 @@ const MapViewer = memo(function MapViewer({
 
   // Update markers when markers prop changes
   useEffect(() => {
-    if (map.current && isMapLoaded.current) {
+    // Skip if map isn't ready or markers already added on load
+    if (!isMapLoaded.current || !isMounted.current) {
+      console.log('Map not ready for markers yet:', {
+        mapLoaded: isMapLoaded.current,
+        isMounted: isMounted.current
+      })
+      return
+    }
+
+    // If markers already exist, don't add them again (they were added on map load)
+    if (markersRef.current.length > 0) {
+      console.log('Markers already added, skipping useEffect')
+      return
+    }
+
+    if (map.current) {
       console.log('Markers changed, updating map markers')
-      // Use the markers from props directly in a stable callback
       const currentMarkers = markers
       const mapInstance = map.current
 
@@ -162,17 +222,12 @@ const MapViewer = memo(function MapViewer({
       })
 
       console.log('Total markers added:', markersRef.current.length)
-    } else if (!isMapLoaded.current) {
-      console.log('Map not ready for markers yet:', {
-        mapExists: !!map.current,
-        mapLoaded: isMapLoaded.current
-      })
     }
   }, [markers]) // Only depend on markers, not on callbacks
 
   // Update map style when style prop changes
   useEffect(() => {
-    if (map.current) {
+    if (map.current && isMapLoaded.current) {
       map.current.setStyle(style)
     }
   }, [style])
