@@ -13,13 +13,16 @@ import ButtonSecondary from '@/components/ButtonSecondary'
 import ButtonMapViewSwitcher from '@/components/ButtonMapViewSwitcher'
 
 function ResultsPage() {
-  const { properties, isLoading, loadProperties, mapData } = usePropertiesStore()
+  const { properties, isLoading, loadProperties, mapData, whereValue, typeValue } = usePropertiesStore()
   const [isMapView, setIsMapView] = useState(false)
 
   useEffect(() => {
-    // Load properties when component mounts
-    loadProperties({ limit: 10, page: 1 })
-  }, [loadProperties])
+    // Load properties when component mounts, using filter values from search box
+    const filters: { limit: number; page: number; city?: string; type?: string } = { limit: 10, page: 1 }
+    if (whereValue) filters.city = whereValue
+    if (typeValue) filters.type = typeValue
+    loadProperties(filters)
+  }, [loadProperties, whereValue, typeValue])
 
   const toggleView = () => {
     setIsMapView(!isMapView)

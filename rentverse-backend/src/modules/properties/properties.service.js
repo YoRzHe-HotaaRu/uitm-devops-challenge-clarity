@@ -141,8 +141,15 @@ class PropertiesService {
 
     // Apply filters
     if (filters.propertyTypeId) where.propertyTypeId = filters.propertyTypeId;
-    if (filters.city)
-      where.city = { contains: filters.city, mode: 'insensitive' };
+
+    // Location filter - search in both city and state fields
+    if (filters.city) {
+      where.OR = [
+        { city: { contains: filters.city, mode: 'insensitive' } },
+        { state: { contains: filters.city, mode: 'insensitive' } },
+        { address: { contains: filters.city, mode: 'insensitive' } },
+      ];
+    }
     if (filters.available !== undefined)
       where.isAvailable = filters.available === 'true';
     if (filters.bedrooms) where.bedrooms = parseInt(filters.bedrooms);

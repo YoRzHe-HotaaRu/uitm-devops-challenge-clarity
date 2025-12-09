@@ -14,55 +14,87 @@ type GetAllLocationsType = () => Array<LocationType>
 type GetAllPropertyTypesType = () => Array<PropertyType>
 
 const locations: Array<LocationType> = [
-  {
-    icon: '🏛️',
-    name: 'George Town, Penang',
-    description: 'UNESCO World Heritage Site with rich culture',
-  },
+  // States
   {
     icon: '🏢',
     name: 'Kuala Lumpur',
     description: 'Malaysia\'s bustling capital city',
   },
   {
-    icon: '🌴',
-    name: 'Langkawi, Kedah',
-    description: 'Tropical island paradise',
+    icon: '🏛️',
+    name: 'Penang',
+    description: 'UNESCO World Heritage with rich culture',
   },
   {
-    icon: '🏖️',
-    name: 'Kota Kinabalu, Sabah',
-    description: 'Gateway to Borneo adventures',
+    icon: '🌆',
+    name: 'Selangor',
+    description: 'Most developed state surrounding KL',
+  },
+  {
+    icon: '🌺',
+    name: 'Johor',
+    description: 'Southern gateway near Singapore',
+  },
+  {
+    icon: '🏰',
+    name: 'Melaka',
+    description: 'Historic city with colonial heritage',
+  },
+  {
+    icon: '🏔️',
+    name: 'Perak',
+    description: 'Limestone caves and heritage buildings',
+  },
+  {
+    icon: '🌴',
+    name: 'Kedah',
+    description: 'Rice bowl of Malaysia with Langkawi',
   },
   {
     icon: '🏞️',
-    name: 'Cameron Highlands, Pahang',
-    description: 'Cool climate and tea plantations',
+    name: 'Pahang',
+    description: 'Largest state with Cameron Highlands',
   },
+  {
+    icon: '⛱️',
+    name: 'Terengganu',
+    description: 'Beautiful beaches and islands',
+  },
+  {
+    icon: '🕌',
+    name: 'Kelantan',
+    description: 'Cultural heartland of Malaysia',
+  },
+  {
+    icon: '🌳',
+    name: 'Negeri Sembilan',
+    description: 'Minangkabau heritage and traditions',
+  },
+  {
+    icon: '🌿',
+    name: 'Perlis',
+    description: 'Smallest state in the north',
+  },
+  {
+    icon: '🏖️',
+    name: 'Sabah',
+    description: 'Land below the wind in Borneo',
+  },
+  {
+    icon: '🌊',
+    name: 'Sarawak',
+    description: 'Land of the hornbills in Borneo',
+  },
+  // Federal Territories
   {
     icon: '🕌',
     name: 'Putrajaya',
     description: 'Malaysia\'s administrative capital',
   },
   {
-    icon: '🏰',
-    name: 'Malacca City, Melaka',
-    description: 'Historic city with colonial architecture',
-  },
-  {
-    icon: '🌊',
-    name: 'Kuching, Sarawak',
-    description: 'Cat city with cultural diversity',
-  },
-  {
-    icon: '🏔️',
-    name: 'Ipoh, Perak',
-    description: 'Limestone caves and heritage buildings',
-  },
-  {
-    icon: '🌺',
-    name: 'Johor Bahru, Johor',
-    description: 'Modern city near Singapore',
+    icon: '🏝️',
+    name: 'Labuan',
+    description: 'Offshore financial center',
   },
 ]
 
