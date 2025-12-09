@@ -142,12 +142,17 @@ class PropertiesService {
     // Apply filters
     if (filters.propertyTypeId) where.propertyTypeId = filters.propertyTypeId;
 
-    // Location filter - search in both city and state fields
+    // Location filter - search in city, state, and address fields
+    // Use AND to ensure it works with other conditions like status
     if (filters.city) {
-      where.OR = [
-        { city: { contains: filters.city, mode: 'insensitive' } },
-        { state: { contains: filters.city, mode: 'insensitive' } },
-        { address: { contains: filters.city, mode: 'insensitive' } },
+      where.AND = [
+        {
+          OR: [
+            { city: { contains: filters.city, mode: 'insensitive' } },
+            { state: { contains: filters.city, mode: 'insensitive' } },
+            { address: { contains: filters.city, mode: 'insensitive' } },
+          ],
+        },
       ];
     }
     if (filters.available !== undefined)
@@ -164,9 +169,13 @@ class PropertiesService {
       if (filters.maxPrice) where.price.lte = parseFloat(filters.maxPrice);
     }
 
+    console.log('=== Properties Filter Debug ===');
+    console.log('Input filters:', filters);
+    console.log('Built where clause:', JSON.stringify(where, null, 2));
+
     const [properties, total] = await Promise.all([
       propertiesRepository.findMany({ where, skip, take: limit }),
-      propertiesRepository.count(where),
+      propertiesRepository.count({ where }),
     ]);
 
     const pages = Math.ceil(total / limit);

@@ -13,16 +13,24 @@ import ButtonSecondary from '@/components/ButtonSecondary'
 import ButtonMapViewSwitcher from '@/components/ButtonMapViewSwitcher'
 
 function ResultsPage() {
-  const { properties, isLoading, loadProperties, mapData, whereValue, typeValue } = usePropertiesStore()
+  const { properties, isLoading, loadProperties, mapData, whereValue, typeValue, pagination } = usePropertiesStore()
   const [isMapView, setIsMapView] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
     // Load properties when component mounts, using filter values from search box
-    const filters: { limit: number; page: number; city?: string; type?: string } = { limit: 10, page: 1 }
+    const filters: { limit: number; page: number; city?: string; type?: string } = { limit: 10, page: currentPage }
     if (whereValue) filters.city = whereValue
     if (typeValue) filters.type = typeValue
     loadProperties(filters)
-  }, [loadProperties, whereValue, typeValue])
+  }, [loadProperties, whereValue, typeValue, currentPage])
+
+  // Handle page change
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    // Scroll to top of results
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const toggleView = () => {
     setIsMapView(!isMapView)
@@ -159,11 +167,9 @@ function ResultsPage() {
                 <SwiperSlide className="!h-auto">
                   <div className="py-8 flex justify-center items-center pr-4">
                     <Pagination
-                      currentPage={1}
-                      totalPages={15}
-                      onPageChange={(page) => {
-                        console.log('Page changed to:', page)
-                      }}
+                      currentPage={currentPage}
+                      totalPages={pagination.pages || 1}
+                      onPageChange={handlePageChange}
                     />
                   </div>
                 </SwiperSlide>
@@ -202,11 +208,9 @@ function ResultsPage() {
                 <SwiperSlide className="!h-auto">
                   <div className="py-8 flex justify-center items-center pr-4 col-span-2">
                     <Pagination
-                      currentPage={1}
-                      totalPages={15}
-                      onPageChange={(page) => {
-                        console.log('Page changed to:', page)
-                      }}
+                      currentPage={currentPage}
+                      totalPages={pagination.pages || 1}
+                      onPageChange={handlePageChange}
                     />
                   </div>
                 </SwiperSlide>
@@ -243,11 +247,9 @@ function ResultsPage() {
                 <SwiperSlide className="!h-auto">
                   <div className="py-8 flex justify-center items-center pr-4">
                     <Pagination
-                      currentPage={1}
-                      totalPages={15}
-                      onPageChange={(page) => {
-                        console.log('Page changed to:', page)
-                      }}
+                      currentPage={currentPage}
+                      totalPages={pagination.pages || 1}
+                      onPageChange={handlePageChange}
                     />
                   </div>
                 </SwiperSlide>
@@ -286,11 +288,9 @@ function ResultsPage() {
                 <SwiperSlide className="!h-auto">
                   <div className="py-8 flex justify-center items-center pr-4 col-span-2">
                     <Pagination
-                      currentPage={1}
-                      totalPages={15}
-                      onPageChange={(page) => {
-                        console.log('Page changed to:', page)
-                      }}
+                      currentPage={currentPage}
+                      totalPages={pagination.pages || 1}
+                      onPageChange={handlePageChange}
                     />
                   </div>
                 </SwiperSlide>
