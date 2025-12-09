@@ -25,17 +25,17 @@ interface MapViewerProps {
 }
 
 const MapViewer = memo(function MapViewer({
-                                            center = { lng: 139.753, lat: 35.6844 }, // Default to Tokyo
-                                            zoom = 14,
-                                            style = 'streets',
-                                            className = '',
-                                            height = '100%',
-                                            width = '100%',
-                                            markers = [],
-                                            onMapLoad,
-                                            onMapClick,
-                                            interactive = true,
-                                          }: MapViewerProps) {
+  center = { lng: 101.6953, lat: 3.1390 }, // Default to Malaysia (Kuala Lumpur)
+  zoom = 14,
+  style = 'streets',
+  className = '',
+  height = '100%',
+  width = '100%',
+  markers = [],
+  onMapLoad,
+  onMapClick,
+  interactive = true,
+}: MapViewerProps) {
   console.log('MapViewer rendering, markers:', markers.length)
   const mapContainer = useRef<HTMLDivElement>(null)
   const map = useRef<maptilersdk.Map | null>(null)

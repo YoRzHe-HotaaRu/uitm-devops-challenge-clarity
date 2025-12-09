@@ -37,16 +37,16 @@ function ResultsPage() {
   // Map configuration - use real data from backend if available (memoized)
   const mapCenter = useMemo(() => {
     console.log('Computing map center with mapData:', mapData)
-    
+
     if (mapData?.latMean && mapData?.longMean) {
       console.log('Using API map center:', { lng: mapData.longMean, lat: mapData.latMean })
       return { lng: mapData.longMean, lat: mapData.latMean }
     }
-    
+
     console.log('Using fallback map center')
-    return { lng: -74.006, lat: 40.7128 } // Fallback to NYC center
+    return { lng: 101.6953, lat: 3.1390 } // Fallback to Malaysia (Kuala Lumpur)
   }, [mapData])
-  
+
   const mapZoom = mapData?.depth || 12
 
   console.log('Map center result:', mapCenter)
@@ -56,7 +56,7 @@ function ResultsPage() {
   const propertyMarkers = useMemo(() => {
     return properties.map((property, index) => {
       let lng, lat
-      
+
       if (property.longitude && property.latitude) {
         // Use real coordinates if available
         lng = property.longitude
@@ -67,7 +67,7 @@ function ResultsPage() {
         const gridX = index % gridSize
         const gridY = Math.floor(index / gridSize)
         const offsetRange = 0.02 // Roughly 2km range
-        
+
         lng = mapCenter.lng + (gridX - gridSize / 2) * (offsetRange / gridSize) + (Math.random() - 0.5) * 0.005
         lat = mapCenter.lat + (gridY - gridSize / 2) * (offsetRange / gridSize) + (Math.random() - 0.5) * 0.005
       }

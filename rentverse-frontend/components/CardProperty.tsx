@@ -21,9 +21,9 @@ function convertPropertyType(backendType: PropertyTypeBackend): PropertyType {
 
 function CardProperty({ property }: { readonly property: Property }) {
   // Use the first image or a fallback
-  const imageUrl = property.images?.[0] || '/placeholder-property.jpg'
+  const imageUrl = property.images?.[0] || 'https://placehold.co/500x300/0d9488/ffffff?text=No+Image'
   const propertyType = convertPropertyType(property.type)
-  
+
   return (
     <div className={clsx([
       'w-full max-w-320 bg-white rounded-2xl overflow-hidden shadow-sm',
