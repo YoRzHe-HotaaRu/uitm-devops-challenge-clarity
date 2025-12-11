@@ -9,9 +9,9 @@ export default function Home() {
     <div>
       <ContentWrapper>
         {/* Hero Section */}
-        <section className="relative min-h-[600px] flex justify-center">
+        <section className="relative min-h-[400px] flex justify-center">
           {/* Background Image - Fixed height to not overlap with sections below */}
-          <div className="absolute top-0 left-0 right-0 h-[1040px] z-0 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[940px] z-0 overflow-hidden">
             {/* Desktop Hero Image */}
             <Image
               width={1440}
