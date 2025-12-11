@@ -88,7 +88,7 @@ const MapViewer = memo(function MapViewer({
         }
 
         // Add markers immediately when map loads (if we have them)
-        if (markers.length > 0 && isMounted.current) {
+        if (markers.length > 0 && isMounted.current && map.current) {
           console.log('Map loaded, adding markers directly:', markers.length)
           const mapInstance = map.current
           const currentMarkers = markers
