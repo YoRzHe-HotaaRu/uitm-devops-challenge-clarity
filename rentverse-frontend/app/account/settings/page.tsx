@@ -81,7 +81,7 @@ function AccountSettingsPage() {
             }
 
             const response = await fetch('/api/users/profile', {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,

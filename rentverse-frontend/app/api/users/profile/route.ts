@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthHeader } from '@/utils/apiForwarder'
 
-export async function PUT(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
     try {
         const authHeader = request.headers.get('Authorization')
 
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
         for (const endpoint of endpoints) {
             try {
                 const response = await fetch(`${backendUrl}${endpoint}`, {
-                    method: 'PUT',
+                    method: 'PATCH',
                     headers: {
                         ...getAuthHeader(request),
                         'Content-Type': 'application/json',

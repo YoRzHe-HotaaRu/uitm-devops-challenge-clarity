@@ -990,4 +990,123 @@ router.post('/oauth/unlink', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/auth/change-password:
+ *   post:
+ *     summary: Change user password
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *                 description: Current password
+ *               newPassword:
+ *                 type: string
+ *                 minLength: 6
+ *                 description: New password (minimum 6 characters)
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *       400:
+ *         description: Validation error or incorrect current password
+ *       401:
+ *         description: Unauthorized
+ */
+router.post(
+  '/change-password',
+  [
+    body('currentPassword').notEmpty().withMessage('Current password is required'),
+    body('newPassword')
+      .isLength({ min: 6 })
+      .withMessage('New password must be at least 6 characters'),
+  ],
+  async (req, res) => {
+    try {
+      // Validate request
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Validation failed',
+          errors: errors.array(),
+        });
+      }
+
+      // Get token from header
+      const token = req.headers.authorization?.replace('Bearer ', '');
+      if (!token) {
+        return res.status(401).json({
+          success: false,
+          message: 'No token provided',
+        });
+      }
+
+      // Verify token
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (err) {
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid token',
+        });
+      }
+
+      const { currentPassword, newPassword } = req.body;
+
+      // Find user with password
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+
+      // Verify current password
+      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).json({
+          success: false,
+          message: 'Current password is incorrect',
+        });
+      }
+
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+      // Update password in database
+      await prisma.user.update({
+        where: { id: decoded.userId },
+        data: { password: hashedPassword },
+      });
+
+      res.json({
+        success: true,
+        message: 'Password changed successfully',
+      });
+    } catch (error) {
+      console.error('Change password error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  }
+);
+
 module.exports = router;
