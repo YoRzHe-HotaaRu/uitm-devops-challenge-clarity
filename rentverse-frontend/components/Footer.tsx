@@ -1,9 +1,33 @@
+'use client'
+
+import Link from 'next/link'
 import { Globe } from 'lucide-react'
 import { FaXTwitter } from 'react-icons/fa6'
 import { FaInstagram, FaFacebook } from 'react-icons/fa'
 import FooterWrapper from '@/components/FooterWrapper'
+import usePropertiesStore from '@/stores/propertiesStore'
+import { useRouter } from 'next/navigation'
 
 function Footer() {
+  const router = useRouter()
+  const { setWhereValue, searchProperties } = usePropertiesStore()
+
+  const handleExploreAll = async () => {
+    setWhereValue('')
+    await searchProperties({ page: 1, limit: 10 })
+    router.push('/property/result')
+  }
+
+  const scrollToPopularLocations = () => {
+    // Scroll to the popular locations section on homepage
+    const element = document.getElementById('popular-locations')
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      router.push('/#popular-locations')
+    }
+  }
+
   return (
     <FooterWrapper>
       <footer className="w-full bg-white border-t border-slate-200 py-12">
@@ -17,19 +41,19 @@ function Footer() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <Link href="/about" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
                     About Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <Link href="/contact" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
                     Contact Us
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <Link href="/careers" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
                     Careers
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -41,14 +65,20 @@ function Footer() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <button
+                    onClick={handleExploreAll}
+                    className="text-slate-600 hover:text-slate-900 transition-colors duration-200"
+                  >
                     All Properties
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <button
+                    onClick={scrollToPopularLocations}
+                    className="text-slate-600 hover:text-slate-900 transition-colors duration-200"
+                  >
                     Popular Locations
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -60,19 +90,19 @@ function Footer() {
               </h3>
               <ul className="space-y-3">
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <Link href="/faq" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
                     Help Center (FAQ)
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <Link href="/terms" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
                     Terms & Conditions
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
+                  <Link href="/privacy" className="text-slate-600 hover:text-slate-900 transition-colors duration-200">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -82,9 +112,9 @@ function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-slate-200">
             {/* Copyright */}
             <div className="mb-4 md:mb-0">
-            <span className="text-slate-500 text-sm">
-              © {new Date().getFullYear()} Metaairflow Sdn. Bhd. All rights reserved.
-            </span>
+              <span className="text-slate-500 text-sm">
+                © {new Date().getFullYear()} Metaairflow Sdn. Bhd. All rights reserved.
+              </span>
             </div>
 
             {/* Language, Currency & Social */}
@@ -105,13 +135,13 @@ function Footer() {
 
               {/* Social Media Icons */}
               <div className="flex items-center space-x-4">
-                <a href="#" className="text-slate-400 hover:text-slate-600 transition-colors duration-200">
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-slate-600 transition-colors duration-200">
                   <FaFacebook size={20} />
                 </a>
-                <a href="#" className="text-slate-400 hover:text-slate-600 transition-colors duration-200">
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-slate-600 transition-colors duration-200">
                   <FaXTwitter size={20} />
                 </a>
-                <a href="#" className="text-slate-400 hover:text-slate-600 transition-colors duration-200">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-slate-600 transition-colors duration-200">
                   <FaInstagram size={20} />
                 </a>
               </div>
@@ -124,3 +154,4 @@ function Footer() {
 }
 
 export default Footer
+

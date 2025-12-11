@@ -23,6 +23,7 @@ const popularLocations: Array<LocationBaseType> = [
   },
   {
     name: 'Penang Island',
+    searchKey: 'Penang', // Search for Penang but display as Penang Island
     imageUrl: 'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758027170/rentverse-locations/penang-island_axjqzm.png',
     latitude: 5.4164,
     longitude: 100.3327,
@@ -34,10 +35,10 @@ const popularLocations: Array<LocationBaseType> = [
     longitude: 103.7414,
   },
   {
-    name: 'Shah Alam',
+    name: 'Sarawak',
     imageUrl: 'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758027182/rentverse-locations/shah-alam_swukrl.png',
-    latitude: 3.0733,
-    longitude: 101.5185,
+    latitude: 1.5533,
+    longitude: 110.3592,
   },
   // Additional Penang locations for better dropdown options
   {
