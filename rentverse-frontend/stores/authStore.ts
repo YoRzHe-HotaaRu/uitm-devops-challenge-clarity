@@ -53,6 +53,9 @@ interface AuthFormState {
   mfaSessionToken: string | null
   mfaExpiresAt: string | null
   mfaEmail: string | null
+  // Signup success state
+  signupSuccess: boolean
+  signupEmail: string | null
 }
 
 type AuthStore = AuthState & AuthFormState & AuthActions
@@ -78,6 +81,10 @@ const useAuthStore = create<AuthStore>((set, get) => ({
   mfaSessionToken: null,
   mfaExpiresAt: null,
   mfaEmail: null,
+
+  // Signup success state
+  signupSuccess: false,
+  signupEmail: null,
 
   // Actions
   setPassword: (password: string) => set({ password }),
@@ -373,11 +380,16 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             error: null,
           })
 
-          // Show success message and prompt user to login
-          alert('Account created successfully! Please login to continue.')
+          // Set signup success state to show beautiful modal
+          set({
+            signupSuccess: true,
+            signupEmail: email,
+          })
 
-          // Redirect to home page where user can click login
-          window.location.href = '/'
+          // Redirect to auth page after a short delay
+          setTimeout(() => {
+            window.location.href = '/auth'
+          }, 2000)
           return
         }
 

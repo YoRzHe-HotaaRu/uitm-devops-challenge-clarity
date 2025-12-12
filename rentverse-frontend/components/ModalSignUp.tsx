@@ -3,7 +3,7 @@
 import clsx from 'clsx'
 import { useRouter } from 'next/navigation'
 import React, { ChangeEvent } from 'react'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, CheckCircle } from 'lucide-react'
 import ButtonFilled from '@/components/ButtonFilled'
 import InputEmail from '@/components/InputEmail'
 import InputName from '@/components/InputName'
@@ -27,6 +27,8 @@ function ModalSignUp({ isModal = true }: ModalSignUpProps) {
     signUpPassword,
     isLoading,
     error,
+    signupSuccess,
+    signupEmail,
     setFirstName,
     setLastName,
     setBirthdate,
@@ -47,6 +49,74 @@ function ModalSignUp({ isModal = true }: ModalSignUpProps) {
     await submitSignUp()
   }
 
+  // Success screen content
+  const successContent = (
+    <div className={clsx([
+      isModal ? 'shadow-xl' : 'border border-slate-400',
+      'bg-white rounded-3xl max-w-md w-full p-8',
+    ])}>
+      <div className="text-center py-8">
+        {/* Animated Success Icon */}
+        <div className="flex justify-center mb-6">
+          <div className="relative">
+            <div className="w-20 h-20 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center animate-pulse">
+              <CheckCircle className="w-12 h-12 text-white" />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full animate-ping opacity-20"></div>
+          </div>
+        </div>
+
+        {/* Success Message */}
+        <h2 className="text-2xl font-bold text-slate-900 mb-3">
+          Welcome to RentVerse! 🎉
+        </h2>
+        <p className="text-slate-600 mb-2">
+          Your account has been created successfully.
+        </p>
+        <p className="text-sm text-slate-500 mb-6">
+          We&apos;ve sent you an email at <span className="font-medium text-slate-700">{signupEmail}</span>
+        </p>
+
+        {/* Security Notice */}
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-6">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">🔐</span>
+            <div className="text-left">
+              <p className="text-sm font-medium text-amber-800">
+                Enhanced Security Enabled
+              </p>
+              <p className="text-xs text-amber-700 mt-1">
+                Two-factor authentication is enabled for your account. You&apos;ll receive a verification code each time you log in.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Redirect Notice */}
+        <div className="flex items-center justify-center gap-2 text-slate-500">
+          <div className="w-4 h-4 border-2 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-sm">Redirecting to login...</span>
+        </div>
+      </div>
+    </div>
+  )
+
+  // Show success screen if signup was successful
+  if (signupSuccess) {
+    if (isModal) {
+      return (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          {successContent}
+        </div>
+      )
+    }
+    return (
+      <div className="flex items-center justify-center p-4">
+        {successContent}
+      </div>
+    )
+  }
+
   const containerContent = (
     <div className={clsx([
       isModal ? 'shadow-xl' : 'border border-slate-400',
@@ -55,7 +125,7 @@ function ModalSignUp({ isModal = true }: ModalSignUpProps) {
       {/* Header */}
       <div className="text-center mb-6 relative">
         <ArrowLeft onClick={handleBackButton} size={20}
-                   className="absolute left-0 top-1 text-slate-800 cursor-pointer hover:text-slate-600" />
+          className="absolute left-0 top-1 text-slate-800 cursor-pointer hover:text-slate-600" />
         <h2 className="text-xl font-semibold text-slate-900 mb-2">
           Finish sign up
         </h2>
