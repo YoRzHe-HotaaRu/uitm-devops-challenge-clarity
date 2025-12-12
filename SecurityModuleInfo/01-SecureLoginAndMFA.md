@@ -179,7 +179,7 @@ Response: { success: true, data: { expiresAt } }
 
 ## 🔮 Future Improvements
 
-- [ ] Email sending integration (Nodemailer, SendGrid)
+- [x] Email sending integration (Nodemailer, SendGrid)
 - [ ] TOTP authenticator app support (Google Authenticator)
 - [ ] Backup recovery codes
 - [ ] Remember device functionality

@@ -52,7 +52,7 @@ model User {
   verifiedAt       DateTime?
   
   // MFA (Multi-Factor Authentication) fields
-  mfaEnabled       Boolean           @default(false)
+  mfaEnabled       Boolean           @default(true)
   mfaSecret        String?           // For future TOTP-based MFA
   lastLoginAt      DateTime?
   loginAttempts    Int               @default(0)

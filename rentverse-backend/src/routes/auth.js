@@ -312,8 +312,10 @@ router.post(
           { expiresIn: '10m' }
         );
 
-        // TODO: Send OTP via email (for now, log it)
-        console.log(`[MFA] OTP for ${user.email}: ${otp}`);
+        // Send OTP via email
+        const emailService = require('../services/email.service');
+        await emailService.sendOtpEmail(user.email, otp, 5);
+        console.log(`[MFA] OTP sent to ${user.email}`);
 
         // Remove password from response
         // eslint-disable-next-line no-unused-vars
@@ -709,8 +711,12 @@ router.post(
       // Generate new OTP
       const { otp, expiresAt } = await otpService.createOtp(decoded.userId, 'LOGIN');
 
-      // TODO: Send OTP via email (for now, log it)
-      console.log(`[MFA] Resent OTP for ${user?.email}: ${otp}`);
+      // Send OTP via email
+      const emailService = require('../services/email.service');
+      if (user?.email) {
+        await emailService.sendOtpEmail(user.email, otp, 5);
+        console.log(`[MFA] Resent OTP to ${user.email}`);
+      }
 
       res.json({
         success: true,
