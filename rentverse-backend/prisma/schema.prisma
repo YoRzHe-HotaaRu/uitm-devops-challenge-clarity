@@ -75,6 +75,11 @@ model User {
   propertyViews    PropertyView[]    @relation("PropertyViews")
   propertyRatings  PropertyRating[]  @relation("PropertyRatings")
   propertyFavorites PropertyFavorite[] @relation("PropertyFavorites")
+  
+  // Security monitoring relations
+  loginHistory     LoginHistory[]
+  devices          UserDevice[]
+  securityAlerts   SecurityAlert[]
 
   @@map("users")
 }
@@ -96,6 +101,77 @@ model OtpCode {
   @@map("otp_codes")
 }
 
+/// Login history for security monitoring and suspicious activity detection
+model LoginHistory {
+  id          String        @id @default(uuid())
+  userId      String
+  ipAddress   String
+  userAgent   String?
+  deviceType  String?       // mobile, desktop, tablet
+  browser     String?
+  os          String?
+  country     String?
+  city        String?
+  success     Boolean       @default(true)
+  failReason  String?       // Reason for failed login
+  riskScore   Int           @default(0)  // 0-100 risk score
+  createdAt   DateTime      @default(now())
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([ipAddress])
+  @@index([createdAt])
+  @@map("login_history")
+}
+
+/// Known devices for each user
+model UserDevice {
+  id            String    @id @default(uuid())
+  userId        String
+  deviceHash    String    // Hash of device fingerprint
+  deviceName    String?   // User-friendly device name
+  deviceType    String?   // mobile, desktop, tablet
+  browser       String?
+  os            String?
+  ipAddress     String?
+  lastUsedAt    DateTime  @default(now())
+  isTrusted     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, deviceHash])
+  @@index([userId])
+  @@map("user_devices")
+}
+
+/// Security alert types
+enum AlertType {
+  NEW_DEVICE
+  MULTIPLE_FAILURES
+  ACCOUNT_LOCKED
+  PASSWORD_CHANGED
+  SUSPICIOUS_TIMING
+  NEW_LOCATION
+}
+
+/// Security alerts sent to users
+model SecurityAlert {
+  id          String      @id @default(uuid())
+  userId      String
+  type        AlertType
+  title       String
+  message     String
+  metadata    Json?       // Additional alert data (IP, device, etc.)
+  isRead      Boolean     @default(false)
+  emailSent   Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("security_alerts")
+}
 
 
 /// Listing properti yang ditawarkan (detail fisik, lokasi, harga).

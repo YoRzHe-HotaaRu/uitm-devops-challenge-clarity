@@ -11,6 +11,10 @@ const { blacklistToken } = require('../services/tokenBlacklist');
 const { securityLogger } = require('../middleware/apiLogger');
 const { auth } = require('../middleware/auth');
 
+// Smart Notification System imports (Module 3)
+const suspiciousActivityService = require('../services/suspiciousActivity.service');
+const securityAlertService = require('../services/securityAlert.service');
+
 const router = express.Router();
 
 // Initialize Passport
@@ -292,12 +296,31 @@ router.post(
         // Record failed attempt
         const attemptResult = await otpService.recordFailedAttempt(user.id);
 
+        // Record failed login in history
+        await suspiciousActivityService.recordLoginAttempt({
+          userId: user.id,
+          ipAddress: req.ip,
+          userAgent: req.headers['user-agent'],
+          success: false,
+          failReason: 'Invalid password',
+        });
+
         if (attemptResult.locked) {
           securityLogger.logAuthFailure(req, 'Account locked after failed attempts');
+
+          // Send account locked alert
+          await securityAlertService.alertAccountLocked(user.id, req.ip);
+
           return res.status(423).json({
             success: false,
             message: 'Too many failed attempts. Account is temporarily locked for 15 minutes.',
           });
+        }
+
+        // Check for multiple failures and send alert
+        const { hasSuspiciousActivity, alerts } = await suspiciousActivityService.checkSuspiciousPatterns(user.id, req.ip);
+        if (hasSuspiciousActivity && alerts.some(a => a.type === 'MULTIPLE_FAILURES')) {
+          await securityAlertService.alertMultipleFailures(user.id, attemptResult.attempts, req.ip);
         }
 
         securityLogger.logAuthFailure(req, `Wrong password (${attemptResult.attemptsRemaining} attempts remaining)`);
@@ -484,6 +507,26 @@ router.post(
       // Remove sensitive fields
       // eslint-disable-next-line no-unused-vars
       const { password: _, mfaSecret: __, ...userWithoutPassword } = user;
+
+      // Record successful login and check for new device
+      const deviceInfo = suspiciousActivityService.parseUserAgent(req.headers['user-agent']);
+      const deviceCheck = await suspiciousActivityService.checkDevice(user.id, req.headers['user-agent'], req.ip);
+
+      // Record login in history
+      await suspiciousActivityService.recordLoginAttempt({
+        userId: user.id,
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+        success: true,
+      });
+
+      // Send new device alert if applicable
+      if (deviceCheck.isNew) {
+        await securityAlertService.alertNewDevice(user.id, {
+          ...deviceInfo,
+          ipAddress: req.ip,
+        });
+      }
 
       // Log successful MFA verification
       securityLogger.logMfaEvent(req, 'VERIFY', true, user.id);
@@ -1590,6 +1633,10 @@ router.post(
         where: { id: decoded.userId },
         data: { password: hashedPassword },
       });
+
+      // Send password changed notification
+      await securityAlertService.alertPasswordChanged(decoded.userId, req.ip);
+      securityLogger.logPasswordChange(req, decoded.userId);
 
       res.json({
         success: true,
