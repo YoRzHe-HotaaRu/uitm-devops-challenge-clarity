@@ -32,10 +32,33 @@ app.use((req, res, next) => {
 connectDB();
 
 // Middleware
+// Enhanced Helmet configuration for security headers (OWASP M5-M6)
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:", "https:", "blob:"],
+        fontSrc: ["'self'", "https:", "data:"],
+        connectSrc: ["'self'", "https:", "wss:", "http://localhost:*"],
+        frameSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    hsts: {
+      maxAge: 31536000, // 1 year
+      includeSubDomains: true,
+      preload: true,
+    },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    noSniff: true,
+    xssFilter: true,
+    hidePoweredBy: true,
   })
 );
 
@@ -124,8 +147,25 @@ app.use((req, res, next) => {
 });
 
 app.use(morgan('combined'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10kb' })); // Limit body size
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Security Middleware (OWASP M5-M6)
+const { globalLimiter } = require('./middleware/rateLimit');
+const { sanitizeRequest, detectInjection } = require('./middleware/requestValidator');
+const { accessLogger, errorLogger } = require('./middleware/apiLogger');
+
+// Apply global rate limiter (100 requests per 15 minutes per IP)
+app.use(globalLimiter);
+
+// Sanitize all incoming requests (XSS prevention)
+app.use(sanitizeRequest);
+
+// Detect potential SQL injection (logs warnings, doesn't block)
+app.use(detectInjection(false));
+
+// API access logging
+app.use(accessLogger);
 
 // Session middleware (required for OAuth)
 app.use(sessionMiddleware);

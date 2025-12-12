@@ -5,6 +5,12 @@ const { body, validationResult } = require('express-validator');
 const { prisma } = require('../config/database');
 const { passport, handleAppleSignIn } = require('../config/passport');
 
+// Security imports (OWASP M5-M6)
+const { authLimiter, strictLimiter, otpLimiter, createAccountLimiter } = require('../middleware/rateLimit');
+const { blacklistToken } = require('../services/tokenBlacklist');
+const { securityLogger } = require('../middleware/apiLogger');
+const { auth } = require('../middleware/auth');
+
 const router = express.Router();
 
 // Initialize Passport
@@ -257,6 +263,7 @@ router.post(
       });
 
       if (!user || !user.isActive) {
+        securityLogger.logAuthFailure(req, !user ? 'User not found' : 'Account inactive');
         return res.status(401).json({
           success: false,
           message: 'Invalid credentials',
@@ -271,6 +278,7 @@ router.post(
         const remainingMinutes = Math.ceil(
           (lockStatus.lockedUntil - new Date()) / (1000 * 60)
         );
+        securityLogger.logAuthFailure(req, `Account locked (${remainingMinutes} min remaining)`);
         return res.status(423).json({
           success: false,
           message: `Account is temporarily locked. Please try again in ${remainingMinutes} minute(s).`,
@@ -285,12 +293,14 @@ router.post(
         const attemptResult = await otpService.recordFailedAttempt(user.id);
 
         if (attemptResult.locked) {
+          securityLogger.logAuthFailure(req, 'Account locked after failed attempts');
           return res.status(423).json({
             success: false,
             message: 'Too many failed attempts. Account is temporarily locked for 15 minutes.',
           });
         }
 
+        securityLogger.logAuthFailure(req, `Wrong password (${attemptResult.attemptsRemaining} attempts remaining)`);
         return res.status(401).json({
           success: false,
           message: `Invalid credentials. ${attemptResult.attemptsRemaining} attempt(s) remaining.`,
@@ -348,6 +358,9 @@ router.post(
       // Remove password and sensitive fields from response
       // eslint-disable-next-line no-unused-vars
       const { password: _, mfaSecret: __, ...userWithoutPassword } = user;
+
+      // Log successful login
+      securityLogger.logAuthSuccess(req, user.id);
 
       res.json({
         success: true,
@@ -439,6 +452,7 @@ router.post(
       const verifyResult = await otpService.verifyOtp(decoded.userId, otp, 'LOGIN');
 
       if (!verifyResult.success) {
+        securityLogger.logMfaEvent(req, 'VERIFY', false, decoded.userId);
         return res.status(400).json({
           success: false,
           message: verifyResult.message,
@@ -470,6 +484,10 @@ router.post(
       // Remove sensitive fields
       // eslint-disable-next-line no-unused-vars
       const { password: _, mfaSecret: __, ...userWithoutPassword } = user;
+
+      // Log successful MFA verification
+      securityLogger.logMfaEvent(req, 'VERIFY', true, user.id);
+      securityLogger.logAuthSuccess(req, user.id);
 
       res.json({
         success: true,
@@ -731,6 +749,56 @@ router.post(
     }
   }
 );
+
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout and invalidate token
+ *     description: Logs out the user and blacklists the current JWT token
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully logged out
+ *       401:
+ *         description: No token provided or invalid token
+ */
+router.post('/logout', auth, async (req, res) => {
+  try {
+    const token = req.token;
+
+    if (token) {
+      // Decode token to get expiration time
+      const decoded = jwt.decode(token);
+      const expiresAt = decoded?.exp ? decoded.exp * 1000 : Date.now() + (7 * 24 * 60 * 60 * 1000);
+
+      // Blacklist the token
+      blacklistToken(token, expiresAt);
+
+      // Log the logout event
+      securityLogger.logTokenBlacklisted(req, 'User logout');
+    }
+
+    // Update last login timestamp  
+    await prisma.user.update({
+      where: { id: req.user.id },
+      data: { lastLoginAt: new Date() },
+    });
+
+    res.json({
+      success: true,
+      message: 'Logged out successfully. Token has been invalidated.',
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error during logout',
+    });
+  }
+});
 
 /**
  * @swagger
