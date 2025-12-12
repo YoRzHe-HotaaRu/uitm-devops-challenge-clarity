@@ -81,11 +81,26 @@ export default function SecurityDashboard() {
     const [loginHistory, setLoginHistory] = useState<LoginEntry[]>([])
     const [alerts, setAlerts] = useState<AlertEntry[]>([])
     const [showFailedOnly, setShowFailedOnly] = useState(false)
+    const [isChecking, setIsChecking] = useState(true)
 
     useEffect(() => {
-        if (!isLoggedIn) {
+        // Check localStorage directly to prevent redirect on page refresh
+        const token = localStorage.getItem('authToken')
+
+        if (!token) {
             router.push('/auth')
             return
+        }
+
+        // Wait for auth store to be hydrated
+        if (!isLoggedIn) {
+            // Give auth store time to hydrate
+            const timeout = setTimeout(() => {
+                if (!isLoggedIn) {
+                    router.push('/auth')
+                }
+            }, 1000)
+            return () => clearTimeout(timeout)
         }
 
         if (user?.role !== 'ADMIN') {
@@ -93,6 +108,7 @@ export default function SecurityDashboard() {
             return
         }
 
+        setIsChecking(false)
         fetchData()
 
         // Real-time polling every 10 seconds
@@ -202,7 +218,7 @@ export default function SecurityDashboard() {
         return colors[type] || 'bg-slate-100 text-slate-800'
     }
 
-    if (loading) {
+    if (loading || isChecking) {
         return (
             <ContentWrapper>
                 <div className="flex items-center justify-center py-20">
