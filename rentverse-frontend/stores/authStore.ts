@@ -56,6 +56,8 @@ interface AuthFormState {
   // Signup success state
   signupSuccess: boolean
   signupEmail: string | null
+  // Login success state
+  loginSuccess: boolean
 }
 
 type AuthStore = AuthState & AuthFormState & AuthActions
@@ -85,6 +87,9 @@ const useAuthStore = create<AuthStore>((set, get) => ({
   // Signup success state
   signupSuccess: false,
   signupEmail: null,
+
+  // Login success state
+  loginSuccess: false,
 
   // Actions
   setPassword: (password: string) => set({ password }),
@@ -266,6 +271,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
         set({
           user,
           isLoggedIn: true,
+          loginSuccess: true, // Show success screen before redirect
           mfaRequired: false,
           mfaSessionToken: null,
           mfaExpiresAt: null,
@@ -281,7 +287,10 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           setCookie('authToken', result.data.token, 7)
         }
 
-        window.location.href = '/'
+        // Redirect after showing success screen
+        setTimeout(() => {
+          window.location.href = '/'
+        }, 2500)
       } else {
         setError(result.message || 'OTP verification failed.')
       }

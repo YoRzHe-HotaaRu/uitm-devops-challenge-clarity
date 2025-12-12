@@ -15,12 +15,12 @@ interface AuthGuardProps {
  * - For auth pages (login/signup): redirects authenticated users away
  * - For protected pages: redirects unauthenticated users to login
  */
-export default function AuthGuard({ 
-  children, 
-  redirectTo = '/', 
-  requireAuth = false 
+export default function AuthGuard({
+  children,
+  redirectTo = '/',
+  requireAuth = false
 }: AuthGuardProps) {
-  const { isLoggedIn, initializeAuth } = useAuthStore()
+  const { isLoggedIn, loginSuccess, signupSuccess, initializeAuth } = useAuthStore()
   const router = useRouter()
 
   useEffect(() => {
@@ -29,6 +29,11 @@ export default function AuthGuard({
   }, [initializeAuth])
 
   useEffect(() => {
+    // Don't redirect if showing success screens
+    if (loginSuccess || signupSuccess) {
+      return
+    }
+
     if (requireAuth && !isLoggedIn) {
       // Redirect to login if auth is required but user is not logged in
       router.push('/auth/login')
@@ -36,10 +41,11 @@ export default function AuthGuard({
       // Redirect away from auth pages if user is already logged in
       router.push(redirectTo)
     }
-  }, [isLoggedIn, requireAuth, redirectTo, router])
+  }, [isLoggedIn, loginSuccess, signupSuccess, requireAuth, redirectTo, router])
 
-  // For auth pages: don't render if user is logged in
-  if (!requireAuth && isLoggedIn) {
+  // For auth pages: show success screens if loginSuccess or signupSuccess is true
+  // Otherwise, don't render if user is logged in (redirect in progress)
+  if (!requireAuth && isLoggedIn && !loginSuccess && !signupSuccess) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
