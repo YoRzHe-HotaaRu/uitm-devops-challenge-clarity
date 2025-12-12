@@ -266,14 +266,78 @@ router.post(
         });
       }
 
+      // Check if account is locked
+      const otpService = require('../services/otp.service');
+      const lockStatus = await otpService.checkAccountLock(user.id);
+
+      if (lockStatus.locked) {
+        const remainingMinutes = Math.ceil(
+          (lockStatus.lockedUntil - new Date()) / (1000 * 60)
+        );
+        return res.status(423).json({
+          success: false,
+          message: `Account is temporarily locked. Please try again in ${remainingMinutes} minute(s).`,
+          lockedUntil: lockStatus.lockedUntil,
+        });
+      }
+
       // Check password
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
+        // Record failed attempt
+        const attemptResult = await otpService.recordFailedAttempt(user.id);
+
+        if (attemptResult.locked) {
+          return res.status(423).json({
+            success: false,
+            message: 'Too many failed attempts. Account is temporarily locked for 15 minutes.',
+          });
+        }
+
         return res.status(401).json({
           success: false,
-          message: 'Invalid credentials',
+          message: `Invalid credentials. ${attemptResult.attemptsRemaining} attempt(s) remaining.`,
         });
       }
+
+      // Check if MFA is enabled
+      if (user.mfaEnabled) {
+        // Generate OTP and create session token for MFA flow
+        const { otp, expiresAt } = await otpService.createOtp(user.id, 'LOGIN');
+
+        // Create a short-lived session token for MFA verification
+        const mfaSessionToken = jwt.sign(
+          { userId: user.id, type: 'mfa_pending' },
+          process.env.JWT_SECRET,
+          { expiresIn: '10m' }
+        );
+
+        // TODO: Send OTP via email (for now, log it)
+        console.log(`[MFA] OTP for ${user.email}: ${otp}`);
+
+        // Remove password from response
+        // eslint-disable-next-line no-unused-vars
+        const { password: _, ...userWithoutPassword } = user;
+
+        return res.json({
+          success: true,
+          message: 'MFA verification required',
+          data: {
+            mfaRequired: true,
+            sessionToken: mfaSessionToken,
+            expiresAt,
+            user: {
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+            },
+          },
+        });
+      }
+
+      // Reset login attempts on successful login
+      await otpService.resetLoginAttempts(user.id);
 
       // Generate JWT token
       const token = jwt.sign(
@@ -282,9 +346,9 @@ router.post(
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
       );
 
-      // Remove password from response
+      // Remove password and sensitive fields from response
       // eslint-disable-next-line no-unused-vars
-      const { password: _, ...userWithoutPassword } = user;
+      const { password: _, mfaSecret: __, ...userWithoutPassword } = user;
 
       res.json({
         success: true,
@@ -296,6 +360,367 @@ router.post(
       });
     } catch (error) {
       console.error('Login error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/auth/mfa/verify:
+ *   post:
+ *     summary: Verify MFA OTP and complete login
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - sessionToken
+ *               - otp
+ *             properties:
+ *               sessionToken:
+ *                 type: string
+ *                 description: MFA session token from login
+ *               otp:
+ *                 type: string
+ *                 description: 6-digit OTP code
+ *     responses:
+ *       200:
+ *         description: MFA verification successful
+ *       400:
+ *         description: Invalid OTP
+ *       401:
+ *         description: Invalid session token
+ */
+router.post(
+  '/mfa/verify',
+  [
+    body('sessionToken').notEmpty().withMessage('Session token is required'),
+    body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits'),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Validation failed',
+          errors: errors.array(),
+        });
+      }
+
+      const { sessionToken, otp } = req.body;
+      const otpService = require('../services/otp.service');
+
+      // Verify session token
+      let decoded;
+      try {
+        decoded = jwt.verify(sessionToken, process.env.JWT_SECRET);
+
+        if (decoded.type !== 'mfa_pending') {
+          return res.status(401).json({
+            success: false,
+            message: 'Invalid session token type',
+          });
+        }
+      } catch (err) {
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid or expired session token. Please login again.',
+        });
+      }
+
+      // Verify OTP
+      const verifyResult = await otpService.verifyOtp(decoded.userId, otp, 'LOGIN');
+
+      if (!verifyResult.success) {
+        return res.status(400).json({
+          success: false,
+          message: verifyResult.message,
+        });
+      }
+
+      // Reset login attempts on successful MFA
+      await otpService.resetLoginAttempts(decoded.userId);
+
+      // Get user data
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+
+      // Generate full JWT token
+      const token = jwt.sign(
+        { userId: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      );
+
+      // Remove sensitive fields
+      // eslint-disable-next-line no-unused-vars
+      const { password: _, mfaSecret: __, ...userWithoutPassword } = user;
+
+      res.json({
+        success: true,
+        message: 'MFA verification successful',
+        data: {
+          user: userWithoutPassword,
+          token,
+        },
+      });
+    } catch (error) {
+      console.error('MFA verify error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/auth/mfa/enable:
+ *   post:
+ *     summary: Enable MFA for authenticated user
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: MFA enabled successfully
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/mfa/enable', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace('Bearer ', '');
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: 'No token provided',
+      });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token',
+      });
+    }
+
+    const otpService = require('../services/otp.service');
+    await otpService.enableMfa(decoded.userId);
+
+    res.json({
+      success: true,
+      message: 'MFA has been enabled for your account. You will need to enter an OTP code on your next login.',
+    });
+  } catch (error) {
+    console.error('MFA enable error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /api/auth/mfa/disable:
+ *   post:
+ *     summary: Disable MFA for authenticated user
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 description: Current password for verification
+ *     responses:
+ *       200:
+ *         description: MFA disabled successfully
+ *       400:
+ *         description: Invalid password
+ *       401:
+ *         description: Unauthorized
+ */
+router.post(
+  '/mfa/disable',
+  [body('password').notEmpty().withMessage('Password is required')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Validation failed',
+          errors: errors.array(),
+        });
+      }
+
+      const token = req.headers.authorization?.replace('Bearer ', '');
+
+      if (!token) {
+        return res.status(401).json({
+          success: false,
+          message: 'No token provided',
+        });
+      }
+
+      let decoded;
+      try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (err) {
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid token',
+        });
+      }
+
+      // Verify password before disabling MFA
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+
+      const { password } = req.body;
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+
+      if (!isPasswordValid) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid password',
+        });
+      }
+
+      const otpService = require('../services/otp.service');
+      await otpService.disableMfa(decoded.userId);
+
+      res.json({
+        success: true,
+        message: 'MFA has been disabled for your account.',
+      });
+    } catch (error) {
+      console.error('MFA disable error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/auth/mfa/resend:
+ *   post:
+ *     summary: Resend MFA OTP code
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - sessionToken
+ *             properties:
+ *               sessionToken:
+ *                 type: string
+ *                 description: MFA session token from login
+ *     responses:
+ *       200:
+ *         description: OTP resent successfully
+ *       401:
+ *         description: Invalid session token
+ */
+router.post(
+  '/mfa/resend',
+  [body('sessionToken').notEmpty().withMessage('Session token is required')],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Validation failed',
+          errors: errors.array(),
+        });
+      }
+
+      const { sessionToken } = req.body;
+      const otpService = require('../services/otp.service');
+
+      // Verify session token
+      let decoded;
+      try {
+        decoded = jwt.verify(sessionToken, process.env.JWT_SECRET);
+
+        if (decoded.type !== 'mfa_pending') {
+          return res.status(401).json({
+            success: false,
+            message: 'Invalid session token type',
+          });
+        }
+      } catch (err) {
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid or expired session token. Please login again.',
+        });
+      }
+
+      // Get user email for logging
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+        select: { email: true },
+      });
+
+      // Generate new OTP
+      const { otp, expiresAt } = await otpService.createOtp(decoded.userId, 'LOGIN');
+
+      // TODO: Send OTP via email (for now, log it)
+      console.log(`[MFA] Resent OTP for ${user?.email}: ${otp}`);
+
+      res.json({
+        success: true,
+        message: 'A new OTP has been sent to your email.',
+        data: {
+          expiresAt,
+        },
+      });
+    } catch (error) {
+      console.error('MFA resend error:', error);
       res.status(500).json({
         success: false,
         message: 'Internal server error',

@@ -8,6 +8,7 @@ import { ArrowLeft } from 'lucide-react'
 import BoxError from '@/components/BoxError'
 import InputPassword from '@/components/InputPassword'
 import ButtonFilled from '@/components/ButtonFilled'
+import OtpVerification from '@/components/OtpVerification'
 import useAuthStore from '@/stores/authStore'
 
 interface ModalLogInProps {
@@ -19,14 +20,24 @@ function ModalLogIn({ isModal = true }: ModalLogInProps) {
     password,
     isLoading,
     error,
+    mfaRequired,
+    mfaExpiresAt,
+    mfaEmail,
     setPassword,
     isLoginFormValid,
     submitLogIn,
+    verifyMfa,
+    resendMfa,
+    cancelMfa,
   } = useAuthStore()
   const router = useRouter()
 
   const handleBackButton = () => {
-    router.back()
+    if (mfaRequired) {
+      cancelMfa()
+    } else {
+      router.back()
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,6 +45,39 @@ function ModalLogIn({ isModal = true }: ModalLogInProps) {
     await submitLogIn()
   }
 
+  const handleVerifyOtp = async (otp: string) => {
+    await verifyMfa(otp)
+  }
+
+  const handleResendOtp = async () => {
+    await resendMfa()
+  }
+
+  // MFA Verification Screen
+  const mfaContent = (
+    <div className={clsx([
+      isModal ? 'shadow-xl' : 'border border-slate-400',
+      'bg-white rounded-3xl max-w-md w-full p-8',
+    ])}>
+      {/* Header */}
+      <div className="text-center mb-2 relative">
+        <ArrowLeft onClick={handleBackButton} size={20}
+          className="absolute left-0 top-1 text-slate-800 cursor-pointer hover:text-slate-600" />
+      </div>
+
+      {/* OTP Verification Component */}
+      <OtpVerification
+        onVerify={handleVerifyOtp}
+        onResend={handleResendOtp}
+        expiresAt={mfaExpiresAt || new Date(Date.now() + 5 * 60 * 1000).toISOString()}
+        email={mfaEmail || undefined}
+        isLoading={isLoading}
+        error={error}
+      />
+    </div>
+  )
+
+  // Login Form Screen
   const containerContent = (
     <div className={clsx([
       isModal ? 'shadow-xl' : 'border border-slate-400',
@@ -42,7 +86,7 @@ function ModalLogIn({ isModal = true }: ModalLogInProps) {
       {/* Header */}
       <div className="text-center mb-6 relative">
         <ArrowLeft onClick={handleBackButton} size={20}
-                   className="absolute left-0 top-1 text-slate-800 cursor-pointer hover:text-slate-600" />
+          className="absolute left-0 top-1 text-slate-800 cursor-pointer hover:text-slate-600" />
         <h2 className="text-xl font-semibold text-slate-900 mb-2">
           Log in
         </h2>
@@ -91,19 +135,23 @@ function ModalLogIn({ isModal = true }: ModalLogInProps) {
     </div>
   )
 
+  // Choose which content to show
+  const content = mfaRequired ? mfaContent : containerContent
+
   if (isModal) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-        {containerContent}
+        {content}
       </div>
     )
   }
 
   return (
     <div className="flex items-center justify-center p-4">
-      {containerContent}
+      {content}
     </div>
   )
 }
 
 export default ModalLogIn
+

@@ -8,6 +8,11 @@ interface AuthActions {
   setPassword: (password: string) => void
   submitLogIn: () => Promise<void>
 
+  // MFA functionality
+  verifyMfa: (otp: string) => Promise<void>
+  resendMfa: () => Promise<void>
+  cancelMfa: () => void
+
   // Signup functionality
   setFirstName: (firstName: string) => void
   setLastName: (lastName: string) => void
@@ -28,7 +33,7 @@ interface AuthActions {
   resetForm: () => void
   isLoginFormValid: () => boolean
   isSignUpFormValid: () => boolean
-  
+
   // Auth persistence
   initializeAuth: () => void
   validateToken: () => Promise<boolean>
@@ -43,6 +48,11 @@ interface AuthFormState {
   email: string
   phone: string
   signUpPassword: string
+  // MFA state
+  mfaRequired: boolean
+  mfaSessionToken: string | null
+  mfaExpiresAt: string | null
+  mfaEmail: string | null
 }
 
 type AuthStore = AuthState & AuthFormState & AuthActions
@@ -62,6 +72,12 @@ const useAuthStore = create<AuthStore>((set, get) => ({
   email: '',
   phone: '',
   signUpPassword: '',
+
+  // MFA state
+  mfaRequired: false,
+  mfaSessionToken: null,
+  mfaExpiresAt: null,
+  mfaEmail: null,
 
   // Actions
   setPassword: (password: string) => set({ password }),
@@ -125,9 +141,27 @@ const useAuthStore = create<AuthStore>((set, get) => ({
       const result = await response.json()
 
       if (response.ok && result.success) {
-        // Store user data and token
+        // Check if MFA is required
+        if (result.data.mfaRequired) {
+          // Store MFA session state
+          set({
+            mfaRequired: true,
+            mfaSessionToken: result.data.sessionToken,
+            mfaExpiresAt: result.data.expiresAt,
+            mfaEmail: result.data.user?.email || email,
+            password: '', // Clear password for security
+            error: null,
+          })
+
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[AUTH] MFA required, waiting for OTP verification')
+          }
+          return
+        }
+
+        // No MFA - proceed with normal login
         const backendUser = result.data.user
-        
+
         // Debug logging for development
         if (process.env.NODE_ENV === 'development') {
           console.log('[AUTH] Backend user data:', backendUser)
@@ -135,7 +169,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           console.log('[AUTH] Last name:', backendUser.lastName)
           console.log('[AUTH] Name field:', backendUser.name)
         }
-        
+
         const user: User = {
           id: backendUser.id,
           email: backendUser.email,
@@ -147,7 +181,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           role: backendUser.role || 'user',
           birthdate: backendUser.dateOfBirth || undefined,
         }
-        
+
         // Debug logging for final user object
         if (process.env.NODE_ENV === 'development') {
           console.log('[AUTH] Final user object:', user)
@@ -173,7 +207,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
         // Navigate to home page instead of forcing to property page
         window.location.href = '/'
       } else {
-        // Handle 400/401 errors
+        // Handle 400/401/423 errors
         setError(result.message || 'Login failed. Please check your credentials.')
       }
     } catch (error) {
@@ -182,6 +216,125 @@ const useAuthStore = create<AuthStore>((set, get) => ({
     } finally {
       setLoading(false)
     }
+  },
+
+  // MFA Functions
+  verifyMfa: async (otp: string) => {
+    const { mfaSessionToken, setLoading, setError } = get()
+
+    if (!mfaSessionToken) {
+      setError('No MFA session found. Please login again.')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/auth/mfa/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionToken: mfaSessionToken, otp }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok && result.success) {
+        const backendUser = result.data.user
+
+        const user: User = {
+          id: backendUser.id,
+          email: backendUser.email,
+          firstName: backendUser.firstName || '',
+          lastName: backendUser.lastName || '',
+          name: backendUser.name || `${backendUser.firstName || ''} ${backendUser.lastName || ''}`.trim(),
+          dateOfBirth: backendUser.dateOfBirth || '',
+          phone: backendUser.phone || '',
+          role: backendUser.role || 'user',
+          birthdate: backendUser.dateOfBirth || undefined,
+        }
+
+        set({
+          user,
+          isLoggedIn: true,
+          mfaRequired: false,
+          mfaSessionToken: null,
+          mfaExpiresAt: null,
+          mfaEmail: null,
+          email: '',
+          error: null,
+        })
+
+        // Store token and user data
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('authToken', result.data.token)
+          localStorage.setItem('authUser', JSON.stringify(user))
+          setCookie('authToken', result.data.token, 7)
+        }
+
+        window.location.href = '/'
+      } else {
+        setError(result.message || 'OTP verification failed.')
+      }
+    } catch (error) {
+      console.error('MFA verify error:', error)
+      setError('Verification failed. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  },
+
+  resendMfa: async () => {
+    const { mfaSessionToken, setError } = get()
+
+    if (!mfaSessionToken) {
+      setError('No MFA session found. Please login again.')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/auth/mfa/resend', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sessionToken: mfaSessionToken }),
+      })
+
+      const result = await response.json()
+
+      if (response.ok && result.success) {
+        set({
+          mfaExpiresAt: result.data.expiresAt,
+        })
+      } else {
+        // If session expired, cancel MFA
+        if (response.status === 401) {
+          set({
+            mfaRequired: false,
+            mfaSessionToken: null,
+            mfaExpiresAt: null,
+            mfaEmail: null,
+          })
+        }
+        setError(result.message || 'Failed to resend OTP.')
+      }
+    } catch (error) {
+      console.error('MFA resend error:', error)
+      setError('Failed to resend OTP. Please try again.')
+    }
+  },
+
+  cancelMfa: () => {
+    set({
+      mfaRequired: false,
+      mfaSessionToken: null,
+      mfaExpiresAt: null,
+      mfaEmail: null,
+      error: null,
+    })
   },
 
   submitSignUp: async () => {
@@ -301,7 +454,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
       phone: '',
       signUpPassword: '',
     })
-    
+
     // Clear localStorage and cookies
     if (typeof window !== 'undefined') {
       localStorage.removeItem('authToken')
@@ -336,7 +489,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           isLoggedIn: true,
           error: null,
         })
-        
+
         if (process.env.NODE_ENV === 'development') {
           console.log('[AUTH] Initialized with stored user:', user)
         }
@@ -368,17 +521,17 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 
       if (response.ok) {
         const result = await response.json()
-        
+
         // Debug logging for development
         if (process.env.NODE_ENV === 'development') {
           console.log('[AUTH] validateToken response:', result)
           console.log('[AUTH] result.data:', result.data)
         }
-        
+
         if (result.success && result.data?.user) {
           // Update user data with fresh data from backend
           const backendUser = result.data.user
-          
+
           // Debug logging for backend user data
           if (process.env.NODE_ENV === 'development') {
             console.log('[AUTH] validateToken backendUser:', backendUser)
@@ -386,7 +539,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             console.log('[AUTH] validateToken lastName:', backendUser.lastName)
             console.log('[AUTH] validateToken name:', backendUser.name)
           }
-          
+
           const user: User = {
             id: backendUser.id,
             email: backendUser.email,
@@ -398,7 +551,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             role: backendUser.role || 'user',
             birthdate: backendUser.dateOfBirth || undefined,
           }
-          
+
           // Debug logging for final user object
           if (process.env.NODE_ENV === 'development') {
             console.log('[AUTH] validateToken final user:', user)
@@ -419,7 +572,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
       } else if (process.env.NODE_ENV === 'development') {
         console.log('[AUTH] validateToken failed - response not ok:', response.status)
       }
-      
+
       // Token is invalid or response unsuccessful, clear auth state
       get().logout()
       return false
@@ -447,7 +600,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 
       if (response.ok) {
         const result = await response.json()
-        
+
         if (result.success && result.data?.user) {
           // Update user data with fresh data from backend
           const backendUser = result.data.user
@@ -474,7 +627,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           return true
         }
       }
-      
+
       return false
     } catch (error) {
       console.error('Error refreshing user data:', error)

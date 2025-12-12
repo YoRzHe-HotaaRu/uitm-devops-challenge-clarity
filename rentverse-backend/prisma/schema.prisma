@@ -51,6 +51,13 @@ model User {
   updatedAt        DateTime          @updatedAt
   verifiedAt       DateTime?
   
+  // MFA (Multi-Factor Authentication) fields
+  mfaEnabled       Boolean           @default(false)
+  mfaSecret        String?           // For future TOTP-based MFA
+  lastLoginAt      DateTime?
+  loginAttempts    Int               @default(0)
+  lockedUntil      DateTime?
+  
   // OAuth IDs
   googleId         String?           @unique
   facebookId       String?           @unique
@@ -58,6 +65,8 @@ model User {
   githubId         String?           @unique
   twitterId        String?           @unique
   
+  // Relations
+  otpCodes         OtpCode[]
   leasesAsLandlord Lease[]           @relation("LandlordLeases")
   leasesAsTenant   Lease[]           @relation("TenantLeases")
   approvals        ListingApproval[] @relation("ReviewerApprovals")
@@ -68,6 +77,23 @@ model User {
   propertyFavorites PropertyFavorite[] @relation("PropertyFavorites")
 
   @@map("users")
+}
+
+/// OTP codes for MFA and verification
+model OtpCode {
+  id          String    @id @default(uuid())
+  userId      String
+  code        String    // Hashed OTP code
+  type        OtpType   @default(LOGIN)
+  expiresAt   DateTime
+  usedAt      DateTime?
+  attempts    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, type])
+  @@index([expiresAt])
+  @@map("otp_codes")
 }
 
 
@@ -367,4 +393,11 @@ enum PaymentStatus {
   COMPLETED
   FAILED
   REFUNDED
+}
+
+/// Jenis OTP untuk MFA dan verifikasi.
+enum OtpType {
+  LOGIN           // OTP for MFA login verification
+  PASSWORD_RESET  // OTP for password reset
+  EMAIL_VERIFY    // OTP for email verification
 }
