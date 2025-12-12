@@ -140,7 +140,24 @@ class PropertiesService {
     }
 
     // Apply filters
-    if (filters.propertyTypeId) where.propertyTypeId = filters.propertyTypeId;
+    if (filters.propertyTypeId) {
+      where.propertyTypeId = filters.propertyTypeId;
+    } else if (filters.type && filters.type !== 'Property') {
+      // Support filtering by property type name (e.g., "Apartment", "Condominium")
+      // Look up the propertyTypeId from the type name
+      const propertyType = await prisma.propertyType.findFirst({
+        where: {
+          OR: [
+            { name: { equals: filters.type, mode: 'insensitive' } },
+            { code: { equals: filters.type.toUpperCase(), mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      if (propertyType) {
+        where.propertyTypeId = propertyType.id;
+      }
+    }
 
     // Location filter - search in city, state, and address fields
     // Use AND to ensure it works with other conditions like status

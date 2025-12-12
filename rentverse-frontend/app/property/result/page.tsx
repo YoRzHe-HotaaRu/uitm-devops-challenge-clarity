@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { ArrowDownWideNarrow } from 'lucide-react'
+import { useState, useEffect, useMemo, useRef } from 'react'
+import { ArrowDownWideNarrow, Check } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Scrollbar, Mousewheel } from 'swiper/modules'
 import usePropertiesStore from '@/stores/propertiesStore'
@@ -12,10 +12,24 @@ import ContentWrapper from '@/components/ContentWrapper'
 import ButtonSecondary from '@/components/ButtonSecondary'
 import ButtonMapViewSwitcher from '@/components/ButtonMapViewSwitcher'
 
+// Sort options
+type SortOption = 'recommended' | 'price_low' | 'price_high' | 'newest' | 'bedrooms'
+
+const sortOptions: { value: SortOption; label: string }[] = [
+  { value: 'recommended', label: 'Recommended' },
+  { value: 'price_low', label: 'Price: Low to High' },
+  { value: 'price_high', label: 'Price: High to Low' },
+  { value: 'newest', label: 'Newest First' },
+  { value: 'bedrooms', label: 'Most Bedrooms' },
+]
+
 function ResultsPage() {
   const { properties, isLoading, loadProperties, mapData, whereValue, typeValue, pagination } = usePropertiesStore()
   const [isMapView, setIsMapView] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [sortBy, setSortBy] = useState<SortOption>('recommended')
+  const [isSortOpen, setIsSortOpen] = useState(false)
+  const sortRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     // Load properties when component mounts, using filter values from search box
@@ -25,11 +39,56 @@ function ResultsPage() {
     loadProperties(filters)
   }, [loadProperties, whereValue, typeValue, currentPage])
 
+  // Close sort dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+        setIsSortOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Sort properties based on selected option
+  const sortedProperties = useMemo(() => {
+    if (!properties || properties.length === 0) return properties
+
+    const sorted = [...properties]
+
+    switch (sortBy) {
+      case 'price_low':
+        sorted.sort((a, b) => Number(a.price) - Number(b.price))
+        break
+      case 'price_high':
+        sorted.sort((a, b) => Number(b.price) - Number(a.price))
+        break
+      case 'newest':
+        sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        break
+      case 'bedrooms':
+        sorted.sort((a, b) => b.bedrooms - a.bedrooms)
+        break
+      case 'recommended':
+      default:
+        // Keep original order (from API)
+        break
+    }
+
+    return sorted
+  }, [properties, sortBy])
+
   // Handle page change
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
     // Scroll to top of results
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Handle sort selection
+  const handleSortSelect = (option: SortOption) => {
+    setSortBy(option)
+    setIsSortOpen(false)
   }
 
   const toggleView = () => {
@@ -39,8 +98,8 @@ function ResultsPage() {
   // Helper function to group properties based on screen size
   const getGroupedProperties = (itemsPerSlide: number) => {
     const grouped = []
-    for (let i = 0; i < properties.length; i += itemsPerSlide) {
-      grouped.push(properties.slice(i, i + itemsPerSlide))
+    for (let i = 0; i < sortedProperties.length; i += itemsPerSlide) {
+      grouped.push(sortedProperties.slice(i, i + itemsPerSlide))
     }
     return grouped
   }
@@ -216,16 +275,41 @@ function ResultsPage() {
           <div className="flex justify-between items-center mb-5">
             <div className="flex flex-col gap-2">
               <h3 className="font-serif text-xl text-teal-900">
-                {properties.length} homes within map area
+                {sortedProperties.length} homes within map area
               </h3>
               <p className="text-base text-teal-800">
-                Showing 1 – {properties.length}
+                Showing 1 – {sortedProperties.length}
               </p>
             </div>
-            <ButtonSecondary
-              iconLeft={<ArrowDownWideNarrow size={16} />}
-              label="Sort"
-            />
+
+            {/* Sort Dropdown */}
+            <div ref={sortRef} className="relative">
+              <ButtonSecondary
+                iconLeft={<ArrowDownWideNarrow size={16} />}
+                label={sortOptions.find(o => o.value === sortBy)?.label || 'Sort'}
+                onClick={() => setIsSortOpen(!isSortOpen)}
+              />
+
+              {/* Dropdown Menu */}
+              {isSortOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50">
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => handleSortSelect(option.value)}
+                      className="w-full px-4 py-3 text-left text-sm hover:bg-slate-50 flex items-center justify-between transition-colors"
+                    >
+                      <span className={sortBy === option.value ? 'font-medium text-teal-600' : 'text-slate-700'}>
+                        {option.label}
+                      </span>
+                      {sortBy === option.value && (
+                        <Check size={16} className="text-teal-600" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Vertical Scrollable Results */}
@@ -248,7 +332,7 @@ function ResultsPage() {
                 className="h-full"
                 style={{ height: '100%' }}
               >
-                {properties.map((property) => (
+                {sortedProperties.map((property) => (
                   <SwiperSlide key={property.id} className="!h-auto">
                     <div className="pr-4 mb-4">
                       <CardProperty property={property} />
@@ -328,7 +412,7 @@ function ResultsPage() {
                 className="h-full"
                 style={{ height: '100%' }}
               >
-                {properties.map((property) => (
+                {sortedProperties.map((property) => (
                   <SwiperSlide key={property.id} className="!h-auto">
                     <div className="pr-4 mb-4">
                       <CardProperty property={property} />

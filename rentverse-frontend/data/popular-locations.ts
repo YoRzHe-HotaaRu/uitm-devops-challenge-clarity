@@ -35,36 +35,12 @@ const popularLocations: Array<LocationBaseType> = [
     longitude: 103.7414,
   },
   {
-    name: 'Sarawak',
+    name: 'Kuching',
     imageUrl: 'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758027182/rentverse-locations/shah-alam_swukrl.png',
     latitude: 1.5533,
     longitude: 110.3592,
   },
-  // Additional Penang locations for better dropdown options
-  {
-    name: 'Georgetown, Penang',
-    imageUrl: 'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758027170/rentverse-locations/penang-island_axjqzm.png',
-    latitude: 5.4141,
-    longitude: 100.3288,
-  },
-  {
-    name: 'Butterworth, Penang',
-    imageUrl: 'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758027170/rentverse-locations/penang-island_axjqzm.png',
-    latitude: 5.4012,
-    longitude: 100.3629,
-  },
-  {
-    name: 'Bayan Lepas, Penang',
-    imageUrl: 'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758027170/rentverse-locations/penang-island_axjqzm.png',
-    latitude: 5.2946,
-    longitude: 100.2658,
-  },
-  {
-    name: 'Bukit Mertajam, Penang',
-    imageUrl: 'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758027170/rentverse-locations/penang-island_axjqzm.png',
-    latitude: 5.3619,
-    longitude: 100.4689,
-  },
+  // Add more popular location here if you wanted to
 ]
 
 export const getPopularLocations: getPopularLocations = () => {
