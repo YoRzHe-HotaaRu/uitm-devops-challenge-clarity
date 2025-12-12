@@ -359,7 +359,29 @@ const useAuthStore = create<AuthStore>((set, get) => ({
       })
 
       if (result.success) {
-        // Store user data and token
+        // Check if login is required (MFA is enabled by default for all new users)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((result.data as any).requiresLogin) {
+          // Clear form fields
+          set({
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            signUpPassword: '',
+            birthdate: '',
+            error: null,
+          })
+
+          // Show success message and prompt user to login
+          alert('Account created successfully! Please login to continue.')
+
+          // Redirect to home page where user can click login
+          window.location.href = '/'
+          return
+        }
+
+        // Legacy: If token is returned (old flow), handle as before
         const backendUser = result.data.user
         const user: User = {
           id: backendUser.id,

@@ -189,19 +189,16 @@ router.post(
         },
       });
 
-      // Generate JWT token
-      const token = jwt.sign(
-        { userId: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-      );
 
+      // Don't auto-login - require user to go through login flow for MFA
+      // This ensures all users go through MFA verification after signup
       res.status(201).json({
         success: true,
-        message: 'User registered successfully',
+        message: 'Account created successfully! Please login to continue.',
         data: {
           user,
-          token,
+          // Note: No token returned - user must login to get one (and verify MFA if enabled)
+          requiresLogin: true,
         },
       });
     } catch (error) {
