@@ -83,23 +83,116 @@ function ResultsPage() {
         lat = mapCenter.lat + (gridY - gridSize / 2) * (offsetRange / gridSize) + (Math.random() - 0.5) * 0.005
       }
 
+      // Get the first image or use a placeholder
+      const propertyImages = property.images || []
+      const mainImage = propertyImages.length > 0
+        ? propertyImages[0]
+        : 'https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'
+
+      // Format price with proper currency
+      const formattedPrice = new Intl.NumberFormat('en-MY', {
+        style: 'currency',
+        currency: property.currencyCode || 'MYR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(Number(property.price))
+
+      // Get property type name - safely handle both object and string types
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const typeValue = property.type as any
+      const propertyTypeName = property.propertyType?.name || (typeValue?.name || typeValue) || 'Property'
+
       return {
         lng,
         lat,
         popup: `
-          <div class="p-3 max-w-xs">
-            <h3 class="font-semibold text-sm mb-1">${property.title}</h3>
-            <p class="text-xs text-gray-600 mb-1">${property.address}</p>
-            <p class="text-xs text-gray-600 mb-2">${property.city}, ${property.state}</p>
-            <div class="flex justify-between items-center">
-              <p class="text-sm font-bold text-teal-600">$${property.price}/month</p>
-              <p class="text-xs text-gray-500">${property.bedrooms}br ${property.bathrooms}ba</p>
+          <div style="width: 280px; padding: 0; margin: -10px -10px -15px -10px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+            <!-- Property Image -->
+            <div style="position: relative; width: 100%; height: 140px; overflow: hidden; border-radius: 8px 8px 0 0;">
+              <img 
+                src="${mainImage}" 
+                alt="${property.title}"
+                style="width: 100%; height: 100%; object-fit: cover;"
+                onerror="this.src='https://placehold.co/300x200/e2e8f0/64748b?text=No+Image'"
+              />
+              <!-- Property Type Badge -->
+              <div style="position: absolute; top: 8px; left: 8px; background: rgba(255,255,255,0.95); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; color: #0d9488; backdrop-filter: blur(4px);">
+                ${propertyTypeName}
+              </div>
+              <!-- Image count badge -->
+              ${propertyImages.length > 1 ? `
+                <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); padding: 3px 8px; border-radius: 12px; font-size: 10px; color: white; display: flex; align-items: center; gap: 4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                  ${propertyImages.length}
+                </div>
+              ` : ''}
             </div>
-            <p class="text-xs text-gray-500 mt-1">${property.areaSqm || property.area || 0} sq ft</p>
-            <div class="mt-2">
-              <a href="/property/${property.id}" class="text-xs text-teal-600 hover:text-teal-700 font-medium">
-                View Details →
-              </a>
+            
+            <!-- Property Details -->
+            <div style="padding: 12px 14px 14px;">
+              <!-- Title -->
+              <h3 style="margin: 0 0 6px 0; font-size: 14px; font-weight: 600; color: #1e293b; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                ${property.title}
+              </h3>
+              
+              <!-- Location -->
+              <p style="margin: 0 0 10px 0; font-size: 12px; color: #64748b; display: flex; align-items: center; gap: 4px;">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                  ${property.city}, ${property.state}
+                </span>
+              </p>
+              
+              <!-- Features Row -->
+              <div style="display: flex; gap: 12px; margin-bottom: 12px; padding: 8px 10px; background: #f8fafc; border-radius: 6px;">
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #475569;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M2 4v16M22 4v16M6 12h12M6 4h12v16H6z"></path>
+                  </svg>
+                  <span><strong>${property.bedrooms}</strong> bed</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #475569;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 12h16M4 12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v6H4v-6"></path>
+                    <path d="M6 12V5a2 2 0 0 1 2-2h3v9"></path>
+                  </svg>
+                  <span><strong>${property.bathrooms}</strong> bath</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px; font-size: 11px; color: #475569;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  </svg>
+                  <span><strong>${property.areaSqm || property.area || 0}</strong> m²</span>
+                </div>
+              </div>
+              
+              <!-- Price and CTA Row -->
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <p style="margin: 0; font-size: 16px; font-weight: 700; color: #0d9488;">
+                    ${formattedPrice}
+                  </p>
+                  <p style="margin: 2px 0 0 0; font-size: 10px; color: #94a3b8;">per month</p>
+                </div>
+                <a 
+                  href="/property/${property.id}" 
+                  style="display: inline-flex; align-items: center; gap: 4px; padding: 8px 14px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); color: white; font-size: 12px; font-weight: 600; text-decoration: none; border-radius: 6px; transition: all 0.2s;"
+                  onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 12px rgba(13,148,136,0.3)';"
+                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';"
+                >
+                  View
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </a>
+              </div>
             </div>
           </div>
         `,

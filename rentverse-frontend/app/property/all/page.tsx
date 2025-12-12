@@ -184,7 +184,7 @@ function AllMyPropertiesPage() {
         }
 
         const data: MyPropertiesResponse = await response.json()
-        
+
         if (data.success) {
           const convertedProperties = data.data.properties.map(convertBackendProperty)
           setMyProperties(convertedProperties)
@@ -206,10 +206,12 @@ function AllMyPropertiesPage() {
   if (isLoading) {
     return (
       <ContentWrapper>
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center space-y-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto"></div>
-            <p className="text-slate-600">Loading your properties...</p>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center space-y-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-900 mx-auto"></div>
+              <p className="text-slate-600">Loading your properties...</p>
+            </div>
           </div>
         </div>
       </ContentWrapper>
@@ -220,15 +222,17 @@ function AllMyPropertiesPage() {
   if (error) {
     return (
       <ContentWrapper>
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center space-y-4">
-            <p className="text-red-600">{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
-            >
-              Try Again
-            </button>
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center space-y-4">
+              <p className="text-red-600">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
           </div>
         </div>
       </ContentWrapper>
@@ -239,31 +243,33 @@ function AllMyPropertiesPage() {
   if (!isLoggedIn) {
     return (
       <ContentWrapper>
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center space-y-6 max-w-md">
-            <div className="flex justify-center">
-              <Image
-                src="https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758310328/rentverse-base/image_17_hsznyz.png"
-                alt="Login required"
-                width={240}
-                height={240}
-                className="w-60 h-60 object-contain"
-              />
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+          <div className="flex items-center justify-center py-20">
+            <div className="text-center space-y-6 max-w-md">
+              <div className="flex justify-center">
+                <Image
+                  src="https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758310328/rentverse-base/image_17_hsznyz.png"
+                  alt="Login required"
+                  width={240}
+                  height={240}
+                  className="w-60 h-60 object-contain"
+                />
+              </div>
+              <div className="space-y-3">
+                <h3 className="text-xl font-sans font-medium text-slate-900">
+                  Login Required
+                </h3>
+                <p className="text-base text-slate-500 leading-relaxed">
+                  Please log in to view your property listings
+                </p>
+              </div>
+              <Link
+                href="/"
+                className="inline-block px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+              >
+                Go to Home
+              </Link>
             </div>
-            <div className="space-y-3">
-              <h3 className="text-xl font-sans font-medium text-slate-900">
-                Login Required
-              </h3>
-              <p className="text-base text-slate-500 leading-relaxed">
-                Please log in to view your property listings
-              </p>
-            </div>
-            <Link
-              href="/"
-              className="inline-block px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
-            >
-              Go to Home
-            </Link>
           </div>
         </div>
       </ContentWrapper>
@@ -272,65 +278,67 @@ function AllMyPropertiesPage() {
 
   return (
     <ContentWrapper>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <h3 className="text-2xl font-sans font-medium text-slate-900">My listings</h3>
-        <Link
-          href="/property/new"
-          className="flex items-center space-x-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl transition-colors duration-200"
-        >
-          <Plus size={16} />
-          <span className="text-sm font-medium">Create new listing</span>
-        </Link>
-      </div>
-
-      {/* Properties Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {myProperties.map((property) => (
-          <div key={property.id} className="group relative">
-            {/* Status Badge */}
-            <div className="absolute top-4 right-4 z-10">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(property.status)}`}>
-                {getStatusDisplayName(property.status)}
-              </span>
-            </div>
-
-            <CardProperty property={property} />
-          </div>
-        ))}
-      </div>
-
-      {/* Empty state fallback */}
-      {myProperties.length === 0 && (
-        <div className="flex-1 flex items-center justify-center py-16">
-          <div className="text-center space-y-6 max-w-md">
-            <div className="flex justify-center">
-              <Image
-                src="https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758310328/rentverse-base/image_17_hsznyz.png"
-                alt="No properties"
-                width={240}
-                height={240}
-                className="w-60 h-60 object-contain"
-              />
-            </div>
-            <div className="space-y-3">
-              <h3 className="text-xl font-sans font-medium text-slate-900">
-                No properties listed yet
-              </h3>
-              <p className="text-base text-slate-500 leading-relaxed">
-                Start by creating your first property listing to earn rental income
-              </p>
-            </div>
-            <Link
-              href="/property/new"
-              className="inline-flex items-center space-x-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl transition-colors duration-200"
-            >
-              <Plus size={16} />
-              <span>Create your first listing</span>
-            </Link>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-sans font-medium text-slate-900">My listings</h3>
+          <Link
+            href="/property/new"
+            className="flex items-center space-x-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-xl transition-colors duration-200"
+          >
+            <Plus size={16} />
+            <span className="text-sm font-medium">Create new listing</span>
+          </Link>
         </div>
-      )}
+
+        {/* Properties Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {myProperties.map((property) => (
+            <div key={property.id} className="group relative">
+              {/* Status Badge */}
+              <div className="absolute top-4 right-4 z-10">
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadgeClass(property.status)}`}>
+                  {getStatusDisplayName(property.status)}
+                </span>
+              </div>
+
+              <CardProperty property={property} />
+            </div>
+          ))}
+        </div>
+
+        {/* Empty state fallback */}
+        {myProperties.length === 0 && (
+          <div className="flex-1 flex items-center justify-center py-16">
+            <div className="text-center space-y-6 max-w-md">
+              <div className="flex justify-center">
+                <Image
+                  src="https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758310328/rentverse-base/image_17_hsznyz.png"
+                  alt="No properties"
+                  width={240}
+                  height={240}
+                  className="w-60 h-60 object-contain"
+                />
+              </div>
+              <div className="space-y-3">
+                <h3 className="text-xl font-sans font-medium text-slate-900">
+                  No properties listed yet
+                </h3>
+                <p className="text-base text-slate-500 leading-relaxed">
+                  Start by creating your first property listing to earn rental income
+                </p>
+              </div>
+              <Link
+                href="/property/new"
+                className="inline-flex items-center space-x-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-xl transition-colors duration-200"
+              >
+                <Plus size={16} />
+                <span>Create your first listing</span>
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     </ContentWrapper>
   )
 }

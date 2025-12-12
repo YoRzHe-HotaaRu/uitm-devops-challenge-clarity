@@ -9,22 +9,22 @@ export default function Home() {
     <div>
       <ContentWrapper>
         {/* Hero Section */}
-        <section className="relative min-h-[600px] flex justify-center">
-          {/* Background Image */}
-          <div className="absolute inset-0 z-0">
+        <section className="relative min-h-[400px] flex justify-center">
+          {/* Background Image - Fixed height to not overlap with sections below */}
+          <div className="absolute top-0 left-0 right-0 h-[940px] z-0 overflow-hidden">
             {/* Desktop Hero Image */}
             <Image
               width={1440}
               height={600}
               alt="Hero Background"
-              className="w-full h-auto bg-top hidden md:block"
+              className="w-full h-full object-cover object-top hidden md:block"
               src="https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758183708/rentverse-base/hero_bg_desktop_z8j6pg.png" />
             {/* Mobile Hero Image */}
             <Image
               width={320}
               height={600}
               alt="Hero Background"
-              className="w-full h-full object-cover md:hidden"
+              className="w-full h-full object-cover object-top md:hidden"
               src="https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758183708/rentverse-base/hero_bg_mobile_s4xpxr.png" />
           </div>
 

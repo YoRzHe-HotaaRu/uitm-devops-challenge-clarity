@@ -26,6 +26,7 @@ export interface LocationBaseType {
   imageUrl: string
   latitude: number
   longitude: number
+  searchKey?: string // Optional: use this for search if different from name
 }
 
 // Types for the comprehensive locations data structure
