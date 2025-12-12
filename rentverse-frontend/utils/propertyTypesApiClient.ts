@@ -1,5 +1,6 @@
 import type { PropertyTypesResponse } from '@/types/property'
 import { getApiUrl } from './apiConfig'
+import { handleRateLimitResponse } from './rateLimitHandler'
 
 const BASE_URL = getApiUrl()
 
@@ -11,21 +12,17 @@ export class PropertyTypesApiClient {
 
   static async getPropertyTypes(): Promise<PropertyTypesResponse> {
     const token = this.getAuthToken()
-    
+
     const headers: Record<string, string> = {
       'accept': 'application/json',
     }
-    
+
     // Add authorization header if token is available
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
     }
 
     try {
-      console.log('Making request to property types API...')
-      console.log('URL:', `${BASE_URL}/property-types?page=1&limit=10`)
-      console.log('Headers:', headers)
-
       const response = await fetch(`${BASE_URL}/property-types?page=1&limit=10`, {
         method: 'GET',
         headers,
@@ -33,18 +30,19 @@ export class PropertyTypesApiClient {
         cache: 'no-cache',
       })
 
-      console.log('Response status:', response.status)
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()))
+      // Handle rate limit errors with modal
+      if (response.status === 429) {
+        await handleRateLimitResponse(response)
+        throw new Error('Rate limit exceeded. Please wait and try again.')
+      }
 
       if (!response.ok) {
         const errorText = await response.text()
         console.error('API Error Response:', errorText)
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`)
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
 
       const data = await response.json()
-      console.log('Successfully fetched property types:', data.data?.length || 0, 'items')
-      
       return data
     } catch (error) {
       console.error('Error fetching property types:', error)

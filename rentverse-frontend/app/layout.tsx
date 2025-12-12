@@ -8,6 +8,7 @@ import 'swiper/css/scrollbar'
 import '@maptiler/sdk/dist/maptiler-sdk.css'
 import clsx from 'clsx'
 import AuthInitializer from '@/components/AuthInitializer'
+import { RateLimitProvider } from '@/components/RateLimitProvider'
 
 const poly = Poly({
   weight: '400',
@@ -26,16 +27,18 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({
-                                     children,
-                                   }: Readonly<{
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en" className={clsx([poly.className, manrope.className])}>
-    <body>
-      <AuthInitializer />
-      {children}
-    </body>
+      <body>
+        <RateLimitProvider>
+          <AuthInitializer />
+          {children}
+        </RateLimitProvider>
+      </body>
     </html>
   )
 }

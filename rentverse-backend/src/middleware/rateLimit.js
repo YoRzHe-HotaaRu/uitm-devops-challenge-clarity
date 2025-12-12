@@ -12,12 +12,12 @@ const sharedOptions = {
 
 /**
  * Global rate limiter - applies to all routes
- * 100 requests per 15 minutes per IP
+ * 2000 requests per 15 minutes per IP
  */
 const globalLimiter = rateLimit({
     ...sharedOptions,
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100,
+    max: 2000,
     message: {
         success: false,
         error: 'Too many requests',
@@ -81,18 +81,18 @@ const strictLimiter = rateLimit({
 
 /**
  * API rate limiter - for authenticated API calls
- * 1000 requests per hour per user
+ * 2000 requests per 15 minutes per user
  * Uses user ID if authenticated, otherwise falls back to IP
  */
 const apiLimiter = rateLimit({
     ...sharedOptions,
-    windowMs: 60 * 60 * 1000, // 1 hour
-    max: 1000,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 2000,
     message: {
         success: false,
         error: 'API rate limit exceeded',
         message: 'You have exceeded the API request limit. Please try again later.',
-        retryAfter: '1 hour',
+        retryAfter: '15 minutes',
     },
     standardHeaders: true,
     legacyHeaders: false,

@@ -371,6 +371,25 @@ router.post(
       // Reset login attempts on successful login
       await otpService.resetLoginAttempts(user.id);
 
+      // Record successful login in history
+      await suspiciousActivityService.recordLoginAttempt({
+        userId: user.id,
+        ipAddress: req.ip,
+        userAgent: req.headers['user-agent'],
+        success: true,
+        failReason: null,
+      });
+
+      // Check if this is a new device and send alert
+      const { isNewDevice, device } = await suspiciousActivityService.checkDevice(
+        user.id,
+        req.headers['user-agent'],
+        req.ip
+      );
+      if (isNewDevice && device) {
+        await securityAlertService.alertNewDevice(user.id, device, req.ip);
+      }
+
       // Generate JWT token
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },
