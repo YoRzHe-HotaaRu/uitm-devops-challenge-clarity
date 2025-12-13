@@ -324,6 +324,7 @@ model Payment {
 }
 
 /// Perjanjian sewa (hasil generate PDF) untuk satu lease.
+/// Enhanced with digital signature validation and access permissions.
 model RentalAgreement {
   id          String   @id @default(uuid())
   leaseId     String   @unique
@@ -332,9 +333,79 @@ model RentalAgreement {
   fileName    String?  // Nama file untuk display
   fileSize    Int?     // Size dalam bytes
   generatedAt DateTime @default(now())
-  lease       Lease    @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  
+  // Digital Signature Workflow Status
+  status            AgreementStatus  @default(DRAFT)
+  documentHash      String?          // SHA-256 hash of PDF for integrity verification
+  
+  // Landlord Signature
+  landlordSigned    Boolean          @default(false)
+  landlordSignature String?          @db.Text // Base64 canvas signature image
+  landlordSignedAt  DateTime?
+  landlordSignHash  String?          // SHA-256(signature + timestamp + leaseId + userId)
+  landlordIpAddress String?
+  landlordConfirmed Boolean          @default(false) // Checkbox confirmation
+  
+  // Tenant Signature  
+  tenantSigned      Boolean          @default(false)
+  tenantSignature   String?          @db.Text // Base64 canvas signature image
+  tenantSignedAt    DateTime?
+  tenantSignHash    String?          // SHA-256(signature + timestamp + leaseId + userId)
+  tenantIpAddress   String?
+  tenantConfirmed   Boolean          @default(false) // Checkbox confirmation
+  
+  // Workflow Timestamps
+  expiresAt         DateTime?        // Agreement expires if not signed within deadline
+  completedAt       DateTime?        // When both parties signed
+  cancelledAt       DateTime?
+  cancelReason      String?
+  
+  // Current Version
+  currentVersion    Int              @default(1)
+  
+  // Relations
+  lease       Lease                @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  auditLogs   AgreementAuditLog[]
+  versions    AgreementVersion[]
 
+  @@index([status])
+  @@index([leaseId])
   @@map("rental_agreements")
+}
+
+/// Audit trail for all agreement actions - security compliance
+model AgreementAuditLog {
+  id           String          @id @default(uuid())
+  agreementId  String
+  action       AuditAction
+  performedBy  String?         // userId who performed action
+  ipAddress    String?
+  userAgent    String?
+  metadata     Json?           // Additional action data (e.g., verification result)
+  createdAt    DateTime        @default(now())
+  agreement    RentalAgreement @relation(fields: [agreementId], references: [id], onDelete: Cascade)
+
+  @@index([agreementId])
+  @@index([createdAt])
+  @@index([action])
+  @@map("agreement_audit_logs")
+}
+
+/// Document versioning for tracking changes
+model AgreementVersion {
+  id           String          @id @default(uuid())
+  agreementId  String
+  version      Int
+  pdfUrl       String?
+  documentHash String?         // Hash of this version
+  changedBy    String?         // userId who made changes
+  changeReason String?
+  createdAt    DateTime        @default(now())
+  agreement    RentalAgreement @relation(fields: [agreementId], references: [id], onDelete: Cascade)
+
+  @@unique([agreementId, version])
+  @@index([agreementId])
+  @@map("agreement_versions")
 }
 
 /// Log prediksi harga (input mentah, harga prediksi, confidence, versi model).
@@ -477,4 +548,30 @@ enum OtpType {
   LOGIN           // OTP for MFA login verification
   PASSWORD_RESET  // OTP for password reset
   EMAIL_VERIFY    // OTP for email verification
+}
+
+/// Status workflow untuk digital agreement signing.
+enum AgreementStatus {
+  DRAFT             // Agreement created but not yet sent for signing
+  PENDING_LANDLORD  // Waiting for landlord signature
+  PENDING_TENANT    // Landlord signed, waiting for tenant
+  COMPLETED         // Both parties signed
+  EXPIRED           // Signing deadline passed
+  CANCELLED         // Agreement cancelled by landlord
+}
+
+/// Audit actions for agreement security logging.
+enum AuditAction {
+  CREATED               // Agreement created
+  VIEWED                // Agreement viewed by a party
+  SIGNATURE_REQUESTED   // Signing request sent
+  LANDLORD_SIGNED       // Landlord submitted signature
+  TENANT_SIGNED         // Tenant submitted signature
+  COMPLETED             // Both signatures collected
+  EXPIRED               // Agreement expired
+  CANCELLED             // Agreement cancelled
+  DOWNLOADED            // PDF downloaded
+  VERIFICATION_SUCCESS  // Integrity check passed
+  VERIFICATION_FAILED   // Integrity check failed (tamper detected)
+  VERSION_CREATED       // New version of document created
 }
