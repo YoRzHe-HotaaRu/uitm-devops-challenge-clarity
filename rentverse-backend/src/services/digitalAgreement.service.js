@@ -264,7 +264,8 @@ class DigitalAgreementService {
      * @param {string} userId - User requesting access
      */
     async getAgreementWithAccess(agreementId, userId) {
-        const agreement = await prisma.rentalAgreement.findUnique({
+        // Try to find by agreement ID first, then by leaseId
+        let agreement = await prisma.rentalAgreement.findUnique({
             where: { id: agreementId },
             include: {
                 lease: {
@@ -280,6 +281,26 @@ class DigitalAgreementService {
                 }
             }
         });
+
+        // If not found by ID, try finding by leaseId (since frontend passes booking/lease ID)
+        if (!agreement) {
+            agreement = await prisma.rentalAgreement.findUnique({
+                where: { leaseId: agreementId },
+                include: {
+                    lease: {
+                        include: {
+                            property: { select: { id: true, title: true, address: true } },
+                            landlord: { select: { id: true, name: true, email: true } },
+                            tenant: { select: { id: true, name: true, email: true } }
+                        }
+                    },
+                    auditLogs: {
+                        orderBy: { createdAt: 'desc' },
+                        take: 20
+                    }
+                }
+            });
+        }
 
         if (!agreement) {
             throw new Error('Agreement not found');

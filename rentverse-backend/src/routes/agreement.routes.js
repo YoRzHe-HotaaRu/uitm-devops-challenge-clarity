@@ -5,6 +5,29 @@ const digitalAgreementService = require('../services/digitalAgreement.service');
 const { auth } = require('../middleware/auth');
 
 /**
+ * Helper function to find agreement by ID or leaseId
+ * @param {string} idOrLeaseId - Agreement ID or Lease ID
+ * @param {Object} include - Prisma include options
+ */
+async function findAgreementByIdOrLeaseId(idOrLeaseId, include = {}) {
+    // Try finding by agreement ID first
+    let agreement = await prisma.rentalAgreement.findUnique({
+        where: { id: idOrLeaseId },
+        include
+    });
+
+    // If not found, try by leaseId
+    if (!agreement) {
+        agreement = await prisma.rentalAgreement.findUnique({
+            where: { leaseId: idOrLeaseId },
+            include
+        });
+    }
+
+    return agreement;
+}
+
+/**
  * @route GET /api/agreements/:id
  * @desc Get agreement details with access control
  * @access Private (Landlord/Tenant only)
@@ -55,11 +78,8 @@ router.post('/:id/initiate', auth, async (req, res) => {
         const { expiresInDays } = req.body;
         const userId = req.user.id;
 
-        // Verify user is landlord
-        const agreement = await prisma.rentalAgreement.findUnique({
-            where: { id },
-            include: { lease: true }
-        });
+        // Find agreement by ID or leaseId
+        const agreement = await findAgreementByIdOrLeaseId(id, { lease: true });
 
         if (!agreement) {
             return res.status(404).json({
@@ -76,7 +96,7 @@ router.post('/:id/initiate', auth, async (req, res) => {
         }
 
         const result = await digitalAgreementService.initiateSigningWorkflow(
-            id,
+            agreement.id,  // Use the actual agreement ID
             userId,
             { expiresInDays: expiresInDays || 7 }
         );
@@ -121,7 +141,16 @@ router.post('/:id/sign/landlord', auth, async (req, res) => {
             });
         }
 
-        const result = await digitalAgreementService.signAsLandlord(id, userId, {
+        // Resolve agreement ID from either id or leaseId
+        const agreement = await findAgreementByIdOrLeaseId(id);
+        if (!agreement) {
+            return res.status(404).json({
+                success: false,
+                error: 'Agreement not found'
+            });
+        }
+
+        const result = await digitalAgreementService.signAsLandlord(agreement.id, userId, {
             signature,
             confirmed,
             ipAddress
@@ -179,7 +208,16 @@ router.post('/:id/sign/tenant', auth, async (req, res) => {
             });
         }
 
-        const result = await digitalAgreementService.signAsTenant(id, userId, {
+        // Resolve agreement ID from either id or leaseId
+        const agreement = await findAgreementByIdOrLeaseId(id);
+        if (!agreement) {
+            return res.status(404).json({
+                success: false,
+                error: 'Agreement not found'
+            });
+        }
+
+        const result = await digitalAgreementService.signAsTenant(agreement.id, userId, {
             signature,
             confirmed,
             ipAddress
@@ -220,22 +258,8 @@ router.get('/:id/verify', async (req, res) => {
     try {
         const { id } = req.params;
 
-        const agreement = await prisma.rentalAgreement.findUnique({
-            where: { id },
-            select: {
-                id: true,
-                status: true,
-                documentHash: true,
-                landlordSigned: true,
-                landlordSignedAt: true,
-                landlordSignHash: true,
-                tenantSigned: true,
-                tenantSignedAt: true,
-                tenantSignHash: true,
-                completedAt: true,
-                currentVersion: true
-            }
-        });
+        // Find agreement by ID or leaseId
+        const agreement = await findAgreementByIdOrLeaseId(id);
 
         if (!agreement) {
             return res.status(404).json({
@@ -294,7 +318,16 @@ router.post('/:id/cancel', auth, async (req, res) => {
             });
         }
 
-        const result = await digitalAgreementService.cancelAgreement(id, userId, reason);
+        // Resolve agreement ID from either id or leaseId
+        const agreement = await findAgreementByIdOrLeaseId(id);
+        if (!agreement) {
+            return res.status(404).json({
+                success: false,
+                error: 'Agreement not found'
+            });
+        }
+
+        const result = await digitalAgreementService.cancelAgreement(agreement.id, userId, reason);
 
         res.json({
             success: true,
@@ -332,7 +365,16 @@ router.get('/:id/audit', auth, async (req, res) => {
         const { id } = req.params;
         const userId = req.user.id;
 
-        const auditLogs = await digitalAgreementService.getAuditTrail(id, userId);
+        // Resolve agreement ID from either id or leaseId
+        const agreement = await findAgreementByIdOrLeaseId(id);
+        if (!agreement) {
+            return res.status(404).json({
+                success: false,
+                error: 'Agreement not found'
+            });
+        }
+
+        const auditLogs = await digitalAgreementService.getAuditTrail(agreement.id, userId);
 
         res.json({
             success: true,
