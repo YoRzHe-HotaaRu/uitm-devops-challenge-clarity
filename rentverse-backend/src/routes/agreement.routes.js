@@ -327,7 +327,7 @@ router.post('/:id/cancel', auth, async (req, res) => {
  * @desc Get audit trail for agreement
  * @access Private (Landlord/Tenant only)
  */
-router.get('/:id/audit', authenticateToken, async (req, res) => {
+router.get('/:id/audit', auth, async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id;
@@ -360,7 +360,7 @@ router.get('/:id/audit', authenticateToken, async (req, res) => {
  * @desc Get agreement by lease ID
  * @access Private (Landlord/Tenant only)
  */
-router.get('/lease/:leaseId', authenticateToken, async (req, res) => {
+router.get('/lease/:leaseId', auth, async (req, res) => {
     try {
         const { leaseId } = req.params;
         const userId = req.user.id;
