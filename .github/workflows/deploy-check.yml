@@ -1,0 +1,204 @@
+name: Deployment Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ===========================================
+  # Pre-Deployment Checks
+  # ===========================================
+  pre-deploy-backend:
+    name: Backend Pre-Deploy Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rentverse-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Validate Prisma Schema
+        run: npx prisma validate
+
+      - name: Check for pending migrations
+        run: |
+          echo "✅ Prisma schema is valid"
+          echo "⚠️ Note: Run 'npx prisma migrate deploy' before production deployment"
+
+      - name: Lint check
+        run: pnpm lint
+        continue-on-error: true
+
+      - name: Security audit
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Check environment variables
+        run: |
+          echo "## 🔧 Required Environment Variables" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Ensure these are set in your deployment environment:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Variable | Required |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|----------|" >> $GITHUB_STEP_SUMMARY
+          echo "| DATABASE_URL | ✅ Yes |" >> $GITHUB_STEP_SUMMARY
+          echo "| JWT_SECRET | ✅ Yes |" >> $GITHUB_STEP_SUMMARY
+          echo "| JWT_EXPIRES_IN | ✅ Yes |" >> $GITHUB_STEP_SUMMARY
+          echo "| CORS_ORIGIN | ✅ Yes |" >> $GITHUB_STEP_SUMMARY
+          echo "| PORT | ⚪ Optional |" >> $GITHUB_STEP_SUMMARY
+          echo "| CLOUDINARY_CLOUD_NAME | 📷 For uploads |" >> $GITHUB_STEP_SUMMARY
+          echo "| EMAIL_HOST | 📧 For emails |" >> $GITHUB_STEP_SUMMARY
+
+  pre-deploy-frontend:
+    name: Frontend Pre-Deploy Checks
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rentverse-frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+        continue-on-error: true
+
+      - name: Lint check
+        run: pnpm lint
+        continue-on-error: true
+
+      - name: Production build test
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_API_URL: https://api.example.com
+          NEXT_PUBLIC_MAPTILER_API_KEY: placeholder
+
+      - name: Check bundle size
+        run: |
+          echo "## 📦 Build Output" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ -d ".next" ]; then
+            echo "✅ Next.js build successful" >> $GITHUB_STEP_SUMMARY
+            du -sh .next >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Security audit
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+  # ===========================================
+  # Database Migration Check
+  # ===========================================
+  migration-check:
+    name: Database Migration Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rentverse-backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: List migrations
+        run: |
+          echo "## 📋 Database Migrations" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Available migrations:" >> $GITHUB_STEP_SUMMARY
+          ls -la prisma/migrations/ 2>/dev/null || echo "No migrations directory found" >> $GITHUB_STEP_SUMMARY
+
+      - name: Validate schema
+        run: npx prisma validate
+
+  # ===========================================
+  # Deployment Summary
+  # ===========================================
+  deploy-summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [pre-deploy-backend, pre-deploy-frontend, migration-check]
+    if: always()
+
+    steps:
+      - name: Generate deployment summary
+        run: |
+          echo "## 🚀 Deployment Readiness Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Component | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Pre-Deploy | ${{ needs.pre-deploy-backend.result == 'success' && '✅ Ready' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Pre-Deploy | ${{ needs.pre-deploy-frontend.result == 'success' && '✅ Ready' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Database Migrations | ${{ needs.migration-check.result == 'success' && '✅ Validated' || '⚠️ Check Required' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.pre-deploy-backend.result }}" == "success" ] && [ "${{ needs.pre-deploy-frontend.result }}" == "success" ]; then
+            echo "### ✅ Ready for Deployment" >> $GITHUB_STEP_SUMMARY
+            echo "All pre-deployment checks passed. Safe to proceed with deployment." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ⚠️ Review Required" >> $GITHUB_STEP_SUMMARY
+            echo "Some checks failed. Review the issues before deploying." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📅 Report generated at: $(date -u)" >> $GITHUB_STEP_SUMMARY

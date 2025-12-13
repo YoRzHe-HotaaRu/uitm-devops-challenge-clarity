@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "security:audit": "pnpm audit --audit-level=moderate",
+    "security:check": "pnpm run lint && pnpm run type-check && pnpm run security:audit"
   },
   "dependencies": {
     "@maptiler/sdk": "^3.8.0",
