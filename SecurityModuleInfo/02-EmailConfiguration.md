@@ -91,4 +91,4 @@ Content: Your verification code is 123456...
 
 ---
 
-*Last Updated: December 2024*
+*Last updated: December 2025 By ClaRity*

@@ -171,4 +171,4 @@ Authorization: Bearer <token>
 
 ---
 
-*Last updated: December 2025*
+*Last updated: December 2025 By ClaRity*

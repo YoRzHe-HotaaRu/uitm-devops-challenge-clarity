@@ -79,4 +79,4 @@ app/admin/security/page.tsx
 
 ---
 
-*Last updated: December 2025*
+*Last updated: December 2025 By ClaRity*

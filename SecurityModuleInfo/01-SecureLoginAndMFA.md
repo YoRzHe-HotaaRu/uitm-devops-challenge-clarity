@@ -195,5 +195,4 @@ Response: { success: true, data: { expiresAt } }
 
 ---
 
-*Last Updated: December 2024*
-*Author: Security Team*
+*Last updated: December 2025 By ClaRity*

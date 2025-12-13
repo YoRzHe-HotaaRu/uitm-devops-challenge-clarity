@@ -196,4 +196,4 @@ Get-Content "\uitm-devops-challenge-clarity\rentverse-backend\logs\security.log"
 Note: The logs folder and files are created automatically when the first log entry is written (e.g., when someone makes an API request or a security event occurs). If the folder doesn't exist yet, make some API requests to the backend first!
 
 
-*Last updated: December 2025*
+*Last updated: December 2025 By ClaRity*
