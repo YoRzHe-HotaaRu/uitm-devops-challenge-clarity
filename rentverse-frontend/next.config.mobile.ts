@@ -12,12 +12,9 @@ const nextConfig: NextConfig = {
     output: 'export',
     trailingSlash: true,
 
-    // Skip type checking and linting during mobile build for speed
+    // Skip type checking during mobile build for speed
     typescript: {
         ignoreBuildErrors: true,
-    },
-    eslint: {
-        ignoreDuringBuilds: true,
     },
 
     images: {
