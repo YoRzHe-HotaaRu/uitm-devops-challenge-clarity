@@ -11,6 +11,9 @@ importers:
       '@prisma/client':
         specifier: ^5.3.1
         version: 5.22.0(prisma@5.22.0)
+      '@sparticuz/chromium':
+        specifier: ^131.0.1
+        version: 131.0.1
       '@supabase/supabase-js':
         specifier: ^2.57.0
         version: 2.57.0
@@ -85,6 +88,9 @@ importers:
         version: 1.0.4
       puppeteer:
         specifier: ^24.22.0
+        version: 24.22.0
+      puppeteer-core:
+        specifier: ^24.0.0
         version: 24.22.0
       qrcode:
         specifier: ^1.5.4
@@ -239,6 +245,10 @@ packages:
 
   '@scarf/scarf@1.4.0':
     resolution: {integrity: sha512-xxeapPiUXdZAE3che6f3xogoJPeZgig6omHEy1rIY5WVsB3H2BHNnZH+gHG6x91SCWyQCzWGsuL2Hh3ClO5/qQ==}
+
+  '@sparticuz/chromium@131.0.1':
+    resolution: {integrity: sha512-VfmHkQmb/Px0zjwdSQwjRMwFw63Qfj+g4Giumz4jiAGEpXHgIZk6xEwlUz6yiUHVDveK2TEgMR2MR6I3okOE7w==}
+    engines: {node: '>= 16'}
 
   '@supabase/auth-js@2.71.1':
     resolution: {integrity: sha512-mMIQHBRc+SKpZFRB2qtupuzulaUhFYupNyxqDj5Jp/LyPvcWvjaJzZzObv6URtL/O6lPxkanASnotGtNpS3H2Q==}
@@ -2151,6 +2161,15 @@ snapshots:
       - supports-color
 
   '@scarf/scarf@1.4.0': {}
+
+  '@sparticuz/chromium@131.0.1':
+    dependencies:
+      follow-redirects: 1.15.11
+      tar-fs: 3.1.1
+    transitivePeerDependencies:
+      - bare-buffer
+      - debug
+      - react-native-b4a
 
   '@supabase/auth-js@2.71.1':
     dependencies:

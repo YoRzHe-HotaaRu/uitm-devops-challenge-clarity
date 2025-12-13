@@ -1,7 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const ejs = require('ejs');
-const puppeteer = require('puppeteer');
+// Use puppeteer-core with @sparticuz/chromium for production (Render.com)
+const isProduction = process.env.NODE_ENV === 'production';
+let puppeteer;
+let chromium;
+if (isProduction) {
+  puppeteer = require('puppeteer-core');
+  chromium = require('@sparticuz/chromium');
+} else {
+  puppeteer = require('puppeteer');
+}
 const { getSignatureQRCode } = require('./eSignature.service');
 const { prisma } = require('../config/database');
 const {
@@ -472,22 +481,36 @@ class PDFGenerationService {
       let pdfBuffer;
       let fileExtension = 'pdf';
       try {
-        const chromePath = this.getChromePath();
-        const launchOptions = {
-          headless: 'new',
-          args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-dev-shm-usage',
-            '--disable-accelerated-2d-canvas',
-            '--no-first-run',
-            '--no-zygote',
-            '--disable-gpu',
-          ],
-        };
+        let launchOptions;
 
-        if (chromePath) {
-          launchOptions.executablePath = chromePath;
+        if (isProduction && chromium) {
+          // Production: Use @sparticuz/chromium for Render.com/serverless
+          console.log('🔧 Using @sparticuz/chromium for production...');
+          launchOptions = {
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
+          };
+        } else {
+          // Development: Use local Chrome or bundled Chromium
+          const chromePath = this.getChromePath();
+          launchOptions = {
+            headless: 'new',
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--disable-accelerated-2d-canvas',
+              '--no-first-run',
+              '--no-zygote',
+              '--disable-gpu',
+            ],
+          };
+
+          if (chromePath) {
+            launchOptions.executablePath = chromePath;
+          }
         }
 
         const browser = await puppeteer.launch(launchOptions);
