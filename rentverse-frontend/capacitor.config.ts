@@ -8,11 +8,8 @@ const config: CapacitorConfig = {
     allowMixedContent: true,
   },
   server: {
-    // For development with live reload, uncomment and set your IP:
-    // url: 'http://YOUR_IP:3001',
-    // cleartext: true,
-
-    // For production, the app uses bundled static assets
+    // For production, load from Vercel deployment
+    url: 'https://rentverse-frontend-nine.vercel.app',
     androidScheme: 'https',
   },
   plugins: {
