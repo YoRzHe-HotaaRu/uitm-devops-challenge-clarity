@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import ContentWrapper from '@/components/ContentWrapper'
-import { Search, Calendar, MapPin, User, Download } from 'lucide-react'
+import { Search, Calendar, MapPin, User, Download, FileSignature } from 'lucide-react'
 import useAuthStore from '@/stores/authStore'
 import { createApiUrl } from '@/utils/apiConfig'
 
@@ -83,7 +83,7 @@ function RentsPage() {
         }
 
         const data: BookingsResponse = await response.json()
-        
+
         if (data.success) {
           setBookings(data.data.bookings)
         } else {
@@ -121,7 +121,7 @@ function RentsPage() {
       }
 
       const data = await response.json()
-      
+
       if (data.success && data.data.pdf) {
         // Create a temporary link element and trigger download
         const link = document.createElement('a')
@@ -130,7 +130,7 @@ function RentsPage() {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
-        
+
         console.log('Rental agreement downloaded successfully')
       } else {
         throw new Error('Failed to get rental agreement PDF')
@@ -338,6 +338,15 @@ function RentsPage() {
                               {downloadingId === booking.id ? 'Downloading...' : 'Download Agreement'}
                             </span>
                           </button>
+                          {(booking.status.toLowerCase() === 'approved' || booking.status.toLowerCase() === 'active') && (
+                            <Link
+                              href={`/agreements/${booking.id}`}
+                              className="flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
+                            >
+                              <FileSignature size={16} />
+                              <span>Sign Agreement</span>
+                            </Link>
+                          )}
                           <Link
                             href={`/rents/${booking.id}`}
                             className="flex items-center justify-center px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors text-sm"
