@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const { prisma } = require('../config/database');
 const digitalAgreementService = require('../services/digitalAgreement.service');
-const { authenticateToken } = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 /**
  * @route GET /api/agreements/:id
  * @desc Get agreement details with access control
  * @access Private (Landlord/Tenant only)
  */
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id;
@@ -49,7 +49,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
  * @desc Initiate signing workflow (send for signatures)
  * @access Private (Landlord only)
  */
-router.post('/:id/initiate', authenticateToken, async (req, res) => {
+router.post('/:id/initiate', auth, async (req, res) => {
     try {
         const { id } = req.params;
         const { expiresInDays } = req.body;
@@ -100,7 +100,7 @@ router.post('/:id/initiate', authenticateToken, async (req, res) => {
  * @desc Landlord signs the agreement
  * @access Private (Landlord only)
  */
-router.post('/:id/sign/landlord', authenticateToken, async (req, res) => {
+router.post('/:id/sign/landlord', auth, async (req, res) => {
     try {
         const { id } = req.params;
         const { signature, confirmed } = req.body;
@@ -158,7 +158,7 @@ router.post('/:id/sign/landlord', authenticateToken, async (req, res) => {
  * @desc Tenant signs the agreement
  * @access Private (Tenant only)
  */
-router.post('/:id/sign/tenant', authenticateToken, async (req, res) => {
+router.post('/:id/sign/tenant', auth, async (req, res) => {
     try {
         const { id } = req.params;
         const { signature, confirmed } = req.body;
@@ -281,7 +281,7 @@ router.get('/:id/verify', async (req, res) => {
  * @desc Cancel agreement (landlord only)
  * @access Private (Landlord only)
  */
-router.post('/:id/cancel', authenticateToken, async (req, res) => {
+router.post('/:id/cancel', auth, async (req, res) => {
     try {
         const { id } = req.params;
         const { reason } = req.body;

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import SignaturePad from '@/components/SignaturePad';
 import { createApiUrl } from '@/utils/apiConfig';
-import { useAuthStore } from '@/stores/authStore';
+import useAuthStore from '@/stores/authStore';
 
 interface Agreement {
     id: string;
@@ -48,7 +48,7 @@ interface AgreementData {
 export default function AgreementSigningPage() {
     const params = useParams();
     const router = useRouter();
-    const { token, user } = useAuthStore();
+    const { isLoggedIn } = useAuthStore();
 
     const [agreementData, setAgreementData] = useState<AgreementData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -62,10 +62,20 @@ export default function AgreementSigningPage() {
 
     // Fetch agreement data
     const fetchAgreement = useCallback(async () => {
-        if (!token || !agreementId) return;
+        if (!isLoggedIn || !agreementId) {
+            setLoading(false);
+            return;
+        }
 
         try {
             setLoading(true);
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                setError('Authentication token not found');
+                setLoading(false);
+                return;
+            }
+
             const response = await fetch(createApiUrl(`agreements/${agreementId}`), {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -84,7 +94,7 @@ export default function AgreementSigningPage() {
         } finally {
             setLoading(false);
         }
-    }, [token, agreementId]);
+    }, [isLoggedIn, agreementId]);
 
     useEffect(() => {
         fetchAgreement();
@@ -92,7 +102,13 @@ export default function AgreementSigningPage() {
 
     // Handle signature submission
     const handleSign = async () => {
-        if (!signature || !confirmed || !token || !agreementData) return;
+        if (!signature || !confirmed || !agreementData) return;
+
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            setError('Authentication token not found');
+            return;
+        }
 
         const endpoint = agreementData.userRole === 'landlord'
             ? `agreements/${agreementId}/sign/landlord`
