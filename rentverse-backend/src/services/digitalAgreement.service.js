@@ -314,8 +314,8 @@ class DigitalAgreementService {
             throw new Error('Access denied. You are not a party to this agreement.');
         }
 
-        // Log view action
-        await this.logAuditAction(agreementId, 'VIEWED', userId);
+        // Log view action - use agreement.id not the param (which could be leaseId)
+        await this.logAuditAction(agreement.id, 'VIEWED', userId);
 
         return {
             agreement,
