@@ -3,113 +3,163 @@ const nodemailer = require('nodemailer');
 /**
  * Email Service for sending OTP and notification emails
  * 
- * Supports multiple SMTP providers:
- * - Gmail (use app password, not regular password)
- * - Outlook/Hotmail
+ * Supports multiple providers:
+ * - Resend (HTTP API - works on Render free tier)
+ * - Gmail SMTP (use app password)
  * - Custom SMTP server
- * - Mailtrap (for testing)
  */
 
 class EmailService {
-    constructor() {
-        this.transporter = null;
-        this.fromAddress = process.env.EMAIL_FROM || 'noreply@rentverse.com';
-        this.fromName = process.env.EMAIL_FROM_NAME || 'RentVerse';
-        this.isConfigured = false;
+  constructor() {
+    this.transporter = null;
+    this.fromAddress = process.env.EMAIL_FROM || 'noreply@rentverse.com';
+    this.fromName = process.env.EMAIL_FROM_NAME || 'RentVerse';
+    this.isConfigured = false;
+    this.useResend = false;
+    this.resendApiKey = process.env.RESEND_API_KEY;
 
-        this._initializeTransporter();
+    this._initializeTransporter();
+  }
+
+  /**
+   * Initialize the email transporter based on environment variables
+   */
+  _initializeTransporter() {
+    // Check if Resend is configured (preferred for Render)
+    if (this.resendApiKey) {
+      console.log('[EMAIL] Resend API configured');
+      this.isConfigured = true;
+      this.useResend = true;
+      return;
     }
 
-    /**
-     * Initialize the email transporter based on environment variables
-     */
-    _initializeTransporter() {
-        const host = process.env.SMTP_HOST;
-        const port = process.env.SMTP_PORT;
-        const user = process.env.SMTP_USER;
-        const pass = process.env.SMTP_PASS;
+    const host = process.env.SMTP_HOST;
+    const port = process.env.SMTP_PORT;
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
 
-        // Check if SMTP is configured
-        if (!host || !user || !pass) {
-            console.log('[EMAIL] SMTP not configured. Emails will be logged to console instead.');
-            console.log('[EMAIL] To enable email, set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in .env');
-            this.isConfigured = false;
-            return;
-        }
-
-        try {
-            this.transporter = nodemailer.createTransport({
-                host: host,
-                port: parseInt(port) || 587,
-                secure: parseInt(port) === 465, // true for 465, false for other ports
-                auth: {
-                    user: user,
-                    pass: pass,
-                },
-                // Timeout settings
-                connectionTimeout: 10000,
-                greetingTimeout: 10000,
-                socketTimeout: 15000,
-            });
-
-            this.isConfigured = true;
-            console.log(`[EMAIL] SMTP configured: ${host}:${port}`);
-        } catch (error) {
-            console.error('[EMAIL] Failed to create transporter:', error.message);
-            this.isConfigured = false;
-        }
+    // Check if SMTP is configured
+    if (!host || !user || !pass) {
+      console.log('[EMAIL] No email provider configured. Emails will be logged to console instead.');
+      console.log('[EMAIL] To enable email, set RESEND_API_KEY or SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in .env');
+      this.isConfigured = false;
+      return;
     }
 
-    /**
-     * Send an email (or log to console if not configured)
-     * @param {Object} options - Email options
-     * @param {string} options.to - Recipient email
-     * @param {string} options.subject - Email subject
-     * @param {string} options.html - HTML content
-     * @param {string} options.text - Plain text content (fallback)
-     * @returns {Promise<boolean>} - Success status
-     */
-    async sendEmail({ to, subject, html, text }) {
-        const mailOptions = {
-            from: `"${this.fromName}" <${this.fromAddress}>`,
-            to,
-            subject,
-            html,
-            text: text || this._stripHtml(html),
-        };
+    try {
+      this.transporter = nodemailer.createTransport({
+        host: host,
+        port: parseInt(port) || 587,
+        secure: parseInt(port) === 465 || process.env.SMTP_SECURE === 'true',
+        auth: {
+          user: user,
+          pass: pass,
+        },
+        // Timeout settings
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
+      });
 
-        // If not configured, log to console
-        if (!this.isConfigured || !this.transporter) {
-            console.log('\n========================================');
-            console.log('[EMAIL] Would send email (SMTP not configured):');
-            console.log(`To: ${to}`);
-            console.log(`Subject: ${subject}`);
-            console.log(`Content: ${text || this._stripHtml(html)}`);
-            console.log('========================================\n');
-            return true; // Return true so the flow continues
-        }
+      this.isConfigured = true;
+      console.log(`[EMAIL] SMTP configured: ${host}:${port}`);
+    } catch (error) {
+      console.error('[EMAIL] Failed to create transporter:', error.message);
+      this.isConfigured = false;
+    }
+  }
 
-        try {
-            const info = await this.transporter.sendMail(mailOptions);
-            console.log(`[EMAIL] Sent to ${to}: ${info.messageId}`);
-            return true;
-        } catch (error) {
-            console.error(`[EMAIL] Failed to send to ${to}:`, error.message);
-            return false;
-        }
+  /**
+   * Send email via Resend API
+   */
+  async _sendViaResend({ to, subject, html, text }) {
+    try {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: `${this.fromName} <${this.fromAddress}>`,
+          to: [to],
+          subject: subject,
+          html: html,
+          text: text || this._stripHtml(html),
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        console.error('[EMAIL] Resend API error:', error);
+        return false;
+      }
+
+      const data = await response.json();
+      console.log(`[EMAIL] Sent via Resend to ${to}: ${data.id}`);
+      return true;
+    } catch (error) {
+      console.error(`[EMAIL] Resend failed:`, error.message);
+      return false;
+    }
+  }
+
+  /**
+   * Send an email (or log to console if not configured)
+   * @param {Object} options - Email options
+   * @param {string} options.to - Recipient email
+   * @param {string} options.subject - Email subject
+   * @param {string} options.html - HTML content
+   * @param {string} options.text - Plain text content (fallback)
+   * @returns {Promise<boolean>} - Success status
+   */
+  async sendEmail({ to, subject, html, text }) {
+    const mailOptions = {
+      from: `"${this.fromName}" <${this.fromAddress}>`,
+      to,
+      subject,
+      html,
+      text: text || this._stripHtml(html),
+    };
+
+    // If not configured, log to console
+    if (!this.isConfigured) {
+      console.log('\n========================================');
+      console.log('[EMAIL] Would send email (not configured):');
+      console.log(`To: ${to}`);
+      console.log(`Subject: ${subject}`);
+      console.log(`Content: ${text || this._stripHtml(html)}`);
+      console.log('========================================\n');
+      return true; // Return true so the flow continues
     }
 
-    /**
-     * Send OTP verification email
-     * @param {string} email - Recipient email
-     * @param {string} otp - The OTP code
-     * @param {number} expiryMinutes - Minutes until expiry
-     * @returns {Promise<boolean>}
-     */
-    async sendOtpEmail(email, otp, expiryMinutes = 5) {
-        const subject = `Your RentVerse Verification Code: ${otp}`;
+    // Use Resend if configured
+    if (this.useResend) {
+      return await this._sendViaResend({ to, subject, html, text });
+    }
 
-        const html = `
+    // Use SMTP
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log(`[EMAIL] Sent to ${to}: ${info.messageId}`);
+      return true;
+    } catch (error) {
+      console.error(`[EMAIL] Failed to send to ${to}:`, error.message);
+      return false;
+    }
+  }
+
+  /**
+   * Send OTP verification email
+   * @param {string} email - Recipient email
+   * @param {string} otp - The OTP code
+   * @param {number} expiryMinutes - Minutes until expiry
+   * @returns {Promise<boolean>}
+   */
+  async sendOtpEmail(email, otp, expiryMinutes = 5) {
+    const subject = `Your RentVerse Verification Code: ${otp}`;
+
+    const html = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -176,7 +226,7 @@ class EmailService {
       </html>
     `;
 
-        const text = `
+    const text = `
 Your RentVerse Verification Code
 
 Use this code to complete your login: ${otp}
@@ -188,18 +238,18 @@ If you didn't request this code, you can safely ignore this email.
 - The RentVerse Team
     `.trim();
 
-        return await this.sendEmail({ to: email, subject, html, text });
-    }
+    return await this.sendEmail({ to: email, subject, html, text });
+  }
 
-    /**
-     * Send MFA enabled notification email
-     * @param {string} email - Recipient email
-     * @returns {Promise<boolean>}
-     */
-    async sendMfaEnabledEmail(email) {
-        const subject = 'Two-Factor Authentication Enabled - RentVerse';
+  /**
+   * Send MFA enabled notification email
+   * @param {string} email - Recipient email
+   * @returns {Promise<boolean>}
+   */
+  async sendMfaEnabledEmail(email) {
+    const subject = 'Two-Factor Authentication Enabled - RentVerse';
 
-        const html = `
+    const html = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -223,42 +273,47 @@ If you didn't request this code, you can safely ignore this email.
       </html>
     `;
 
-        return await this.sendEmail({ to: email, subject, html });
+    return await this.sendEmail({ to: email, subject, html });
+  }
+
+  /**
+   * Strip HTML tags for plain text fallback
+   * @param {string} html - HTML content
+   * @returns {string} Plain text
+   */
+  _stripHtml(html) {
+    return html
+      .replace(/<style[^>]*>.*<\/style>/gm, '')
+      .replace(/<script[^>]*>.*<\/script>/gm, '')
+      .replace(/<[^>]+>/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /**
+   * Verify connection (for SMTP only)
+   * @returns {Promise<boolean>}
+   */
+  async verifyConnection() {
+    if (this.useResend) {
+      console.log('[EMAIL] Resend API configured - no connection verification needed');
+      return true;
     }
 
-    /**
-     * Strip HTML tags for plain text fallback
-     * @param {string} html - HTML content
-     * @returns {string} Plain text
-     */
-    _stripHtml(html) {
-        return html
-            .replace(/<style[^>]*>.*<\/style>/gm, '')
-            .replace(/<script[^>]*>.*<\/script>/gm, '')
-            .replace(/<[^>]+>/g, '')
-            .replace(/\s+/g, ' ')
-            .trim();
+    if (!this.isConfigured || !this.transporter) {
+      console.log('[EMAIL] Email not configured');
+      return false;
     }
 
-    /**
-     * Verify SMTP connection
-     * @returns {Promise<boolean>}
-     */
-    async verifyConnection() {
-        if (!this.isConfigured || !this.transporter) {
-            console.log('[EMAIL] SMTP not configured');
-            return false;
-        }
-
-        try {
-            await this.transporter.verify();
-            console.log('[EMAIL] SMTP connection verified');
-            return true;
-        } catch (error) {
-            console.error('[EMAIL] SMTP verification failed:', error.message);
-            return false;
-        }
+    try {
+      await this.transporter.verify();
+      console.log('[EMAIL] SMTP connection verified');
+      return true;
+    } catch (error) {
+      console.error('[EMAIL] SMTP verification failed:', error.message);
+      return false;
     }
+  }
 }
 
 module.exports = new EmailService();
