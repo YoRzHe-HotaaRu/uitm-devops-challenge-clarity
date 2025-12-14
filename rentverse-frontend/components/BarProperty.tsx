@@ -43,7 +43,7 @@ function BarProperty(props: Readonly<BarPropertyProps>) {
     try {
       setIsToggling(true)
       const response = await FavoritesApiClient.toggleFavorite(props.propertyId)
-      
+
       if (response.success) {
         setIsFavorited(response.data.isFavorited)
         // Notify parent component about the change
@@ -69,7 +69,7 @@ function BarProperty(props: Readonly<BarPropertyProps>) {
         showToast: true,
         fallbackMessage: 'Property link copied to clipboard!'
       })
-      
+
       if (success) {
         console.log('Property shared successfully')
       }
@@ -79,46 +79,49 @@ function BarProperty(props: Readonly<BarPropertyProps>) {
   }
 
   return (
-    <div className="w-full max-w-7xl mx-auto flex items-center justify-between p-4 bg-white border-b border-gray-100">
+    <div className="w-full max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 bg-white border-b border-gray-100">
       {/* Left side - Back button and title */}
-      <div className="flex items-center space-x-3">
-        <ButtonCircle icon={<ArrowLeft />} onClick={handleBackButton} />
-        <h1 className="text-lg font-semibold text-gray-900">
+      <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+        <ButtonCircle icon={<ArrowLeft size={18} />} onClick={handleBackButton} />
+        <h1 className="text-base sm:text-lg font-semibold text-gray-900 truncate">
           {props.title}
         </h1>
       </div>
 
       {/* Right side - Share and Favourites buttons */}
-      <div className="flex items-center space-x-4">
-        <button 
+      <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+        <button
           onClick={handleShare}
           className={clsx([
-            'flex items-center space-x-2 text-gray-600 cursor-pointer',
-            'hover:underline hover:text-gray-900 transition-colors',
+            'flex items-center space-x-1 sm:space-x-2 text-gray-600 cursor-pointer p-2 sm:p-0',
+            'hover:text-gray-900 transition-colors rounded-lg sm:hover:underline',
           ])}
         >
-          <Share size={14} />
-          <span className="text-sm font-medium">Share</span>
+          <Share size={16} className="sm:w-[14px] sm:h-[14px]" />
+          <span className="text-sm font-medium hidden sm:inline">Share</span>
         </button>
-        <button 
+        <button
           onClick={handleFavoriteToggle}
           disabled={isToggling || !props.propertyId}
           className={clsx([
-            'flex items-center space-x-2 cursor-pointer transition-colors',
-            'hover:underline disabled:opacity-50 disabled:cursor-not-allowed',
-            isFavorited 
-              ? 'text-red-600 hover:text-red-700' 
+            'flex items-center space-x-1 sm:space-x-2 cursor-pointer transition-colors p-2 sm:p-0 rounded-lg',
+            'disabled:opacity-50 disabled:cursor-not-allowed sm:hover:underline',
+            isFavorited
+              ? 'text-red-600 hover:text-red-700'
               : 'text-gray-600 hover:text-gray-900'
           ])}
         >
-          <Heart 
-            size={14} 
-            className={isFavorited ? 'fill-current' : ''} 
+          <Heart
+            size={16}
+            className={clsx([
+              'sm:w-[14px] sm:h-[14px]',
+              isFavorited ? 'fill-current' : ''
+            ])}
           />
-          <span className="text-sm font-medium">
+          <span className="text-sm font-medium hidden sm:inline">
             {(() => {
               if (isToggling) return 'Updating...'
-              return isFavorited ? 'Remove from Favourites' : 'Add to Favourites'
+              return isFavorited ? 'Saved' : 'Save'
             })()}
           </span>
         </button>
