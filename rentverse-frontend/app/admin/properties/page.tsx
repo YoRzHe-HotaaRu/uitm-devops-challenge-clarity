@@ -294,7 +294,7 @@ export default function AdminPropertiesPage() {
                                     : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                                     }`}
                             >
-                                {status === 'all' ? 'All' : status === 'PENDING_REVIEW' ? 'Pending' : status}
+                                {status === 'all' ? 'All' : status === 'PENDING_REVIEW' ? 'PENDING' : status}
                             </button>
                         ))}
                     </div>
@@ -324,7 +324,7 @@ export default function AdminPropertiesPage() {
                                                 className="object-cover"
                                             />
                                             <span className={`absolute top-2 left-2 px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium ${getStatusColor(property.status)}`}>
-                                                {property.status === 'PENDING_REVIEW' ? 'Pending' : property.status}
+                                                {property.status === 'PENDING_REVIEW' ? 'PENDING' : property.status}
                                             </span>
                                         </div>
                                     </div>
