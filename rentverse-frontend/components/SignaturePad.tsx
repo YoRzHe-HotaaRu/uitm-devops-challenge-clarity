@@ -85,7 +85,8 @@ export default function SignaturePad({
     // Start drawing
     const startDrawing = useCallback((e: React.TouchEvent | React.MouseEvent) => {
         if (disabled) return;
-        e.preventDefault();
+        // Note: Don't call preventDefault here - touch-action: none handles scroll prevention
+        // Calling it on passive listeners causes warnings
 
         const coords = getCoordinates(e);
         if (!coords) return;
@@ -97,7 +98,7 @@ export default function SignaturePad({
     // Draw
     const draw = useCallback((e: React.TouchEvent | React.MouseEvent) => {
         if (!isDrawing || disabled) return;
-        e.preventDefault();
+        // Note: Don't call preventDefault here - touch-action: none handles scroll prevention
 
         const canvas = canvasRef.current;
         const ctx = canvas?.getContext('2d');
