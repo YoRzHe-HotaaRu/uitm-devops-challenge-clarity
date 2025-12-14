@@ -458,7 +458,14 @@ function AdminPage() {
         {/* Statistics Dashboard */}
         <div className="mb-8">
           <h2 className="text-2xl font-sans font-bold text-slate-900 mb-6">Admin Dashboard</h2>
-
+          {/* Navigation Tabs */}
+          <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-4 mb-6 -mx-4 px-4 sm:mx-0 sm:px-0">
+            <Link href="/admin" className="px-3 sm:px-4 py-2 bg-teal-600 text-white text-xs sm:text-sm font-medium rounded-xl whitespace-nowrap">Dashboard</Link>
+            <Link href="/admin/agreements" className="px-3 sm:px-4 py-2 bg-white border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors whitespace-nowrap">Agreements</Link>
+            <Link href="/admin/properties" className="px-3 sm:px-4 py-2 bg-white border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors whitespace-nowrap">Properties</Link>
+            <Link href="/admin/users" className="px-3 sm:px-4 py-2 bg-white border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors whitespace-nowrap">Users</Link>
+            <Link href="/admin/security" className="px-3 sm:px-4 py-2 bg-white border border-slate-200 text-slate-600 text-xs sm:text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors whitespace-nowrap">Security</Link>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Total Pending */}
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -532,8 +539,8 @@ function AdminPage() {
                   onClick={toggleAutoReview}
                   disabled={isTogglingAutoReview}
                   className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 ${autoReviewEnabled
-                      ? 'bg-teal-600'
-                      : 'bg-slate-300'
+                    ? 'bg-teal-600'
+                    : 'bg-slate-300'
                     } ${isTogglingAutoReview ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   <span

@@ -245,6 +245,9 @@ const amenityRoutes = require('./modules/amenities/amenities.routes');
 const predictionRoutes = require('./modules/predictions/predictions.routes');
 const adminSecurityRoutes = require('./routes/admin.security.routes');
 const agreementRoutes = require('./routes/agreement.routes');
+const adminAgreementsRoutes = require('./routes/admin.agreements.routes');
+const adminPropertiesRoutes = require('./routes/admin.properties.routes');
+const adminUsersRoutes = require('./routes/admin.users.routes');
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -257,6 +260,9 @@ app.use('/api/amenities', amenityRoutes);
 app.use('/api/predictions', predictionRoutes);
 app.use('/api/admin/security', adminSecurityRoutes);
 app.use('/api/agreements', agreementRoutes);
+app.use('/api/admin/agreements', adminAgreementsRoutes);
+app.use('/api/admin/properties', adminPropertiesRoutes);
+app.use('/api/admin/users', adminUsersRoutes);
 
 /**
  * @swagger
