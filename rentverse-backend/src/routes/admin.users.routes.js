@@ -168,7 +168,7 @@ router.get('/', async (req, res) => {
                     _count: {
                         select: {
                             properties: true,
-                            tenantsLeases: true,
+                            leasesAsTenant: true,
                         },
                     },
                 },
@@ -185,7 +185,7 @@ router.get('/', async (req, res) => {
                 users: users.map(u => ({
                     ...u,
                     propertyCount: u._count.properties,
-                    leaseCount: u._count.tenantsLeases,
+                    leaseCount: u._count.leasesAsTenant,
                     isLocked: u.lockedUntil && u.lockedUntil > new Date(),
                 })),
                 pagination: {
@@ -243,7 +243,7 @@ router.get('/:id', async (req, res) => {
                     },
                     take: 10,
                 },
-                tenantsLeases: {
+                leasesAsTenant: {
                     select: {
                         id: true,
                         status: true,
