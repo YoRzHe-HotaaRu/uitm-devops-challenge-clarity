@@ -565,6 +565,7 @@ enum AuditAction {
   CREATED               // Agreement created
   VIEWED                // Agreement viewed by a party
   SIGNATURE_REQUESTED   // Signing request sent
+  REMINDER_SENT         // Reminder email sent to pending signer
   LANDLORD_SIGNED       // Landlord submitted signature
   TENANT_SIGNED         // Tenant submitted signature
   COMPLETED             // Both signatures collected
