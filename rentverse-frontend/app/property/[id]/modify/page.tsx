@@ -399,234 +399,244 @@ function ModifyPropertyPage() {
       )}
 
       {!isLoading && !error && isLoggedIn && !isUnauthorized && (
-        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <div className="space-y-8">
-            <div className="space-y-3">
-              <label htmlFor="title" className="block text-sm font-medium text-slate-700">
-                Title
-              </label>
-              <input
-                id="title"
-                type="text"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                placeholder="Enter property title"
-              />
-            </div>
-
-            <div className="space-y-3">
-              <label htmlFor="description" className="block text-sm font-medium text-slate-700">
-                Description
-              </label>
-              <textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                rows={4}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
-                placeholder="Enter property description"
-              />
-            </div>
-
-            <div className="space-y-3">
-              <label htmlFor="propertyType" className="block text-sm font-medium text-slate-700">
-                Property type
-              </label>
-              <select
-                id="propertyType"
-                value={formData.propertyType}
-                onChange={(e) => handleInputChange('propertyType', e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                disabled={isLoadingTypes}
-              >
-                <option value="">Select property type</option>
-                {isLoadingTypes ? (
-                  <option value="">Loading property types...</option>
-                ) : (
-                  propertyTypes.map((type) => (
-                    <option key={type.id} value={type.name}>
-                      {type.name}
-                    </option>
-                  ))
-                )}
-              </select>
-            </div>
-
-            <div className="space-y-3">
-              <label htmlFor="price" className="block text-sm font-medium text-slate-700">
-                Price (MYR)
-              </label>
-              <input
-                id="price"
-                type="number"
-                value={formData.price}
-                onChange={(e) => handleInputChange('price', e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                placeholder="Enter rental price"
-                min="0"
-                step="0.01"
-              />
-            </div>
-
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-slate-700">
-                Furnished
-              </label>
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center space-x-2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0">
+          {/* Mobile: Stack vertically, Desktop: Side by side */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
+            {/* Form Section */}
+            <div className="order-2 lg:order-1 bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm">
+              <h3 className="text-lg font-semibold text-slate-900 mb-6 pb-4 border-b border-slate-100">Edit Details</h3>
+              <div className="space-y-5">
+                <div className="space-y-3">
+                  <label htmlFor="title" className="block text-sm font-medium text-slate-700">
+                    Title
+                  </label>
                   <input
-                    type="radio"
-                    name="furnished"
-                    checked={formData.furnished === true}
-                    onChange={() => handleInputChange('furnished', 'true')}
-                    className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
+                    id="title"
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    placeholder="Enter property title"
                   />
-                  <span className="text-sm text-slate-700">Yes</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="furnished"
-                    checked={formData.furnished === false}
-                    onChange={() => handleInputChange('furnished', 'false')}
-                    className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
-                  />
-                  <span className="text-sm text-slate-700">No</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-slate-700">
-                Availability
-              </label>
-              <div className="flex items-center space-x-4">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="isAvailable"
-                    checked={formData.isAvailable === true}
-                    onChange={() => handleInputChange('isAvailable', 'true')}
-                    className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
-                  />
-                  <span className="text-sm text-slate-700">Available</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="isAvailable"
-                    checked={formData.isAvailable === false}
-                    onChange={() => handleInputChange('isAvailable', 'false')}
-                    className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
-                  />
-                  <span className="text-sm text-slate-700">Not Available</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <label htmlFor="status" className="block text-sm font-medium text-slate-700">
-                Status
-              </label>
-              <select
-                id="status"
-                value={formData.status}
-                onChange={(e) => handleInputChange('status', e.target.value)}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-              >
-                <option value="PENDING">Pending</option>
-                <option value="APPROVED">Approved</option>
-                <option value="REJECTED">Rejected</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="flex justify-end">
-              <span className="text-sm text-slate-400">
-                {formData.title.length}/100 characters
-              </span>
-            </div>
-
-            <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-3xl font-serif text-slate-900 mb-2">
-                    {formData.title || 'Property Title'}
-                  </h2>
-                  <p className="text-slate-600 leading-relaxed">
-                    {formData.description || 'Property description will appear here...'}
-                  </p>
                 </div>
-
-                {property && property.images && property.images.length > 0 ? (
-                  <div className="w-full h-48 rounded-xl overflow-hidden">
-                    <img
-                      src={property.images[0]}
-                      alt={formData.title || 'Property'}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-full h-48 bg-slate-100 rounded-xl flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-slate-400 mb-2">
-                        <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <p className="text-sm text-slate-500">No photos uploaded</p>
-                    </div>
-                  </div>
-                )}
 
                 <div className="space-y-3">
-                  <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm font-medium">
-                      {formData.propertyType}
-                    </span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${formData.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                        formData.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-red-100 text-red-700'
-                      }`}>
-                      {formData.status}
-                    </span>
+                  <label htmlFor="description" className="block text-sm font-medium text-slate-700">
+                    Description
+                  </label>
+                  <textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+                    placeholder="Enter property description"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label htmlFor="propertyType" className="block text-sm font-medium text-slate-700">
+                    Property type
+                  </label>
+                  <select
+                    id="propertyType"
+                    value={formData.propertyType}
+                    onChange={(e) => handleInputChange('propertyType', e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    disabled={isLoadingTypes}
+                  >
+                    <option value="">Select property type</option>
+                    {isLoadingTypes ? (
+                      <option value="">Loading property types...</option>
+                    ) : (
+                      propertyTypes.map((type) => (
+                        <option key={type.id} value={type.name}>
+                          {type.name}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                <div className="space-y-3">
+                  <label htmlFor="price" className="block text-sm font-medium text-slate-700">
+                    Price (MYR)
+                  </label>
+                  <input
+                    id="price"
+                    type="number"
+                    value={formData.price}
+                    onChange={(e) => handleInputChange('price', e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    placeholder="Enter rental price"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Furnished
+                  </label>
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="furnished"
+                        checked={formData.furnished === true}
+                        onChange={() => handleInputChange('furnished', 'true')}
+                        className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
+                      />
+                      <span className="text-sm text-slate-700">Yes</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="furnished"
+                        checked={formData.furnished === false}
+                        onChange={() => handleInputChange('furnished', 'false')}
+                        className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
+                      />
+                      <span className="text-sm text-slate-700">No</span>
+                    </label>
                   </div>
+                </div>
 
-                  {formData.price && (
-                    <p className="text-2xl font-bold text-slate-900">
-                      MYR {parseFloat(formData.price).toLocaleString()}
-                      <span className="text-sm font-normal text-slate-500"> / month</span>
-                    </p>
-                  )}
+                <div className="space-y-3">
+                  <label className="block text-sm font-medium text-slate-700">
+                    Availability
+                  </label>
+                  <div className="flex items-center space-x-4">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="isAvailable"
+                        checked={formData.isAvailable === true}
+                        onChange={() => handleInputChange('isAvailable', 'true')}
+                        className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
+                      />
+                      <span className="text-sm text-slate-700">Available</span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="isAvailable"
+                        checked={formData.isAvailable === false}
+                        onChange={() => handleInputChange('isAvailable', 'false')}
+                        className="w-4 h-4 text-teal-600 border-slate-300 focus:ring-teal-500"
+                      />
+                      <span className="text-sm text-slate-700">Not Available</span>
+                    </label>
+                  </div>
+                </div>
 
-                  <div className="flex items-center space-x-4 text-sm text-slate-600">
-                    <span>Furnished: {formData.furnished ? 'Yes' : 'No'}</span>
-                    <span>•</span>
-                    <span>{formData.isAvailable ? 'Available' : 'Not Available'}</span>
+                <div className="space-y-3">
+                  <label htmlFor="status" className="block text-sm font-medium text-slate-700">
+                    Status
+                  </label>
+                  <select
+                    id="status"
+                    value={formData.status}
+                    onChange={(e) => handleInputChange('status', e.target.value)}
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  >
+                    <option value="PENDING">Pending</option>
+                    <option value="APPROVED">Approved</option>
+                    <option value="REJECTED">Rejected</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Preview Section */}
+              <div className="order-1 lg:order-2 space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-semibold text-slate-900">Preview</h3>
+                  <span className="text-sm text-slate-400">
+                    {formData.title.length}/100 characters
+                  </span>
+                </div>
+
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm">
+                  <div className="space-y-5">
+                    <div>
+                      <h2 className="text-3xl font-serif text-slate-900 mb-2">
+                        {formData.title || 'Property Title'}
+                      </h2>
+                      <p className="text-slate-600 leading-relaxed">
+                        {formData.description || 'Property description will appear here...'}
+                      </p>
+                    </div>
+
+                    {property && property.images && property.images.length > 0 ? (
+                      <div className="w-full h-48 rounded-xl overflow-hidden">
+                        <img
+                          src={property.images[0]}
+                          alt={formData.title || 'Property'}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-full h-48 bg-slate-100 rounded-xl flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="text-slate-400 mb-2">
+                            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                          <p className="text-sm text-slate-500">No photos uploaded</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm font-medium">
+                          {formData.propertyType}
+                        </span>
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${formData.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
+                          formData.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-red-100 text-red-700'
+                          }`}>
+                          {formData.status}
+                        </span>
+                      </div>
+
+                      {formData.price && (
+                        <p className="text-2xl font-bold text-slate-900">
+                          MYR {parseFloat(formData.price).toLocaleString()}
+                          <span className="text-sm font-normal text-slate-500"> / month</span>
+                        </p>
+                      )}
+
+                      <div className="flex items-center space-x-4 text-sm text-slate-600">
+                        <span>Furnished: {formData.furnished ? 'Yes' : 'No'}</span>
+                        <span>•</span>
+                        <span>{formData.isAvailable ? 'Available' : 'Not Available'}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="flex justify-between">
-              <button
-                onClick={handleDeleteClick}
-                disabled={isDeleting}
-                className="px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors duration-200"
-              >
-                {isDeleting ? 'Deleting...' : 'Delete Property'}
-              </button>
+              {/* Action Buttons - Mobile: Full width stacked, Desktop: Side by side */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:justify-between pt-4">
+                <button
+                  onClick={handleDeleteClick}
+                  disabled={isDeleting}
+                  className="w-full sm:w-auto px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors duration-200 order-2 sm:order-1"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Property'}
+                </button>
 
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="px-8 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors duration-200"
-              >
-                {isSaving ? 'Saving...' : 'Save Changes'}
-              </button>
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="w-full sm:w-auto px-8 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors duration-200 order-1 sm:order-2"
+                >
+                  {isSaving ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -635,7 +645,7 @@ function ModifyPropertyPage() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4">
             <div className="text-center space-y-4">
               <div className="text-6xl">🗑️</div>
               <h3 className="text-xl font-bold text-slate-900">
@@ -647,7 +657,7 @@ function ModifyPropertyPage() {
               <div className="text-sm text-slate-500 bg-slate-50 p-3 rounded-lg">
                 Property: <span className="font-medium">{property?.title}</span>
               </div>
-              <div className="flex space-x-3 pt-4">
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                   onClick={handleDeleteCancel}
                   disabled={isDeleting}
