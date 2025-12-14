@@ -546,81 +546,81 @@ function ModifyPropertyPage() {
                   </select>
                 </div>
               </div>
+            </div>
 
-              {/* Preview Section */}
-              <div className="order-1 lg:order-2 space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold text-slate-900">Preview</h3>
-                  <span className="text-sm text-slate-400">
-                    {formData.title.length}/100 characters
-                  </span>
-                </div>
+            {/* Preview Section */}
+            <div className="order-1 lg:order-2 space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-slate-900">Preview</h3>
+                <span className="text-sm text-slate-400">
+                  {formData.title.length}/100 characters
+                </span>
+              </div>
 
-                <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm">
-                  <div className="space-y-5">
-                    <div>
-                      <h2 className="text-3xl font-serif text-slate-900 mb-2">
-                        {formData.title || 'Property Title'}
-                      </h2>
-                      <p className="text-slate-600 leading-relaxed">
-                        {formData.description || 'Property description will appear here...'}
-                      </p>
+              <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm">
+                <div className="space-y-5">
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl font-serif text-slate-900 mb-2">
+                      {formData.title || 'Property Title'}
+                    </h2>
+                    <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
+                      {formData.description || 'Property description will appear here...'}
+                    </p>
+                  </div>
+
+                  {property && property.images && property.images.length > 0 ? (
+                    <div className="w-full h-40 sm:h-48 rounded-xl overflow-hidden">
+                      <img
+                        src={property.images[0]}
+                        alt={formData.title || 'Property'}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-full h-40 sm:h-48 bg-slate-100 rounded-xl flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-slate-400 mb-2">
+                          <svg className="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <p className="text-xs sm:text-sm text-slate-500">No photos uploaded</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-3">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs sm:text-sm font-medium">
+                        {formData.propertyType || 'Type'}
+                      </span>
+                      <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${formData.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
+                        formData.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                        {formData.status}
+                      </span>
                     </div>
 
-                    {property && property.images && property.images.length > 0 ? (
-                      <div className="w-full h-48 rounded-xl overflow-hidden">
-                        <img
-                          src={property.images[0]}
-                          alt={formData.title || 'Property'}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-full h-48 bg-slate-100 rounded-xl flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="text-slate-400 mb-2">
-                            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                          </div>
-                          <p className="text-sm text-slate-500">No photos uploaded</p>
-                        </div>
-                      </div>
+                    {formData.price && (
+                      <p className="text-xl sm:text-2xl font-bold text-slate-900">
+                        MYR {parseFloat(formData.price).toLocaleString()}
+                        <span className="text-xs sm:text-sm font-normal text-slate-500"> / month</span>
+                      </p>
                     )}
 
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm font-medium">
-                          {formData.propertyType}
-                        </span>
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${formData.status === 'APPROVED' ? 'bg-green-100 text-green-700' :
-                          formData.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700'
-                          }`}>
-                          {formData.status}
-                        </span>
-                      </div>
-
-                      {formData.price && (
-                        <p className="text-2xl font-bold text-slate-900">
-                          MYR {parseFloat(formData.price).toLocaleString()}
-                          <span className="text-sm font-normal text-slate-500"> / month</span>
-                        </p>
-                      )}
-
-                      <div className="flex items-center space-x-4 text-sm text-slate-600">
-                        <span>Furnished: {formData.furnished ? 'Yes' : 'No'}</span>
-                        <span>•</span>
-                        <span>{formData.isAvailable ? 'Available' : 'Not Available'}</span>
-                      </div>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-slate-600">
+                      <span>Furnished: {formData.furnished ? 'Yes' : 'No'}</span>
+                      <span className="hidden sm:inline">•</span>
+                      <span>{formData.isAvailable ? 'Available' : 'Not Available'}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Action Buttons - Mobile: Full width stacked, Desktop: Side by side */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:justify-between pt-4">
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
                 <button
                   onClick={handleDeleteClick}
                   disabled={isDeleting}
@@ -632,7 +632,7 @@ function ModifyPropertyPage() {
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="w-full sm:w-auto px-8 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors duration-200 order-1 sm:order-2"
+                  className="w-full sm:flex-1 px-8 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors duration-200 order-1 sm:order-2"
                 >
                   {isSaving ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -647,11 +647,11 @@ function ModifyPropertyPage() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4">
             <div className="text-center space-y-4">
-              <div className="text-6xl">🗑️</div>
-              <h3 className="text-xl font-bold text-slate-900">
+              <div className="text-5xl sm:text-6xl">🗑️</div>
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900">
                 Delete Property
               </h3>
-              <p className="text-slate-600 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
                 Are you sure you want to delete this property? This action cannot be undone and all data associated with this property will be permanently removed.
               </p>
               <div className="text-sm text-slate-500 bg-slate-50 p-3 rounded-lg">
