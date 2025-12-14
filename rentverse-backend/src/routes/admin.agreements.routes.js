@@ -324,11 +324,11 @@ router.post('/:id/remind', async (req, res) => {
                 agreementId: agreement.id,
                 action: 'REMINDER_SENT',
                 performedBy: req.user.id,
-                details: JSON.stringify({
+                metadata: {
                     sentTo: reminderTarget.user.email,
                     role: reminderTarget.role,
                     sentByAdmin: true,
-                }),
+                },
                 ipAddress: req.ip,
             },
         });
