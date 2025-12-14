@@ -593,10 +593,17 @@ class PDFGenerationService {
 
       console.log('📍 PDF URL:', uploadResult.url);
 
-      // 7. Simpan record RentalAgreement ke database
+      // 7. Save/Update RentalAgreement record in database (upsert for regeneration support)
       console.log('💾 Saving rental agreement record to database...');
-      const rentalAgreement = await prisma.rentalAgreement.create({
-        data: {
+      const rentalAgreement = await prisma.rentalAgreement.upsert({
+        where: { leaseId: lease.id },
+        update: {
+          pdfUrl: uploadResult.url,
+          publicId: uploadResult.publicId,
+          fileName: uploadResult.fileName,
+          fileSize: uploadResult.size,
+        },
+        create: {
           leaseId: lease.id,
           pdfUrl: uploadResult.url,
           publicId: uploadResult.publicId,
