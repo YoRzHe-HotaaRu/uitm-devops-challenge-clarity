@@ -554,7 +554,7 @@ class PDFGenerationService {
       let uploadResult;
 
       // Check if Cloudinary is configured
-      if (isCloudinaryConfigured()) {
+      if (isCloudinaryConfigured) {
         try {
           // Primary: Upload to Cloudinary (persistent storage - survives server restarts)
           uploadResult = await this.uploadPDFToCloudinary(pdfBuffer, fileName);
