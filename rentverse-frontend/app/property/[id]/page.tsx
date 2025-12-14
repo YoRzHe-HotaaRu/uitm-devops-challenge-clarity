@@ -23,12 +23,12 @@ function DetailPage() {
   useEffect(() => {
     const fetchPropertyAndLogView = async () => {
       if (!propertyId) return
-      
+
       try {
         setIsLoading(true)
         // Use the view logging API which returns complete property data
         const viewResponse = await PropertiesApiClient.logPropertyView(propertyId)
-        
+
         if (viewResponse.success && viewResponse.data.property) {
           setProperty(viewResponse.data.property)
         } else {
@@ -91,10 +91,15 @@ function DetailPage() {
     'https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758211362/rentverse-rooms/Gemini_Generated_Image_2wt0y22wt0y22wt0_ocdafo.png',
   ]
 
-  // Use property images or fallback to temp images
-  const displayImages = property.images && property.images.length >= 5 
-    ? property.images.slice(0, 5) as [string, string, string, string, string]
-    : tempImage
+  // Use property images or fallback to temp images - pad with fallbacks if fewer than 5
+  const propertyImgs = property.images || []
+  const displayImages: [string, string, string, string, string] = [
+    propertyImgs[0] || tempImage[0],
+    propertyImgs[1] || tempImage[1],
+    propertyImgs[2] || tempImage[2],
+    propertyImgs[3] || tempImage[3],
+    propertyImgs[4] || tempImage[4],
+  ]
 
   // Format price for display
   const displayPrice = typeof property.price === 'string' ? parseFloat(property.price) : property.price
@@ -110,8 +115,8 @@ function DetailPage() {
 
   return (
     <ContentWrapper>
-      <BarProperty 
-        title={property.title} 
+      <BarProperty
+        title={property.title}
         propertyId={property.id}
         isFavorited={property.isFavorited}
         onFavoriteChange={handleFavoriteChange}
@@ -176,9 +181,9 @@ function DetailPage() {
 
           {/* Right side - Booking box */}
           <div className="lg:col-span-1">
-            <BoxPropertyPrice 
-              price={displayPrice} 
-              propertyId={property.id} 
+            <BoxPropertyPrice
+              price={displayPrice}
+              propertyId={property.id}
               ownerId={property.ownerId}
             />
           </div>
@@ -197,9 +202,9 @@ function DetailPage() {
         {/* MapTiler Map */}
         <div className="w-full h-80 rounded-2xl overflow-hidden border border-slate-200">
           <MapViewer
-            center={{ 
-              lng: property.longitude || 102.2386, 
-              lat: property.latitude || 6.1254 
+            center={{
+              lng: property.longitude || 102.2386,
+              lat: property.latitude || 6.1254
             }}
             zoom={14}
             style="streets-v2"
