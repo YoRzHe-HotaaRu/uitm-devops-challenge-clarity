@@ -19,7 +19,9 @@ import {
     Home,
     User,
     Calendar,
-    MapPin
+    MapPin,
+    X,
+    XCircle
 } from 'lucide-react'
 import { createApiUrl } from '@/utils/apiConfig'
 import Image from 'next/image'
@@ -90,6 +92,15 @@ export default function AdminAgreementsPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [debouncedSearch, setDebouncedSearch] = useState('')
     const [sendingReminder, setSendingReminder] = useState<string | null>(null)
+    const [toast, setToast] = useState<{ show: boolean; type: 'success' | 'error'; message: string }>({ show: false, type: 'success', message: '' })
+
+    // Auto-hide toast after 4 seconds
+    useEffect(() => {
+        if (toast.show) {
+            const timer = setTimeout(() => setToast({ ...toast, show: false }), 4000)
+            return () => clearTimeout(timer)
+        }
+    }, [toast.show])
 
     // Check admin access
     useEffect(() => {
@@ -184,13 +195,13 @@ export default function AdminAgreementsPage() {
             const data = await response.json()
 
             if (data.success) {
-                alert(`Reminder sent to ${data.data.sentTo}`)
+                setToast({ show: true, type: 'success', message: `📧 Reminder sent to ${data.data.sentTo}` })
             } else {
-                alert(data.message || 'Failed to send reminder')
+                setToast({ show: true, type: 'error', message: data.message || 'Failed to send reminder' })
             }
         } catch (err) {
             console.error('Error sending reminder:', err)
-            alert('Failed to send reminder')
+            setToast({ show: true, type: 'error', message: 'Failed to send reminder' })
         } finally {
             setSendingReminder(null)
         }
@@ -240,6 +251,31 @@ export default function AdminAgreementsPage() {
 
     return (
         <ContentWrapper>
+            {/* Toast Notification */}
+            {toast.show && (
+                <div className="fixed top-4 right-4 z-50 animate-[slideIn_0.3s_ease-out]">
+                    <div className={`flex items-center gap-3 px-5 py-4 rounded-xl shadow-lg border backdrop-blur-sm ${toast.type === 'success'
+                        ? 'bg-emerald-50/95 border-emerald-200 text-emerald-800'
+                        : 'bg-red-50/95 border-red-200 text-red-800'
+                        }`}>
+                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${toast.type === 'success' ? 'bg-emerald-100' : 'bg-red-100'
+                            }`}>
+                            {toast.type === 'success' ? (
+                                <CheckCircle size={18} className="text-emerald-600" />
+                            ) : (
+                                <XCircle size={18} className="text-red-600" />
+                            )}
+                        </div>
+                        <span className="font-medium">{toast.message}</span>
+                        <button
+                            onClick={() => setToast({ ...toast, show: false })}
+                            className="ml-2 p-1 hover:bg-black/5 rounded-full transition-colors"
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
