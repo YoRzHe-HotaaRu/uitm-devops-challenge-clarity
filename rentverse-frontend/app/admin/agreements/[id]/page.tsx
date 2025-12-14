@@ -39,7 +39,7 @@ interface Agreement {
         id: string
         startDate: string
         endDate: string
-        monthlyRent: string
+        rentAmount: string
         property: {
             id: string
             title: string
@@ -284,7 +284,7 @@ export default function AdminAgreementDetailsPage() {
                                         <span>{formatDate(agreement.lease.startDate)} - {formatDate(agreement.lease.endDate)}</span>
                                     </div>
                                     <p className="mt-2 text-lg font-semibold text-indigo-600">
-                                        RM {parseFloat(agreement.lease.monthlyRent).toLocaleString()}/month
+                                        RM {parseFloat(agreement.lease.rentAmount || '0').toLocaleString()}/month
                                     </p>
                                 </div>
                             </div>
