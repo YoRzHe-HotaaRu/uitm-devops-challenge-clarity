@@ -4,8 +4,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import ContentWrapper from '@/components/ContentWrapper'
-import { FileSignature, Calendar, User, MapPin, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import { FileSignature, Calendar, User, MapPin, Clock, CheckCircle, XCircle, AlertCircle, Home, Key } from 'lucide-react'
 import useAuthStore from '@/stores/authStore'
+import useCurrentUser from '@/hooks/useCurrentUser'
 import { createApiUrl } from '@/utils/apiConfig'
 
 interface Agreement {
@@ -46,11 +47,15 @@ interface Agreement {
     }
 }
 
+type RoleFilter = 'all' | 'landlord' | 'tenant'
+
 function MyAgreementsPage() {
     const [agreements, setAgreements] = useState<Agreement[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [roleFilter, setRoleFilter] = useState<RoleFilter>('all')
     const { isLoggedIn } = useAuthStore()
+    const { user } = useCurrentUser()
 
     useEffect(() => {
         const fetchAgreements = async () => {
@@ -67,7 +72,6 @@ function MyAgreementsPage() {
                     return
                 }
 
-                // Fetch agreements where user is landlord
                 const response = await fetch(createApiUrl('agreements/my-agreements'), {
                     method: 'GET',
                     headers: {
@@ -102,6 +106,21 @@ function MyAgreementsPage() {
 
         fetchAgreements()
     }, [isLoggedIn])
+
+    // Determine user's role for each agreement
+    const getUserRole = (agreement: Agreement): 'landlord' | 'tenant' => {
+        return agreement.lease.landlord.id === user?.id ? 'landlord' : 'tenant'
+    }
+
+    // Filter agreements based on role
+    const filteredAgreements = agreements.filter(agreement => {
+        if (roleFilter === 'all') return true
+        return getUserRole(agreement) === roleFilter
+    })
+
+    // Count by role
+    const landlordCount = agreements.filter(a => getUserRole(a) === 'landlord').length
+    const tenantCount = agreements.filter(a => getUserRole(a) === 'tenant').length
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -160,9 +179,9 @@ function MyAgreementsPage() {
             case 'DRAFT':
                 return 'Draft'
             case 'PENDING_LANDLORD':
-                return 'Awaiting Landlord Signature'
+                return 'Awaiting Landlord'
             case 'PENDING_TENANT':
-                return 'Awaiting Tenant Signature'
+                return 'Awaiting Tenant'
             case 'COMPLETED':
                 return 'Completed'
             case 'EXPIRED':
@@ -171,6 +190,16 @@ function MyAgreementsPage() {
                 return 'Cancelled'
             default:
                 return status
+        }
+    }
+
+    // Check if the current user needs to sign
+    const needsToSign = (agreement: Agreement): boolean => {
+        const role = getUserRole(agreement)
+        if (role === 'landlord') {
+            return !agreement.landlordSigned && (agreement.status === 'DRAFT' || agreement.status === 'PENDING_LANDLORD')
+        } else {
+            return !agreement.tenantSigned && agreement.status === 'PENDING_TENANT'
         }
     }
 
@@ -197,14 +226,49 @@ function MyAgreementsPage() {
     return (
         <ContentWrapper>
             {/* Header */}
-            <div className="max-w-6xl mx-auto flex items-center justify-between mb-8">
-                <div className="flex items-center space-x-3">
-                    <FileSignature size={28} className="text-indigo-600" />
-                    <h3 className="text-2xl font-serif text-slate-900">My Agreements</h3>
+            <div className="max-w-6xl mx-auto mb-6">
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-3">
+                        <FileSignature size={28} className="text-indigo-600" />
+                        <h3 className="text-2xl font-serif text-slate-900">My Agreements</h3>
+                    </div>
+                    <p className="text-sm text-slate-500 hidden sm:block">
+                        Manage and sign your rental agreements
+                    </p>
                 </div>
-                <p className="text-sm text-slate-500">
-                    Manage and sign your rental agreements
-                </p>
+
+                {/* Role Filter Tabs */}
+                <div className="flex space-x-2 mt-4 border-b border-slate-200">
+                    <button
+                        onClick={() => setRoleFilter('all')}
+                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${roleFilter === 'all'
+                                ? 'border-indigo-600 text-indigo-600'
+                                : 'border-transparent text-slate-500 hover:text-slate-700'
+                            }`}
+                    >
+                        All ({agreements.length})
+                    </button>
+                    <button
+                        onClick={() => setRoleFilter('landlord')}
+                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors flex items-center space-x-2 ${roleFilter === 'landlord'
+                                ? 'border-indigo-600 text-indigo-600'
+                                : 'border-transparent text-slate-500 hover:text-slate-700'
+                            }`}
+                    >
+                        <Home size={16} />
+                        <span>As Landlord ({landlordCount})</span>
+                    </button>
+                    <button
+                        onClick={() => setRoleFilter('tenant')}
+                        className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors flex items-center space-x-2 ${roleFilter === 'tenant'
+                                ? 'border-indigo-600 text-indigo-600'
+                                : 'border-transparent text-slate-500 hover:text-slate-700'
+                            }`}
+                    >
+                        <Key size={16} />
+                        <span>As Tenant ({tenantCount})</span>
+                    </button>
+                </div>
             </div>
 
             {/* Contents */}
@@ -228,115 +292,147 @@ function MyAgreementsPage() {
                             </button>
                         </div>
                     </div>
-                ) : agreements.length === 0 ? (
+                ) : filteredAgreements.length === 0 ? (
                     <div className="flex-1 flex items-center justify-center py-10">
                         <div className="text-center space-y-6 max-w-md">
                             <FileSignature size={64} className="mx-auto text-slate-300" />
                             <div className="space-y-3">
                                 <h3 className="text-xl font-sans font-medium text-slate-900">
-                                    No agreements yet
+                                    {roleFilter === 'all'
+                                        ? 'No agreements yet'
+                                        : roleFilter === 'landlord'
+                                            ? 'No agreements as landlord'
+                                            : 'No agreements as tenant'}
                                 </h3>
                                 <p className="text-base text-slate-500 leading-relaxed">
-                                    When tenants book your properties, agreements will appear here for signing.
+                                    {roleFilter === 'landlord'
+                                        ? 'When tenants book your properties, agreements will appear here.'
+                                        : roleFilter === 'tenant'
+                                            ? 'When you book properties, agreements will appear here.'
+                                            : 'Agreements will appear here when you book or receive bookings.'}
                                 </p>
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="space-y-6">
-                        {agreements.map((agreement) => (
-                            <div
-                                key={agreement.id}
-                                className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow"
-                            >
-                                <div className="flex flex-col md:flex-row">
-                                    {/* Property Image */}
-                                    <div className="md:w-1/4">
-                                        <div className="relative h-48 md:h-full min-h-[180px]">
-                                            <Image
-                                                src={agreement.lease.property.images?.[0] || '/placeholder-property.jpg'}
-                                                alt={agreement.lease.property.title}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        </div>
-                                    </div>
+                        {filteredAgreements.map((agreement) => {
+                            const userRole = getUserRole(agreement)
+                            const actionNeeded = needsToSign(agreement)
 
-                                    {/* Agreement Details */}
-                                    <div className="flex-1 p-6">
-                                        <div className="flex flex-col h-full">
-                                            {/* Header */}
-                                            <div className="flex justify-between items-start mb-4">
-                                                <div>
-                                                    <h3 className="text-xl font-semibold text-slate-900 mb-1">
-                                                        {agreement.lease.property.title}
-                                                    </h3>
-                                                    <div className="flex items-center text-slate-600 text-sm">
-                                                        <MapPin size={14} className="mr-1" />
-                                                        <span>{agreement.lease.property.address}, {agreement.lease.property.city}</span>
+                            return (
+                                <div
+                                    key={agreement.id}
+                                    className={`bg-white rounded-xl border overflow-hidden hover:shadow-lg transition-shadow ${actionNeeded ? 'border-amber-300 ring-1 ring-amber-200' : 'border-slate-200'
+                                        }`}
+                                >
+                                    <div className="flex flex-col md:flex-row">
+                                        {/* Property Image */}
+                                        <div className="md:w-1/4 relative">
+                                            <div className="relative h-48 md:h-full min-h-[180px]">
+                                                <Image
+                                                    src={agreement.lease.property.images?.[0] || '/placeholder-property.jpg'}
+                                                    alt={agreement.lease.property.title}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                                {/* Role Badge */}
+                                                <div className={`absolute top-3 left-3 px-3 py-1.5 rounded-full text-xs font-semibold flex items-center space-x-1.5 shadow-md ${userRole === 'landlord'
+                                                        ? 'bg-indigo-600 text-white'
+                                                        : 'bg-teal-600 text-white'
+                                                    }`}>
+                                                    {userRole === 'landlord' ? <Home size={12} /> : <Key size={12} />}
+                                                    <span>{userRole === 'landlord' ? 'My Property' : 'My Rent'}</span>
+                                                </div>
+                                                {/* Action Needed Badge */}
+                                                {actionNeeded && (
+                                                    <div className="absolute top-3 right-3 px-2 py-1 bg-amber-500 text-white rounded-full text-xs font-semibold animate-pulse">
+                                                        Action Required
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Agreement Details */}
+                                        <div className="flex-1 p-6">
+                                            <div className="flex flex-col h-full">
+                                                {/* Header */}
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div>
+                                                        <h3 className="text-xl font-semibold text-slate-900 mb-1">
+                                                            {agreement.lease.property.title}
+                                                        </h3>
+                                                        <div className="flex items-center text-slate-600 text-sm">
+                                                            <MapPin size={14} className="mr-1" />
+                                                            <span>{agreement.lease.property.address}, {agreement.lease.property.city}</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className={`px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getStatusColor(agreement.status)}`}>
+                                                        {getStatusIcon(agreement.status)}
+                                                        <span>{getStatusLabel(agreement.status)}</span>
                                                     </div>
                                                 </div>
-                                                <div className={`px-3 py-1 rounded-full text-xs font-medium flex items-center space-x-1 ${getStatusColor(agreement.status)}`}>
-                                                    {getStatusIcon(agreement.status)}
-                                                    <span>{getStatusLabel(agreement.status)}</span>
-                                                </div>
-                                            </div>
 
-                                            {/* Rental Period */}
-                                            <div className="flex items-center text-slate-600 mb-3">
-                                                <Calendar size={16} className="mr-2" />
-                                                <span className="text-sm">
-                                                    {formatDate(agreement.lease.startDate)} - {formatDate(agreement.lease.endDate)}
-                                                </span>
-                                            </div>
-
-                                            {/* Tenant */}
-                                            <div className="flex items-center text-slate-600 mb-4">
-                                                <User size={16} className="mr-2" />
-                                                <span className="text-sm">
-                                                    Tenant: {agreement.lease.tenant.name} ({agreement.lease.tenant.email})
-                                                </span>
-                                            </div>
-
-                                            {/* Signature Status */}
-                                            <div className="flex flex-wrap gap-4 mb-4">
-                                                <div className={`flex items-center text-sm ${agreement.landlordSigned ? 'text-green-600' : 'text-slate-500'}`}>
-                                                    {agreement.landlordSigned ? <CheckCircle size={16} className="mr-1" /> : <Clock size={16} className="mr-1" />}
-                                                    Landlord: {agreement.landlordSigned ? `Signed ${agreement.landlordSignedAt ? formatDateTime(agreement.landlordSignedAt) : ''}` : 'Not signed'}
+                                                {/* Rental Period */}
+                                                <div className="flex items-center text-slate-600 mb-2">
+                                                    <Calendar size={16} className="mr-2" />
+                                                    <span className="text-sm">
+                                                        {formatDate(agreement.lease.startDate)} - {formatDate(agreement.lease.endDate)}
+                                                    </span>
                                                 </div>
-                                                <div className={`flex items-center text-sm ${agreement.tenantSigned ? 'text-green-600' : 'text-slate-500'}`}>
-                                                    {agreement.tenantSigned ? <CheckCircle size={16} className="mr-1" /> : <Clock size={16} className="mr-1" />}
-                                                    Tenant: {agreement.tenantSigned ? `Signed ${agreement.tenantSignedAt ? formatDateTime(agreement.tenantSignedAt) : ''}` : 'Not signed'}
-                                                </div>
-                                            </div>
 
-                                            {/* Footer */}
-                                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-auto space-y-3 sm:space-y-0">
-                                                <div className="text-sm text-slate-500">
-                                                    Created: {formatDate(agreement.generatedAt)}
-                                                    {agreement.expiresAt && (
-                                                        <span className="ml-4">Expires: {formatDate(agreement.expiresAt)}</span>
-                                                    )}
+                                                {/* Other Party Info */}
+                                                <div className="flex items-center text-slate-600 mb-4">
+                                                    <User size={16} className="mr-2" />
+                                                    <span className="text-sm">
+                                                        {userRole === 'landlord'
+                                                            ? `Tenant: ${agreement.lease.tenant.name}`
+                                                            : `Landlord: ${agreement.lease.landlord.name}`}
+                                                    </span>
                                                 </div>
-                                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
-                                                    <Link
-                                                        href={`/agreements/${agreement.leaseId}`}
-                                                        className="flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
-                                                    >
-                                                        <FileSignature size={16} />
-                                                        <span>
-                                                            {agreement.status === 'PENDING_LANDLORD' && !agreement.landlordSigned
-                                                                ? 'Sign Agreement'
-                                                                : 'View Agreement'}
-                                                        </span>
-                                                    </Link>
+
+                                                {/* Signature Status */}
+                                                <div className="flex flex-wrap gap-4 mb-4">
+                                                    <div className={`flex items-center text-sm ${agreement.landlordSigned ? 'text-green-600' : 'text-slate-500'}`}>
+                                                        {agreement.landlordSigned ? <CheckCircle size={16} className="mr-1" /> : <Clock size={16} className="mr-1" />}
+                                                        Landlord: {agreement.landlordSigned ? 'Signed' : 'Pending'}
+                                                        {userRole === 'landlord' && !agreement.landlordSigned && (
+                                                            <span className="ml-1 text-amber-600 font-medium">(You)</span>
+                                                        )}
+                                                    </div>
+                                                    <div className={`flex items-center text-sm ${agreement.tenantSigned ? 'text-green-600' : 'text-slate-500'}`}>
+                                                        {agreement.tenantSigned ? <CheckCircle size={16} className="mr-1" /> : <Clock size={16} className="mr-1" />}
+                                                        Tenant: {agreement.tenantSigned ? 'Signed' : 'Pending'}
+                                                        {userRole === 'tenant' && !agreement.tenantSigned && (
+                                                            <span className="ml-1 text-amber-600 font-medium">(You)</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                {/* Footer */}
+                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-auto space-y-3 sm:space-y-0">
+                                                    <div className="text-sm text-slate-500">
+                                                        Created: {formatDate(agreement.generatedAt)}
+                                                    </div>
+                                                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                                                        <Link
+                                                            href={`/agreements/${agreement.leaseId}`}
+                                                            className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-lg transition-colors text-sm ${actionNeeded
+                                                                    ? 'bg-amber-500 text-white hover:bg-amber-600'
+                                                                    : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                                                }`}
+                                                        >
+                                                            <FileSignature size={16} />
+                                                            <span>{actionNeeded ? 'Sign Now' : 'View Agreement'}</span>
+                                                        </Link>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            )
+                        })}
                     </div>
                 )}
             </div>
