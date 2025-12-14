@@ -270,7 +270,7 @@ class DigitalAgreementService {
             include: {
                 lease: {
                     include: {
-                        property: { select: { id: true, title: true, address: true } },
+                        property: { select: { id: true, title: true, address: true, images: true } },
                         landlord: { select: { id: true, name: true, email: true } },
                         tenant: { select: { id: true, name: true, email: true } }
                     }
@@ -289,7 +289,7 @@ class DigitalAgreementService {
                 include: {
                     lease: {
                         include: {
-                            property: { select: { id: true, title: true, address: true } },
+                            property: { select: { id: true, title: true, address: true, images: true } },
                             landlord: { select: { id: true, name: true, email: true } },
                             tenant: { select: { id: true, name: true, email: true } }
                         }
