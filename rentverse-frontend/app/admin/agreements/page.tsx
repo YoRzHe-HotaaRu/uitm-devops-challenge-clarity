@@ -441,7 +441,7 @@ export default function AdminAgreementsPage() {
                                         {/* Actions */}
                                         <div className="flex flex-wrap gap-2">
                                             <Link
-                                                href={`/agreements/${agreement.leaseId}`}
+                                                href={`/admin/agreements/${agreement.leaseId}`}
                                                 className="px-3 py-1.5 bg-indigo-600 text-white text-xs rounded-lg hover:bg-indigo-700 transition-colors"
                                             >
                                                 View Details
