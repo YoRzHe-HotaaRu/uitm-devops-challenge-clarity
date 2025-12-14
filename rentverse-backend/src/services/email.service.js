@@ -349,6 +349,165 @@ If you didn't request this code, you can safely ignore this email.
   }
 
   /**
+   * Send booking confirmation email to tenant
+   * @param {Object} options
+   */
+  async sendBookingConfirmationToTenant({ to, tenantName, propertyTitle, landlordName, startDate, endDate, rentAmount, agreementUrl }) {
+    const subject = `🎉 Booking Confirmed - ${propertyTitle}`;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><title>Booking Confirmed</title></head>
+      <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+        <div style="max-width: 520px; margin: 0 auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #10b981; margin: 0;">🎉</h1>
+            <h2 style="color: #1e293b; margin: 8px 0 0 0;">Booking Confirmed!</h2>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">Hi <strong>${tenantName}</strong>,</p>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            Great news! Your booking has been confirmed. Here are the details:
+          </p>
+          
+          <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 16px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0 0 8px 0; color: #1e293b; font-weight: 600;">🏠 ${propertyTitle}</p>
+            <p style="margin: 4px 0; color: #64748b; font-size: 14px;">📅 ${startDate} - ${endDate}</p>
+            <p style="margin: 4px 0; color: #64748b; font-size: 14px;">👤 Landlord: ${landlordName}</p>
+            <p style="margin: 8px 0 0 0; color: #10b981; font-weight: 600; font-size: 18px;">RM ${rentAmount}/month</p>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            <strong>Next Step:</strong> Please sign the rental agreement to complete the process.
+          </p>
+          
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${agreementUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600;">
+              View Agreement
+            </a>
+          </div>
+          
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
+          <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">
+            This email was sent by RentVerse. Please do not reply to this email.
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return await this.sendEmail({ to, subject, html });
+  }
+
+  /**
+   * Send new booking notification to landlord
+   * @param {Object} options
+   */
+  async sendBookingNotificationToLandlord({ to, landlordName, tenantName, tenantEmail, propertyTitle, startDate, endDate, rentAmount, agreementUrl }) {
+    const subject = `📋 New Booking Request - ${propertyTitle}`;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><title>New Booking</title></head>
+      <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+        <div style="max-width: 520px; margin: 0 auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #6366f1; margin: 0;">📋</h1>
+            <h2 style="color: #1e293b; margin: 8px 0 0 0;">New Booking Request</h2>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">Hi <strong>${landlordName}</strong>,</p>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            You have a new booking for your property:
+          </p>
+          
+          <div style="background: #f8fafc; border-left: 4px solid #6366f1; padding: 16px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0 0 8px 0; color: #1e293b; font-weight: 600;">🏠 ${propertyTitle}</p>
+            <p style="margin: 4px 0; color: #64748b; font-size: 14px;">📅 ${startDate} - ${endDate}</p>
+            <p style="margin: 4px 0; color: #64748b; font-size: 14px;">👤 Tenant: ${tenantName} (${tenantEmail})</p>
+            <p style="margin: 8px 0 0 0; color: #6366f1; font-weight: 600; font-size: 18px;">RM ${rentAmount}/month</p>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            <strong>Action Required:</strong> Please sign the rental agreement to proceed.
+          </p>
+          
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${agreementUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600;">
+              Review & Sign Agreement
+            </a>
+          </div>
+          
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
+          <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">
+            This email was sent by RentVerse. Please do not reply to this email.
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return await this.sendEmail({ to, subject, html });
+  }
+
+  /**
+   * Send agreement completed email to both parties
+   * @param {Object} options
+   */
+  async sendAgreementCompletedEmail({ to, recipientName, role, propertyTitle, otherPartyName, startDate, endDate, pdfUrl, dashboardUrl }) {
+    const subject = `✅ Rental Agreement Completed - ${propertyTitle}`;
+    const roleText = role === 'landlord' ? 'tenant' : 'landlord';
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head><meta charset="utf-8"><title>Agreement Completed</title></head>
+      <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+        <div style="max-width: 520px; margin: 0 auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #10b981; margin: 0;">✅</h1>
+            <h2 style="color: #1e293b; margin: 8px 0 0 0;">Agreement Completed!</h2>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">Hi <strong>${recipientName}</strong>,</p>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            Great news! The rental agreement has been signed by both parties and is now complete.
+          </p>
+          
+          <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 16px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0 0 8px 0; color: #1e293b; font-weight: 600;">🏠 ${propertyTitle}</p>
+            <p style="margin: 4px 0; color: #64748b; font-size: 14px;">📅 ${startDate} - ${endDate}</p>
+            <p style="margin: 4px 0; color: #64748b; font-size: 14px;">👤 ${roleText.charAt(0).toUpperCase() + roleText.slice(1)}: ${otherPartyName}</p>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            You can download the signed agreement from your dashboard.
+          </p>
+          
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${dashboardUrl}" style="display: inline-block; background: #10b981; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600;">
+              View Agreement
+            </a>
+          </div>
+          
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
+          <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">
+            This email was sent by RentVerse. Please do not reply to this email.
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return await this.sendEmail({ to, subject, html });
+  }
+
+  /**
    * Strip HTML tags for plain text fallback
    * @param {string} html - HTML content
    * @returns {string} Plain text

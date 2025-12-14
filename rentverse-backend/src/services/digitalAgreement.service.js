@@ -216,6 +216,62 @@ class DigitalAgreementService {
         });
         await this.logAuditAction(agreementId, 'COMPLETED', userId, ipAddress);
 
+        // 📧 Send agreement completed emails to both parties
+        try {
+            const emailService = require('./email.service');
+            const frontendUrl = process.env.FRONTEND_URL || 'https://rentverse-frontend-nine.vercel.app';
+            const dashboardUrl = `${frontendUrl}/my-agreements`;
+
+            const formatDate = (date) => new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            // Get full lease details for email
+            const leaseDetails = await prisma.lease.findUnique({
+                where: { id: agreement.leaseId },
+                include: {
+                    property: { select: { title: true } },
+                    landlord: { select: { email: true, name: true, firstName: true } },
+                    tenant: { select: { email: true, name: true, firstName: true } }
+                }
+            });
+
+            if (leaseDetails) {
+                const propertyTitle = leaseDetails.property.title;
+                const landlordName = leaseDetails.landlord.name || leaseDetails.landlord.firstName || 'Landlord';
+                const tenantName = leaseDetails.tenant.name || leaseDetails.tenant.firstName || 'Tenant';
+                const startDate = formatDate(leaseDetails.startDate);
+                const endDate = formatDate(leaseDetails.endDate);
+
+                // Email to landlord
+                await emailService.sendAgreementCompletedEmail({
+                    to: leaseDetails.landlord.email,
+                    recipientName: landlordName,
+                    role: 'landlord',
+                    propertyTitle: propertyTitle,
+                    otherPartyName: tenantName,
+                    startDate: startDate,
+                    endDate: endDate,
+                    dashboardUrl: dashboardUrl,
+                });
+
+                // Email to tenant
+                await emailService.sendAgreementCompletedEmail({
+                    to: leaseDetails.tenant.email,
+                    recipientName: tenantName,
+                    role: 'tenant',
+                    propertyTitle: propertyTitle,
+                    otherPartyName: landlordName,
+                    startDate: startDate,
+                    endDate: endDate,
+                    dashboardUrl: dashboardUrl,
+                });
+
+                console.log('📧 Agreement completed emails sent to both parties');
+            }
+        } catch (emailError) {
+            console.error('❌ Error sending agreement completed emails:', emailError.message);
+            // Don't fail the signing if email fails
+        }
+
         return updated;
     }
 
