@@ -41,7 +41,8 @@ class PDFGenerationService {
         .replace(/[-T:.Z]/g, '')
         .slice(0, 14);
       const shortId = uuidv4().split('-')[0];
-      const publicId = `${CLOUD_FOLDER_PREFIX}/rental-agreements/${fileName}-${fileTimestamp}-${shortId}`;
+      // Add .pdf extension to public_id for proper download format
+      const publicId = `${CLOUD_FOLDER_PREFIX}/rental-agreements/${fileName}-${fileTimestamp}-${shortId}.pdf`;
 
       // Use unsigned upload with upload preset (simpler, no signature issues)
       const uploadOptions = {
