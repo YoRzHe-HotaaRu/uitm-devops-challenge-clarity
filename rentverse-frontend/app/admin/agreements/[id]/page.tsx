@@ -21,7 +21,10 @@ import {
     Download,
     Send,
     Mail,
-    Phone
+    Phone,
+    RefreshCw,
+    X,
+    XCircle
 } from 'lucide-react'
 
 interface Agreement {
@@ -71,6 +74,16 @@ export default function AdminAgreementDetailsPage() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [agreement, setAgreement] = useState<Agreement | null>(null)
+    const [isRegenerating, setIsRegenerating] = useState(false)
+    const [toast, setToast] = useState<{ show: boolean; type: 'success' | 'error'; message: string }>({ show: false, type: 'success', message: '' })
+
+    // Auto-hide toast after 4 seconds
+    useEffect(() => {
+        if (toast.show) {
+            const timer = setTimeout(() => setToast({ ...toast, show: false }), 4000)
+            return () => clearTimeout(timer)
+        }
+    }, [toast.show])
 
     useEffect(() => {
         const checkAccess = async () => {
@@ -188,6 +201,31 @@ export default function AdminAgreementDetailsPage() {
 
     return (
         <ContentWrapper>
+            {/* Toast Notification */}
+            {toast.show && (
+                <div className="fixed top-4 right-4 z-50 animate-[slideIn_0.3s_ease-out]">
+                    <div className={`flex items-center gap-3 px-5 py-4 rounded-xl shadow-lg border backdrop-blur-sm ${toast.type === 'success'
+                            ? 'bg-emerald-50/95 border-emerald-200 text-emerald-800'
+                            : 'bg-red-50/95 border-red-200 text-red-800'
+                        }`}>
+                        <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${toast.type === 'success' ? 'bg-emerald-100' : 'bg-red-100'
+                            }`}>
+                            {toast.type === 'success' ? (
+                                <CheckCircle size={18} className="text-emerald-600" />
+                            ) : (
+                                <XCircle size={18} className="text-red-600" />
+                            )}
+                        </div>
+                        <span className="font-medium">{toast.message}</span>
+                        <button
+                            onClick={() => setToast({ ...toast, show: false })}
+                            className="ml-2 p-1 hover:bg-black/5 rounded-full transition-colors"
+                        >
+                            <X size={16} />
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
@@ -367,6 +405,36 @@ export default function AdminAgreementDetailsPage() {
                                         Download PDF
                                     </button>
                                 )}
+                                {/* Regenerate PDF button - always available for admin */}
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            setIsRegenerating(true)
+                                            const token = localStorage.getItem('authToken')
+                                            const res = await fetch(createApiUrl(`admin/agreements/${params.id}/regenerate-pdf`), {
+                                                method: 'POST',
+                                                headers: { Authorization: `Bearer ${token}` }
+                                            })
+                                            const data = await res.json()
+                                            if (data.success) {
+                                                setToast({ show: true, type: 'success', message: '✅ PDF regenerated successfully!' })
+                                                // Update the agreement with new PDF URL
+                                                setAgreement(prev => prev ? { ...prev, pdfUrl: data.data.pdfUrl } : null)
+                                            } else {
+                                                setToast({ show: true, type: 'error', message: data.message || 'Failed to regenerate PDF' })
+                                            }
+                                        } catch (err) {
+                                            setToast({ show: true, type: 'error', message: 'Failed to regenerate PDF' })
+                                        } finally {
+                                            setIsRegenerating(false)
+                                        }
+                                    }}
+                                    disabled={isRegenerating}
+                                    className="w-full px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 flex items-center justify-center gap-2 disabled:opacity-50"
+                                >
+                                    {isRegenerating ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+                                    {isRegenerating ? 'Regenerating...' : 'Regenerate PDF'}
+                                </button>
                                 {(agreement.status === 'PENDING_LANDLORD' || agreement.status === 'PENDING_TENANT') && (
                                     <button className="w-full px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 flex items-center justify-center gap-2">
                                         <Send size={16} />

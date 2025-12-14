@@ -547,33 +547,47 @@ class PDFGenerationService {
         console.log(`📝 Using ${fileExtension.toUpperCase()} placeholder`);
       }
 
-      // 6. Save PDF locally with Cloudinary as backup
-      console.log('💾 Saving PDF locally...');
+      // 6. Save PDF to Cloudinary (persistent storage) with local as fallback
+      console.log('💾 Saving PDF to Cloudinary (persistent storage)...');
       const fileName = `rental-agreement-${lease.id}`;
 
       let uploadResult;
-      try {
-        // Primary: Save to local storage
-        uploadResult = await this.saveToLocalStorage(pdfBuffer, fileName, fileExtension);
-        console.log('✅ PDF saved to local storage successfully!');
-      } catch (localStorageError) {
-        console.warn(
-          '⚠️  Local storage failed, trying Cloudinary backup...',
-          localStorageError.message
-        );
 
+      // Check if Cloudinary is configured
+      if (isCloudinaryConfigured()) {
         try {
-          // Backup: Upload to Cloudinary with signed method
+          // Primary: Upload to Cloudinary (persistent storage - survives server restarts)
           uploadResult = await this.uploadPDFToCloudinary(pdfBuffer, fileName);
-          console.log('✅ PDF uploaded to Cloudinary successfully as backup!');
+          console.log('✅ PDF uploaded to Cloudinary successfully!');
         } catch (cloudinaryError) {
-          console.error('❌ Both local storage and Cloudinary failed:', {
-            localError: localStorageError.message,
-            cloudinaryError: cloudinaryError.message,
-          });
-          throw new Error(
-            `Failed to save PDF: Local storage failed (${localStorageError.message}), Cloudinary backup also failed (${cloudinaryError.message})`
+          console.warn(
+            '⚠️  Cloudinary upload failed, trying local storage backup...',
+            cloudinaryError.message
           );
+
+          try {
+            // Fallback: Save to local storage
+            uploadResult = await this.saveToLocalStorage(pdfBuffer, fileName, fileExtension);
+            console.log('✅ PDF saved to local storage as backup!');
+          } catch (localStorageError) {
+            console.error('❌ Both Cloudinary and local storage failed:', {
+              cloudinaryError: cloudinaryError.message,
+              localError: localStorageError.message,
+            });
+            throw new Error(
+              `Failed to save PDF: Cloudinary failed (${cloudinaryError.message}), local backup also failed (${localStorageError.message})`
+            );
+          }
+        }
+      } else {
+        // Cloudinary not configured - use local storage (dev environment)
+        console.log('⚠️ Cloudinary not configured, using local storage (files may be lost on restart)');
+        try {
+          uploadResult = await this.saveToLocalStorage(pdfBuffer, fileName, fileExtension);
+          console.log('✅ PDF saved to local storage!');
+        } catch (localStorageError) {
+          console.error('❌ Local storage failed:', localStorageError.message);
+          throw new Error(`Failed to save PDF to local storage: ${localStorageError.message}`);
         }
       }
 
