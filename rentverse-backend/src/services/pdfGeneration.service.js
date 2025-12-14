@@ -43,31 +43,14 @@ class PDFGenerationService {
       const shortId = uuidv4().split('-')[0];
       const publicId = `${CLOUD_FOLDER_PREFIX}/rental-agreements/${fileName}-${fileTimestamp}-${shortId}`;
 
-      // Generate signature for signed upload
+      // Generate signature timestamp
       const signatureTimestamp = Math.round(new Date().getTime() / 1000);
-      const uploadParams = {
-        public_id: publicId,
-        resource_type: 'raw',
-        format: 'pdf',
-        use_filename: false,
-        unique_filename: false,
-        overwrite: true,
-        type: 'upload', // Public upload type
-        access_mode: 'public', // Make publicly accessible
-        timestamp: signatureTimestamp,
-      };
 
-      // Generate signature using Cloudinary's method (fixed order and format)
+      // For signed upload, only include parameters that affect the signature
+      // Note: resource_type is NOT included in signature calculation
       const paramsToSign = {
         public_id: publicId,
-        resource_type: 'raw',
         timestamp: signatureTimestamp,
-        format: 'pdf',
-        overwrite: true,
-        use_filename: false,
-        unique_filename: false,
-        type: 'upload',
-        access_mode: 'public',
       };
 
       const signature = cloudinary.utils.api_sign_request(
@@ -75,9 +58,13 @@ class PDFGenerationService {
         process.env.CLOUD_API_SECRET
       );
 
-      // Add signature and API key to params
-      const signedParams = {
-        ...uploadParams,
+      // Upload options (includes all parameters for the actual upload)
+      const uploadOptions = {
+        public_id: publicId,
+        resource_type: 'raw',
+        format: 'pdf',
+        overwrite: true,
+        timestamp: signatureTimestamp,
         signature: signature,
         api_key: process.env.CLOUD_API_KEY,
       };
@@ -85,7 +72,7 @@ class PDFGenerationService {
       console.log('🔐 Using signed upload for PDF to Cloudinary...');
 
       const uploadStream = cloudinary.uploader.upload_stream(
-        signedParams,
+        uploadOptions,
         (error, result) => {
           if (error) {
             console.error('Cloudinary signed PDF upload error:', error);
