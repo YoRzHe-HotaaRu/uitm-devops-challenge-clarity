@@ -22,7 +22,7 @@ const { v4: uuidv4 } = require('uuid');
 
 class PDFGenerationService {
   /**
-   * Upload PDF buffer to Cloudinary using signed upload
+   * Upload PDF buffer to Cloudinary using unsigned upload preset
    * @param {Buffer} pdfBuffer
    * @param {string} fileName
    * @returns {Promise<Object>}
@@ -43,33 +43,14 @@ class PDFGenerationService {
       const shortId = uuidv4().split('-')[0];
       const publicId = `${CLOUD_FOLDER_PREFIX}/rental-agreements/${fileName}-${fileTimestamp}-${shortId}`;
 
-      // Generate signature timestamp
-      const signatureTimestamp = Math.round(new Date().getTime() / 1000);
-
-      // For signed upload, only include parameters that affect the signature
-      // Note: resource_type is NOT included in signature calculation
-      const paramsToSign = {
-        public_id: publicId,
-        timestamp: signatureTimestamp,
-      };
-
-      const signature = cloudinary.utils.api_sign_request(
-        paramsToSign,
-        process.env.CLOUD_API_SECRET
-      );
-
-      // Upload options (includes all parameters for the actual upload)
+      // Use unsigned upload with upload preset (simpler, no signature issues)
       const uploadOptions = {
         public_id: publicId,
         resource_type: 'raw',
-        format: 'pdf',
-        overwrite: true,
-        timestamp: signatureTimestamp,
-        signature: signature,
-        api_key: process.env.CLOUD_API_KEY,
+        upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET || 'rentverse_unsigned',
       };
 
-      console.log('🔐 Using signed upload for PDF to Cloudinary...');
+      console.log('📤 Uploading PDF to Cloudinary (unsigned preset)...');
 
       const uploadStream = cloudinary.uploader.upload_stream(
         uploadOptions,
