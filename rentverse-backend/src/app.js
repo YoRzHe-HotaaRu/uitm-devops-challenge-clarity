@@ -147,8 +147,8 @@ app.use((req, res, next) => {
 });
 
 app.use(morgan('combined'));
-app.use(express.json({ limit: '10kb' })); // Limit body size
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: '5mb' })); // Increased limit for Base64 signature images
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 // Security Middleware (OWASP M5-M6)
 const { globalLimiter } = require('./middleware/rateLimit');
