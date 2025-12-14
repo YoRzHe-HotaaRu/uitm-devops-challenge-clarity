@@ -42,8 +42,6 @@ router.get('/statistics', async (req, res) => {
             submittedToday,
             propertiesByType,
             propertiesByCity,
-            mostViewed,
-            mostFavorited,
         ] = await Promise.all([
             prisma.property.count(),
             prisma.property.count({ where: { isAvailable: true, status: 'APPROVED' } }),
@@ -64,16 +62,6 @@ router.get('/statistics', async (req, res) => {
                 _count: true,
                 orderBy: { _count: { city: 'desc' } },
                 take: 5,
-            }),
-            prisma.property.findMany({
-                orderBy: { viewCount: 'desc' },
-                take: 5,
-                select: { id: true, title: true, viewCount: true, city: true },
-            }),
-            prisma.property.findMany({
-                orderBy: { favoriteCount: 'desc' },
-                take: 5,
-                select: { id: true, title: true, favoriteCount: true, city: true },
             }),
         ]);
 
@@ -105,8 +93,6 @@ router.get('/statistics', async (req, res) => {
                     city: c.city,
                     count: c._count,
                 })),
-                topViewed: mostViewed,
-                topFavorited: mostFavorited,
             },
         });
     } catch (error) {
