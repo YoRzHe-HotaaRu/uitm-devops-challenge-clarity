@@ -109,6 +109,7 @@ function AdminPage() {
   const [isTogglingAutoReview, setIsTogglingAutoReview] = useState(false)
   const [approvingProperties, setApprovingProperties] = useState<Set<string>>(new Set())
   const [rejectingProperties, setRejectingProperties] = useState<Set<string>>(new Set())
+  const [propertyStats, setPropertyStats] = useState<{ pendingApproval: number; submittedToday: number } | null>(null)
   const { isLoggedIn } = useAuthStore()
 
   // Check if user is admin
@@ -229,6 +230,36 @@ function AdminPage() {
     }
 
     fetchAutoReviewStatus()
+  }, [user])
+
+  // Fetch property statistics
+  useEffect(() => {
+    const fetchPropertyStats = async () => {
+      if (!user || user.role !== 'ADMIN') return
+      try {
+        const token = localStorage.getItem('authToken')
+        if (!token) return
+        const response = await fetch(createApiUrl('admin/properties/statistics'), {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success && data.data.summary) {
+            setPropertyStats({
+              pendingApproval: data.data.summary.pendingApproval,
+              submittedToday: data.data.summary.submittedToday,
+            })
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching property statistics:', err)
+      }
+    }
+    fetchPropertyStats()
   }, [user])
 
   const formatPrice = (price: string, currency: string) => {
@@ -473,7 +504,7 @@ function AdminPage() {
                 <div>
                   <p className="text-sm font-medium text-slate-600">Total Pending</p>
                   <p className="text-3xl font-bold text-slate-900 mt-1">
-                    {pendingApprovals.length}
+                    {propertyStats?.pendingApproval ?? pendingApprovals.length}
                   </p>
                 </div>
                 <div className="p-3 bg-yellow-100 rounded-lg">
@@ -503,11 +534,7 @@ function AdminPage() {
                 <div>
                   <p className="text-sm font-medium text-slate-600">Submitted Today</p>
                   <p className="text-3xl font-bold text-slate-900 mt-1">
-                    {pendingApprovals.filter(approval => {
-                      const today = new Date().toDateString()
-                      const submittedDate = new Date(approval.createdAt).toDateString()
-                      return today === submittedDate
-                    }).length}
+                    {propertyStats?.submittedToday ?? 0}
                   </p>
                 </div>
                 <div className="p-3 bg-teal-100 rounded-lg">

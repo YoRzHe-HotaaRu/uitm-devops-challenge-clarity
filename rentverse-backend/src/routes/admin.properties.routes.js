@@ -26,6 +26,10 @@ router.get('/statistics', async (req, res) => {
         const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         const last30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
+        // Calculate start of today (midnight)
+        const startOfToday = new Date(now);
+        startOfToday.setHours(0, 0, 0, 0);
+
         // Get counts - using correct model and enum values
         const [
             totalProperties,
@@ -35,6 +39,7 @@ router.get('/statistics', async (req, res) => {
             rejectedProperties,
             createdLast7d,
             createdLast30d,
+            submittedToday,
             propertiesByType,
             propertiesByCity,
             mostViewed,
@@ -48,6 +53,8 @@ router.get('/statistics', async (req, res) => {
             prisma.property.count({ where: { status: 'REJECTED' } }),
             prisma.property.count({ where: { createdAt: { gte: last7d } } }),
             prisma.property.count({ where: { createdAt: { gte: last30d } } }),
+            // Count properties submitted today (all statuses)
+            prisma.property.count({ where: { createdAt: { gte: startOfToday } } }),
             prisma.property.groupBy({
                 by: ['propertyTypeId'],
                 _count: true,
@@ -85,6 +92,7 @@ router.get('/statistics', async (req, res) => {
                     rejectedProperties,
                     createdLast7d,
                     createdLast30d,
+                    submittedToday,
                     approvalRate: totalProperties > 0
                         ? Math.round((approvedProperties / totalProperties) * 100)
                         : 0,
