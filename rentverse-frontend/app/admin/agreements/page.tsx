@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ContentWrapper from '@/components/ContentWrapper'
@@ -80,12 +80,14 @@ export default function AdminAgreementsPage() {
     const router = useRouter()
     const { isLoggedIn, user } = useAuthStore()
     const [isLoading, setIsLoading] = useState(true)
+    const [isRefetching, setIsRefetching] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [statistics, setStatistics] = useState<Statistics | null>(null)
     const [trends, setTrends] = useState<DailyTrend[]>([])
     const [agreements, setAgreements] = useState<Agreement[]>([])
     const [statusFilter, setStatusFilter] = useState('all')
     const [searchQuery, setSearchQuery] = useState('')
+    const [debouncedSearch, setDebouncedSearch] = useState('')
     const [sendingReminder, setSendingReminder] = useState<string | null>(null)
 
     // Check admin access
@@ -115,17 +117,30 @@ export default function AdminAgreementsPage() {
         checkAccess()
     }, [router])
 
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery)
+        }, 500)
+        return () => clearTimeout(timer)
+    }, [searchQuery])
+
     // Fetch data
+    const isInitialLoad = useRef(true)
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setIsLoading(true)
+                if (isInitialLoad.current) {
+                    setIsLoading(true)
+                } else {
+                    setIsRefetching(true)
+                }
                 const token = localStorage.getItem('authToken')
                 const headers = { Authorization: `Bearer ${token}` }
 
                 const [statsRes, agreementsRes] = await Promise.all([
                     fetch(createApiUrl('admin/agreements/statistics'), { headers }),
-                    fetch(createApiUrl(`admin/agreements?status=${statusFilter}&search=${searchQuery}&limit=50`), { headers }),
+                    fetch(createApiUrl(`admin/agreements?status=${statusFilter}&search=${debouncedSearch}&limit=50`), { headers }),
                 ])
 
                 const statsData = await statsRes.json()
@@ -144,11 +159,13 @@ export default function AdminAgreementsPage() {
                 setError('Failed to load agreements data')
             } finally {
                 setIsLoading(false)
+                setIsRefetching(false)
+                isInitialLoad.current = false
             }
         }
 
         fetchData()
-    }, [statusFilter, searchQuery])
+    }, [statusFilter, debouncedSearch])
 
     const handleSendReminder = async (agreementId: string) => {
         try {
@@ -337,8 +354,8 @@ export default function AdminAgreementsPage() {
                                 key={status}
                                 onClick={() => setStatusFilter(status)}
                                 className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${statusFilter === status
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                                    ? 'bg-indigo-600 text-white'
+                                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                                     }`}
                             >
                                 {status === 'all' ? 'All' : getStatusLabel(status)}

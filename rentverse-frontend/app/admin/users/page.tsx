@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ContentWrapper from '@/components/ContentWrapper'
@@ -56,10 +56,12 @@ interface Statistics {
 export default function AdminUsersPage() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(true)
+    const [isRefetching, setIsRefetching] = useState(false)
     const [statistics, setStatistics] = useState<Statistics | null>(null)
     const [users, setUsers] = useState<User[]>([])
     const [roleFilter, setRoleFilter] = useState('all')
     const [searchQuery, setSearchQuery] = useState('')
+    const [debouncedSearch, setDebouncedSearch] = useState('')
     const [actionInProgress, setActionInProgress] = useState<string | null>(null)
 
     // Check admin access
@@ -88,17 +90,30 @@ export default function AdminUsersPage() {
         checkAccess()
     }, [router])
 
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery)
+        }, 500)
+        return () => clearTimeout(timer)
+    }, [searchQuery])
+
     // Fetch data
+    const isInitialLoad = useRef(true)
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setIsLoading(true)
+                if (isInitialLoad.current) {
+                    setIsLoading(true)
+                } else {
+                    setIsRefetching(true)
+                }
                 const token = localStorage.getItem('authToken')
                 const headers = { Authorization: `Bearer ${token}` }
 
                 const [statsRes, usersRes] = await Promise.all([
                     fetch(createApiUrl('admin/users/statistics'), { headers }),
-                    fetch(createApiUrl(`admin/users?role=${roleFilter}&search=${searchQuery}&limit=50`), { headers }),
+                    fetch(createApiUrl(`admin/users?role=${roleFilter}&search=${debouncedSearch}&limit=50`), { headers }),
                 ])
 
                 const statsData = await statsRes.json()
@@ -115,11 +130,13 @@ export default function AdminUsersPage() {
                 console.error('Failed to fetch data:', err)
             } finally {
                 setIsLoading(false)
+                setIsRefetching(false)
+                isInitialLoad.current = false
             }
         }
 
         fetchData()
-    }, [roleFilter, searchQuery])
+    }, [roleFilter, debouncedSearch])
 
     const handleToggleStatus = async (userId: string) => {
         try {
@@ -297,8 +314,8 @@ export default function AdminUsersPage() {
                                 key={role}
                                 onClick={() => setRoleFilter(role)}
                                 className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${roleFilter === role
-                                        ? 'bg-purple-600 text-white'
-                                        : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                                    ? 'bg-purple-600 text-white'
+                                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                                     }`}
                             >
                                 {role === 'all' ? 'All' : role}
@@ -373,8 +390,8 @@ export default function AdminUsersPage() {
                                                 onClick={() => handleToggleStatus(user.id)}
                                                 disabled={actionInProgress === user.id}
                                                 className={`px-3 py-1.5 text-xs rounded-lg transition-colors flex items-center gap-1 ${user.isActive
-                                                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                                                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                                                    : 'bg-green-100 text-green-700 hover:bg-green-200'
                                                     }`}
                                             >
                                                 {actionInProgress === user.id ? (

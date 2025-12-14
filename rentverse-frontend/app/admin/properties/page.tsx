@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import ContentWrapper from '@/components/ContentWrapper'
@@ -65,10 +65,12 @@ interface Statistics {
 export default function AdminPropertiesPage() {
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(true)
+    const [isRefetching, setIsRefetching] = useState(false)
     const [statistics, setStatistics] = useState<Statistics | null>(null)
     const [properties, setProperties] = useState<Property[]>([])
     const [statusFilter, setStatusFilter] = useState('all')
     const [searchQuery, setSearchQuery] = useState('')
+    const [debouncedSearch, setDebouncedSearch] = useState('')
     const [togglingId, setTogglingId] = useState<string | null>(null)
 
     // Check admin access
@@ -97,17 +99,32 @@ export default function AdminPropertiesPage() {
         checkAccess()
     }, [router])
 
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery)
+        }, 500)
+        return () => clearTimeout(timer)
+    }, [searchQuery])
+
     // Fetch data
+    const isInitialLoad = useRef(true)
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setIsLoading(true)
+                // Only show full loading on initial load
+                if (isInitialLoad.current) {
+                    setIsLoading(true)
+                } else {
+                    setIsRefetching(true)
+                }
+
                 const token = localStorage.getItem('authToken')
                 const headers = { Authorization: `Bearer ${token}` }
 
                 const [statsRes, propertiesRes] = await Promise.all([
                     fetch(createApiUrl('admin/properties/statistics'), { headers }),
-                    fetch(createApiUrl(`admin/properties?status=${statusFilter}&search=${searchQuery}&limit=50`), { headers }),
+                    fetch(createApiUrl(`admin/properties?status=${statusFilter}&search=${debouncedSearch}&limit=50`), { headers }),
                 ])
 
                 const statsData = await statsRes.json()
@@ -124,11 +141,13 @@ export default function AdminPropertiesPage() {
                 console.error('Failed to fetch data:', err)
             } finally {
                 setIsLoading(false)
+                setIsRefetching(false)
+                isInitialLoad.current = false
             }
         }
 
         fetchData()
-    }, [statusFilter, searchQuery])
+    }, [statusFilter, debouncedSearch])
 
     const handleToggleAvailability = async (propertyId: string) => {
         try {
@@ -271,8 +290,8 @@ export default function AdminPropertiesPage() {
                                 key={status}
                                 onClick={() => setStatusFilter(status)}
                                 className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg whitespace-nowrap transition-colors ${statusFilter === status
-                                        ? 'bg-teal-600 text-white'
-                                        : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                                    ? 'bg-teal-600 text-white'
+                                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                                     }`}
                             >
                                 {status === 'all' ? 'All' : status}
@@ -352,8 +371,8 @@ export default function AdminPropertiesPage() {
                                                     onClick={() => handleToggleAvailability(property.id)}
                                                     disabled={togglingId === property.id}
                                                     className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-colors ${property.isAvailable
-                                                            ? 'bg-green-100 text-green-700'
-                                                            : 'bg-red-100 text-red-700'
+                                                        ? 'bg-green-100 text-green-700'
+                                                        : 'bg-red-100 text-red-700'
                                                         }`}
                                                 >
                                                     {togglingId === property.id ? (
