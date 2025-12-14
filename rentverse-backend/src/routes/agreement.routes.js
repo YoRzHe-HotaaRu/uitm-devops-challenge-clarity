@@ -28,6 +28,72 @@ async function findAgreementByIdOrLeaseId(idOrLeaseId, include = {}) {
 }
 
 /**
+ * @route GET /api/agreements/my-agreements
+ * @desc Get all agreements for the authenticated user (as landlord or tenant)
+ * @access Private
+ */
+router.get('/my-agreements', auth, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // Fetch agreements where user is landlord or tenant
+        const agreements = await prisma.rentalAgreement.findMany({
+            where: {
+                lease: {
+                    OR: [
+                        { landlordId: userId },
+                        { tenantId: userId }
+                    ]
+                }
+            },
+            include: {
+                lease: {
+                    include: {
+                        property: {
+                            select: {
+                                id: true,
+                                title: true,
+                                address: true,
+                                city: true,
+                                images: true
+                            }
+                        },
+                        landlord: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true
+                            }
+                        },
+                        tenant: {
+                            select: {
+                                id: true,
+                                name: true,
+                                email: true
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        res.json({
+            success: true,
+            data: agreements
+        });
+    } catch (error) {
+        console.error('Error fetching user agreements:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch agreements'
+        });
+    }
+});
+
+/**
  * @route GET /api/agreements/:id
  * @desc Get agreement details with access control
  * @access Private (Landlord/Tenant only)
