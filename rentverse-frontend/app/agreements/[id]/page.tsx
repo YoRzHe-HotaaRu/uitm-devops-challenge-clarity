@@ -20,7 +20,8 @@ import {
   Clock,
   AlertTriangle,
   Download,
-  FileText
+  FileText,
+  XCircle
 } from 'lucide-react';
 
 interface Agreement {
@@ -77,6 +78,9 @@ export default function AgreementSigningPage() {
   const [confirmed, setConfirmed] = useState(false);
   const [signing, setSigning] = useState(false);
   const [signSuccess, setSignSuccess] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelReason, setCancelReason] = useState('');
 
   const agreementId = params?.id as string;
 
@@ -161,6 +165,46 @@ export default function AgreementSigningPage() {
       setError(err instanceof Error ? err.message : 'Failed to sign');
     } finally {
       setSigning(false);
+    }
+  };
+
+  // Handle agreement cancellation
+  const handleCancel = async () => {
+    if (!agreementData) return;
+
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      setError('Authentication token not found');
+      return;
+    }
+
+    try {
+      setCancelling(true);
+      const response = await fetch(createApiUrl(`agreements/${agreementId}/cancel`), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reason: cancelReason || 'Cancelled by landlord',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to cancel agreement');
+      }
+
+      // Refresh agreement data
+      await fetchAgreement();
+      setShowCancelModal(false);
+      setCancelReason('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to cancel agreement');
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -345,8 +389,8 @@ export default function AgreementSigningPage() {
               <div className="space-y-4">
                 {/* Landlord */}
                 <div className={`flex items-center justify-between p-4 rounded-xl border-2 transition-colors ${agreement.landlordSigned
-                    ? 'border-green-200 bg-green-50'
-                    : 'border-slate-200 bg-slate-50'
+                  ? 'border-green-200 bg-green-50'
+                  : 'border-slate-200 bg-slate-50'
                   }`}>
                   <div className="flex items-center space-x-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${agreement.landlordSigned ? 'bg-green-600' : 'bg-indigo-600'
@@ -381,8 +425,8 @@ export default function AgreementSigningPage() {
 
                 {/* Tenant */}
                 <div className={`flex items-center justify-between p-4 rounded-xl border-2 transition-colors ${agreement.tenantSigned
-                    ? 'border-green-200 bg-green-50'
-                    : 'border-slate-200 bg-slate-50'
+                  ? 'border-green-200 bg-green-50'
+                  : 'border-slate-200 bg-slate-50'
                   }`}>
                   <div className="flex items-center space-x-4">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${agreement.tenantSigned ? 'bg-green-600' : 'bg-teal-600'
@@ -526,9 +570,105 @@ export default function AgreementSigningPage() {
                 </div>
               </div>
             )}
+
+            {/* Cancel Agreement Button - Only for landlords, not completed/cancelled */}
+            {userRole === 'landlord' && agreement.status !== 'COMPLETED' && agreement.status !== 'CANCELLED' && (
+              <div className="border-t border-slate-100 pt-6">
+                <div className="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-xl">
+                  <div>
+                    <h4 className="font-semibold text-red-800">Cancel Agreement</h4>
+                    <p className="text-sm text-red-600">This action cannot be undone. The agreement will be permanently cancelled.</p>
+                  </div>
+                  <button
+                    onClick={() => setShowCancelModal(true)}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors flex items-center space-x-2"
+                  >
+                    <XCircle size={18} />
+                    <span>Cancel Agreement</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Cancelled Status Display */}
+            {agreement.status === 'CANCELLED' && (
+              <div className="border-t border-slate-100 pt-6">
+                <div className="bg-gray-50 rounded-2xl p-8 text-center">
+                  <div className="w-16 h-16 mx-auto bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                    <XCircle size={32} className="text-gray-600" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Agreement Cancelled</h3>
+                  <p className="text-gray-600">
+                    This agreement has been cancelled and is no longer valid.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Cancel Confirmation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto bg-red-100 rounded-full flex items-center justify-center">
+                <XCircle size={32} className="text-red-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900">
+                Cancel Agreement?
+              </h3>
+              <p className="text-slate-600 leading-relaxed">
+                Are you sure you want to cancel this agreement? This action cannot be undone and the agreement will be permanently marked as cancelled.
+              </p>
+
+              <div className="text-left">
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Reason for cancellation (optional)
+                </label>
+                <textarea
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  placeholder="Enter reason for cancellation..."
+                  rows={3}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl bg-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <button
+                  onClick={() => {
+                    setShowCancelModal(false);
+                    setCancelReason('');
+                  }}
+                  disabled={cancelling}
+                  className="flex-1 px-4 py-3 bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 text-slate-700 font-medium rounded-xl transition-colors"
+                >
+                  Keep Agreement
+                </button>
+                <button
+                  onClick={handleCancel}
+                  disabled={cancelling}
+                  className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-colors flex items-center justify-center space-x-2"
+                >
+                  {cancelling ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Cancelling...</span>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle size={18} />
+                      <span>Cancel Agreement</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </ContentWrapper>
   );
 }
