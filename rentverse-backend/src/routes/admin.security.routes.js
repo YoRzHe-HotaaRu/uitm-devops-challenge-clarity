@@ -72,18 +72,23 @@ router.get('/statistics', async (req, res) => {
             },
         });
 
-        // Get 7-day trend data
+        // Get 7-day trend data (including today)
         const dailyStats = [];
         for (let i = 6; i >= 0; i--) {
-            const dayStart = new Date(now.getTime() - (i + 1) * 24 * 60 * 60 * 1000);
-            const dayEnd = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+            // Create date boundaries for each day
+            const dayStart = new Date(now);
+            dayStart.setHours(0, 0, 0, 0);
+            dayStart.setDate(dayStart.getDate() - i);
+
+            const dayEnd = new Date(dayStart);
+            dayEnd.setHours(23, 59, 59, 999);
 
             const [total, failed] = await Promise.all([
                 prisma.loginHistory.count({
-                    where: { createdAt: { gte: dayStart, lt: dayEnd } },
+                    where: { createdAt: { gte: dayStart, lte: dayEnd } },
                 }),
                 prisma.loginHistory.count({
-                    where: { createdAt: { gte: dayStart, lt: dayEnd }, success: false },
+                    where: { createdAt: { gte: dayStart, lte: dayEnd }, success: false },
                 }),
             ]);
 
