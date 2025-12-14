@@ -26,7 +26,7 @@ router.get('/statistics', async (req, res) => {
         const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
         const last30d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-        // Get counts
+        // Get counts - using correct model and enum values
         const [
             totalProperties,
             activeProperties,
@@ -42,7 +42,8 @@ router.get('/statistics', async (req, res) => {
         ] = await Promise.all([
             prisma.property.count(),
             prisma.property.count({ where: { isAvailable: true, status: 'APPROVED' } }),
-            prisma.propertyApproval.count({ where: { status: 'PENDING' } }),
+            // Count properties with PENDING_REVIEW status (not PropertyApproval model)
+            prisma.property.count({ where: { status: 'PENDING_REVIEW' } }),
             prisma.property.count({ where: { status: 'APPROVED' } }),
             prisma.property.count({ where: { status: 'REJECTED' } }),
             prisma.property.count({ where: { createdAt: { gte: last7d } } }),

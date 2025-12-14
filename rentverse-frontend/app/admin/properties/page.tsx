@@ -176,7 +176,7 @@ export default function AdminPropertiesPage() {
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'APPROVED': return 'bg-green-100 text-green-700'
-            case 'PENDING': return 'bg-amber-100 text-amber-700'
+            case 'PENDING_REVIEW': return 'bg-amber-100 text-amber-700'
             case 'REJECTED': return 'bg-red-100 text-red-700'
             default: return 'bg-slate-100 text-slate-700'
         }
@@ -285,7 +285,7 @@ export default function AdminPropertiesPage() {
                         />
                     </div>
                     <div className="flex gap-2 overflow-x-auto">
-                        {['all', 'APPROVED', 'PENDING', 'REJECTED'].map((status) => (
+                        {['all', 'APPROVED', 'PENDING_REVIEW', 'REJECTED'].map((status) => (
                             <button
                                 key={status}
                                 onClick={() => setStatusFilter(status)}
@@ -294,7 +294,7 @@ export default function AdminPropertiesPage() {
                                     : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                                     }`}
                             >
-                                {status === 'all' ? 'All' : status}
+                                {status === 'all' ? 'All' : status === 'PENDING_REVIEW' ? 'Pending' : status}
                             </button>
                         ))}
                     </div>
@@ -324,7 +324,7 @@ export default function AdminPropertiesPage() {
                                                 className="object-cover"
                                             />
                                             <span className={`absolute top-2 left-2 px-2 py-1 rounded-full text-[10px] sm:text-xs font-medium ${getStatusColor(property.status)}`}>
-                                                {property.status}
+                                                {property.status === 'PENDING_REVIEW' ? 'Pending' : property.status}
                                             </span>
                                         </div>
                                     </div>
