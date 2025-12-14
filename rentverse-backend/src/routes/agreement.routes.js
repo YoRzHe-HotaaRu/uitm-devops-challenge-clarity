@@ -76,7 +76,7 @@ router.get('/my-agreements', auth, async (req, res) => {
                 }
             },
             orderBy: {
-                createdAt: 'desc'
+                generatedAt: 'desc'
             }
         });
 

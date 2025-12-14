@@ -19,7 +19,7 @@ interface Agreement {
     tenantSignedAt: string | null
     completedAt: string | null
     expiresAt: string | null
-    createdAt: string
+    generatedAt: string
     lease: {
         id: string
         startDate: string
@@ -313,7 +313,7 @@ function MyAgreementsPage() {
                                             {/* Footer */}
                                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end mt-auto space-y-3 sm:space-y-0">
                                                 <div className="text-sm text-slate-500">
-                                                    Created: {formatDate(agreement.createdAt)}
+                                                    Created: {formatDate(agreement.generatedAt)}
                                                     {agreement.expiresAt && (
                                                         <span className="ml-4">Expires: {formatDate(agreement.expiresAt)}</span>
                                                     )}
