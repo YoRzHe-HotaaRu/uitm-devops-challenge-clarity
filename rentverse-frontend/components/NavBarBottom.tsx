@@ -1,30 +1,29 @@
 'use client'
 
 import Link from "next/link"
-import { Search, Heart, User } from 'lucide-react'
-import { useState } from 'react'
-import clsx from 'clsx'
-
-type NavItem = 'explore' | 'wishlists' | 'login'
+import { Search, Heart, User, Menu } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import useAuthStore from '@/stores/authStore'
 
 function NavBarBottom() {
-  const [activeTab, setActiveTab] = useState<NavItem>('explore')
+  const pathname = usePathname()
+  const { isLoggedIn } = useAuthStore()
 
-  const handleTabClick = (tab: NavItem) => {
-    setActiveTab(tab)
+  // Determine active tab based on pathname
+  const getActiveTab = () => {
+    if (pathname === '/wishlist') return 'wishlists'
+    if (pathname === '/menu' || pathname === '/auth') return 'profile'
+    return 'explore'
   }
 
+  const activeTab = getActiveTab()
+
   return (
-    <nav className={clsx([
-      'fixed z-50',
-      'block md:hidden',
-      'bottom-0 left-0 right-0 bg-white border-t border-slate-200'
-    ])}>
+    <nav className="fixed z-50 block md:hidden bottom-0 left-0 right-0 bg-white border-t border-slate-200">
       <ul className="flex items-center justify-around py-3 px-4">
         <li>
           <Link
             href='/'
-            onClick={() => handleTabClick('explore')}
             className="flex flex-col items-center space-y-1 group"
           >
             <Search
@@ -47,7 +46,6 @@ function NavBarBottom() {
         <li>
           <Link
             href='/wishlist'
-            onClick={() => handleTabClick('wishlists')}
             className="flex flex-col items-center space-y-1 group"
           >
             <Heart
@@ -68,27 +66,49 @@ function NavBarBottom() {
           </Link>
         </li>
         <li>
-          <Link
-            href='/auth'
-            onClick={() => handleTabClick('login')}
-            className="flex flex-col items-center space-y-1 group"
-          >
-            <User
-              size={24}
-              className={`transition-colors duration-200 ${activeTab === 'login'
-                  ? 'text-teal-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
-                }`}
-            />
-            <span
-              className={`text-xs font-medium transition-colors duration-200 ${activeTab === 'login'
-                  ? 'text-teal-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
-                }`}
+          {isLoggedIn ? (
+            <Link
+              href='/menu'
+              className="flex flex-col items-center space-y-1 group"
             >
-              Log in
-            </span>
-          </Link>
+              <Menu
+                size={24}
+                className={`transition-colors duration-200 ${activeTab === 'profile'
+                    ? 'text-teal-600'
+                    : 'text-slate-400 group-hover:text-slate-600'
+                  }`}
+              />
+              <span
+                className={`text-xs font-medium transition-colors duration-200 ${activeTab === 'profile'
+                    ? 'text-teal-600'
+                    : 'text-slate-400 group-hover:text-slate-600'
+                  }`}
+              >
+                Options
+              </span>
+            </Link>
+          ) : (
+            <Link
+              href='/auth'
+              className="flex flex-col items-center space-y-1 group"
+            >
+              <User
+                size={24}
+                className={`transition-colors duration-200 ${activeTab === 'profile'
+                    ? 'text-teal-600'
+                    : 'text-slate-400 group-hover:text-slate-600'
+                  }`}
+              />
+              <span
+                className={`text-xs font-medium transition-colors duration-200 ${activeTab === 'profile'
+                    ? 'text-teal-600'
+                    : 'text-slate-400 group-hover:text-slate-600'
+                  }`}
+              >
+                Log in
+              </span>
+            </Link>
+          )}
         </li>
       </ul>
     </nav>
