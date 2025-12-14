@@ -6,6 +6,7 @@
 const express = require('express');
 const { prisma } = require('../config/database');
 const { auth, authorize } = require('../middleware/auth');
+const emailService = require('../services/email.service');
 
 const router = express.Router();
 
@@ -318,7 +319,7 @@ router.post('/:id/remind', async (req, res) => {
             });
         }
 
-        // Log the reminder (in production, send actual email)
+        // Log the reminder
         await prisma.agreementAuditLog.create({
             data: {
                 agreementId: agreement.id,
@@ -333,8 +334,17 @@ router.post('/:id/remind', async (req, res) => {
             },
         });
 
-        // TODO: Integrate with email service
-        // await emailService.sendSigningReminder(reminderTarget.user, agreement);
+        // Send actual reminder email
+        const frontendUrl = process.env.FRONTEND_URL || 'https://rentverse-frontend-nine.vercel.app';
+        const agreementUrl = `${frontendUrl}/my-agreements`;
+
+        await emailService.sendSigningReminderEmail({
+            to: reminderTarget.user.email,
+            recipientName: reminderTarget.user.name || 'User',
+            role: reminderTarget.role,
+            propertyTitle: agreement.lease.property.title,
+            agreementUrl: agreementUrl,
+        });
 
         res.json({
             success: true,

@@ -277,6 +277,78 @@ If you didn't request this code, you can safely ignore this email.
   }
 
   /**
+   * Send signing reminder email for rental agreement
+   * @param {Object} options - Reminder options
+   * @param {string} options.to - Recipient email
+   * @param {string} options.recipientName - Recipient name
+   * @param {string} options.role - 'landlord' or 'tenant'
+   * @param {string} options.propertyTitle - Property title
+   * @param {string} options.agreementUrl - URL to sign the agreement
+   * @returns {Promise<boolean>}
+   */
+  async sendSigningReminderEmail({ to, recipientName, role, propertyTitle, agreementUrl }) {
+    const subject = `⏰ Reminder: Sign Your Rental Agreement - ${propertyTitle}`;
+
+    const roleText = role === 'landlord' ? 'landlord' : 'tenant';
+    const actionText = role === 'landlord'
+      ? 'As the landlord, your signature is required to proceed with the rental agreement.'
+      : 'The landlord has signed the agreement. Your signature is now required to complete the process.';
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Signing Reminder</title>
+      </head>
+      <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+        <div style="max-width: 520px; margin: 0 auto; background: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #f59e0b; margin: 0;">⏰</h1>
+            <h2 style="color: #1e293b; margin: 8px 0 0 0;">Signing Reminder</h2>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            Hi <strong>${recipientName}</strong>,
+          </p>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            This is a friendly reminder that your signature is pending for the rental agreement:
+          </p>
+          
+          <div style="background: #f8fafc; border-left: 4px solid #6366f1; padding: 16px; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 0; color: #1e293b; font-weight: 600;">🏠 ${propertyTitle}</p>
+            <p style="margin: 8px 0 0 0; color: #64748b; font-size: 14px;">Role: ${roleText.charAt(0).toUpperCase() + roleText.slice(1)}</p>
+          </div>
+          
+          <p style="color: #374151; line-height: 1.6;">
+            ${actionText}
+          </p>
+          
+          <div style="text-align: center; margin: 28px 0;">
+            <a href="${agreementUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600;">
+              Sign Agreement Now
+            </a>
+          </div>
+          
+          <p style="color: #6b7280; font-size: 13px; margin-top: 24px; text-align: center;">
+            If you have any questions, please contact our support team.
+          </p>
+          
+          <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;">
+          
+          <p style="color: #94a3b8; font-size: 12px; text-align: center; margin: 0;">
+            This email was sent by RentVerse. Please do not reply to this email.
+          </p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return await this.sendEmail({ to, subject, html });
+  }
+
+  /**
    * Strip HTML tags for plain text fallback
    * @param {string} html - HTML content
    * @returns {string} Plain text
