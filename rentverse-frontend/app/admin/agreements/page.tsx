@@ -28,6 +28,7 @@ interface Agreement {
     id: string
     leaseId: string
     status: string
+    pdfUrl: string | null
     landlordSigned: boolean
     landlordSignedAt: string | null
     tenantSigned: boolean
@@ -460,8 +461,11 @@ export default function AdminAgreementsPage() {
                                                     Remind
                                                 </button>
                                             )}
-                                            {agreement.status === 'COMPLETED' && (
-                                                <button className="px-3 py-1.5 bg-slate-200 text-slate-700 text-xs rounded-lg hover:bg-slate-300 transition-colors flex items-center gap-1">
+                                            {agreement.status === 'COMPLETED' && agreement.pdfUrl && (
+                                                <button
+                                                    onClick={() => window.open(agreement.pdfUrl!, '_blank')}
+                                                    className="px-3 py-1.5 bg-slate-200 text-slate-700 text-xs rounded-lg hover:bg-slate-300 transition-colors flex items-center gap-1"
+                                                >
                                                     <Download size={12} />
                                                     PDF
                                                 </button>
