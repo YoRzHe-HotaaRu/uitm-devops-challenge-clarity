@@ -1,197 +1,429 @@
 <div align="center">
-  <img src="/github/assets/logo.png" width="120" height="120"><br>
-  <i>Building the Future Through Innovation</i>
-</div>
-
-<br>
-
-# Will be rewritten and revamp by ClaRity
-### Team Members:
-- 1. Amir Hafizi
-- 2. Nik Muhammad Haziq bin Nik Hasni
-- 3. Muhammad 'Adli Bin Mohd Ali
-
-### Welcome to Rentverse Ecosystem by ClaRity
-We are a dynamic team specializing in modern property rental technology solutions. Our comprehensive RentVerse platform revolutionizes the property rental industry through cutting-edge web technologies, AI-powered services, and user-centric design.
-
-Our expertise spans full-stack web development, machine learning, and cloud computing, all focused on creating the ultimate property rental ecosystem that connects property owners with tenants seamlessly.
-
-#### Our Mission & Vision 🎯
-- **Property Innovation**: Revolutionizing the rental property marketplace through modern technology
-- **Digital Transformation**: Streamlining property rental processes with intuitive, efficient platforms
-- **AI-Powered Solutions**: Utilizing machine learning for intelligent property pricing and listing optimization
-- **Market Leadership**: Building the most comprehensive and user-friendly rental platform ecosystem
-
-<div align="center">
-  <h3>RentVerse Platform Ecosystem 🚀</h3>
-</div>
-
-<div align="center">
-  <h3>Our Development Team 💫✨</h3>
-  <table align="center">
+  <table>
     <tr>
-      <th>Name</th>
-      <th>Role</th>
-      <th>Profile</th>
-    </tr>
-    <tr>
-      <td>Alie Pratama</td>
-      <td>UI/UX, Frontend, AI Engineer</td>
-      <td>
-        <a href="https://github.com/aliepratama"><img src="https://img.shields.io/badge/github-121013?style=for-the-badge&logo=github&logoColor=white"></a>
+      <td align="center" width="200">
+        <img src="github/assets/uitm.png" width="100" height="100"><br>
+        <b>UiTM Tapah</b>
+      </td>
+      <td align="center" width="200">
+        <img src="github/assets/logo.png" width="120" height="120"><br>
+        <i>Building the Future Through Innovation</i>
+      </td>
+      <td align="center" width="200">
+        <img src="github/assets/ClaRityLogo.png" width="100" height="100"><br>
+        <b>ClaRity</b>
       </td>
     </tr>
-    <tr>
-      <td>Joko Yuliyanto</td>
-      <td>Backend, DevOps, System Analyst</td>
-      <td>
-        <a href="https://github.com/Jekoyu"><img src="https://img.shields.io/badge/github-121013?style=for-the-badge&logo=github&logoColor=white"></a>
-      </td>
-    </tr>
-    
   </table>
 </div>
 
-<img src="/assets/new-cover.png">
-
-## 🏠 RentVerse Frontend - Modern Property Rental Platform
-*A comprehensive rental property platform that connects property owners with tenants*
-
-**Problem Statement**: Traditional property rental processes are often fragmented, time-consuming, and lack transparency. RentVerse addresses these challenges by centralizing property discovery, streamlining the rental process, and providing transparency in pricing and property information.
-
-**Core Features**:
-- **Advanced Property Search & Discovery**: Smart filtering by location, property type, price range, and rental duration
-- **Interactive Map Integration**: MapTiler-powered maps for location visualization
-- **Property Management System**: Easy listing creation with photo galleries and comprehensive property details
-- **User Authentication & Profiles**: Secure registration with role-based access for tenants, owners, and admins
-- **Wishlist & Favorites**: Save properties, comparison tools, and notification system
-- **Responsive Design**: Mobile-first approach with Progressive Web App capabilities
-- **Admin Dashboard**: Property oversight, user management, and analytics
-
-**Tech Stack**: Next.js 15, React 19, TypeScript, Tailwind CSS 4, Zustand, MapTiler SDK, Swiper
+<h1 align="center">🏠 RentVerse by ClaRity</h1>
+<p align="center"><i>A Secure Property Rental Platform with DevSecOps Integration</i></p>
 
 ---
 
-## 🔧 RentVerse Backend - Scalable API Infrastructure
-*Express.js backend with comprehensive database management and authentication*
+## 👥 Team Members
 
-**Features**:
-- **Express.js Architecture**: Organized folder structure with middleware integration
-- **Database Management**: Prisma ORM with PostgreSQL for robust data handling
-- **API Documentation**: Swagger UI documentation at `/docs` endpoint
-- **Security & Authentication**: JWT-based authentication & authorization system
-- **Middleware Stack**: CORS, Helmet, Morgan for enhanced security and logging
-- **Development Tools**: Husky pre-commit hooks, Prettier & ESLint for code quality
-- **Health Monitoring**: Health check endpoints and error handling middleware
-- **Database Operations**: Comprehensive seeding and migration support
-
-**Tech Stack**: Node.js, Express.js, Prisma, PostgreSQL, JWT, Swagger, Husky
-
----
-
-## 🤖 RentVerse AI Service - Intelligent Property Analytics
-*FastAPI-powered machine learning service for property insights*
-
-**AI Capabilities**:
-- **Price Prediction**: Advanced ML models for accurate property rental price forecasting in Malaysia
-- **Listing Classification**: Automatic approval classification based on market analysis
-- **Multi-Model Support**: Enhanced and standard deployment pipelines for different use cases
-- **Production-Ready**: Comprehensive testing, CORS configuration, and Docker containerization
-- **API Integration**: RESTful endpoints for seamless integration with frontend and backend
-
-**Key Features**:
-- Multiple ML model pipelines (enhanced & standard)
-- Real-time price prediction API
-- Batch processing capabilities
-- Comprehensive error handling and logging
-- Docker deployment with docker-compose setup
-
-**Tech Stack**: FastAPI, Python, Scikit-learn, Pandas, Docker, Pydantic
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/Nomics03">
+          <img src="https://github.com/Nomics03.png" width="100" height="100" style="border-radius: 50%"><br>
+          <b>Muhammad 'Adli Bin Mohd Ali</b>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/YoRzHe-HotaaRu">
+          <img src="https://github.com/YoRzHe-HotaaRu.png" width="100" height="100" style="border-radius: 50%"><br>
+          <b>Amir Hafizi Bin Musa</b>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/dev-manchae">
+          <img src="https://github.com/dev-manchae.png" width="100" height="100" style="border-radius: 50%"><br>
+          <b>Nik Muhammad Haziq bin Nik Hasni</b>
+        </a>
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
-## 🛠 Technology Expertise
+## 🔗 Quick Links
 
-### **Frontend Development**
-- React, Next.js, TypeScript
-- Responsive design with Tailwind CSS
-- Progressive Web Apps (PWA)
-- Modern UI/UX design principles
+| Platform | Link |
+|----------|------|
+| 🌐 **Live Website** | [https://rentverse-frontend-nine.vercel.app/](https://rentverse-frontend-nine.vercel.app/) |
+| 📱 **Mobile App (APK)** | [Download RentVerse APK](MobileAppBuild/rentverse-clarity.apk) |
 
-### **Backend Development**
-- Node.js, Express.js, FastAPI
-- RESTful API design
-- Database management (PostgreSQL, Prisma)
-- Authentication & security
+---
 
-### **Mobile Development**
-- Cross-platform solutions
-- Mobile-responsive web design
-- Touch-friendly interfaces
+## 📸 Platform Preview
 
-### **Machine Learning & AI**
-- Property price prediction models
-- Classification algorithms for listing approval
-- Data preprocessing and feature engineering
-- Model deployment and serving with FastAPI
+### Web Application
+<!-- PLACEHOLDER: Add screenshot of web application here -->
+![Web Application](github/assets/web-preview.png)
 
-### **Cloud Computing**
-- Scalable cloud architecture
-- Microservices design
-- Docker containerization
-- API gateway implementation
+### Mobile Application
+<!-- PLACEHOLDER: Add screenshot of mobile application here -->
+![Mobile Application](github/assets/mobile-preview.png)
 
-### **Development Practices**
-- Clean code principles
-- Test-driven development
-- CI/CD pipelines
-- Code quality assurance (ESLint, Prettier)
+---
 
-## 📊 Platform Statistics
+# 🛡️ Core Development Modules
 
-- **3** Integrated microservices (Frontend, Backend, AI Service)
-- **Full-stack** property rental solution
-- **AI-powered** pricing and classification
-- **Modern** web technologies (Next.js 15, React 19)
-- **Scalable** cloud-ready architecture
+## Module 1: Secure Login & MFA
 
-## 🌟 What Makes Us Different
+**Description:** Create MFA/OTP-based login with role-based access.
 
-### **Property-Focused Innovation**
-We specialize exclusively in property rental technology, allowing us to create deep, comprehensive solutions that address every aspect of the rental marketplace.
+**Security Focus:** Authentication & Authorization (OWASP M1–M3)
 
-### **End-to-End Platform**
-Our complete ecosystem covers everything from user-facing web applications to intelligent backend services and AI-powered analytics.
+<!-- PLACEHOLDER: Add screenshot of login/MFA flow here -->
+![MFA Login Flow](github/assets/module1-mfa.png)
 
-### **Modern Architecture**
-Built with the latest technologies including Next.js 15, React 19, FastAPI, and advanced ML models for optimal performance and scalability.
+### Implementation Details
 
-### **Intelligent Automation**
-AI-powered features like automatic price prediction and listing classification reduce manual work and improve decision-making.
+#### 🔐 Multi-Factor Authentication (MFA/OTP)
+- **OTP Generation**: Cryptographically secure 6-digit OTP codes using `crypto.randomBytes()`
+- **OTP Hashing**: OTPs are stored hashed using bcrypt for secure storage
+- **Expiry**: OTPs expire after 5 minutes
+- **Rate Limiting**: Maximum 5 OTP verification attempts to prevent brute force
 
-## 📝 Documentation & Resources
+**Key Files:**
+- `src/services/otp.service.js` - OTP generation, verification, and management
+- `src/services/email.service.js` - OTP email delivery with styled templates
 
-### Project Repositories
-- **RentVerse Frontend**: Modern property rental web platform with Next.js 15
-- **RentVerse Backend**: Scalable Express.js API server with PostgreSQL
-- **RentVerse AI Service**: FastAPI machine learning service for property analytics
+```javascript
+// OTP Generation (Cryptographically Secure)
+generateOtpCode() {
+    const randomBytes = crypto.randomBytes(4);
+    const randomNumber = randomBytes.readUInt32BE(0);
+    return (randomNumber % 1000000).toString().padStart(6, '0');
+}
+```
 
-### Development Standards
-- Comprehensive API documentation (Swagger/OpenAPI)
-- Clean code practices with linting and formatting
-- Test coverage and quality assurance
-- Version control with Git best practices
+#### 👤 Role-Based Access Control (RBAC)
+- **Roles**: `USER` (tenant), `ADMIN` (administrator)
+- **Middleware**: `authorize()` middleware enforces role-based access
+- **Logging**: Unauthorized access attempts are logged to security logs
 
-## 🤝 Contributing
+**Key Files:**
+- `src/middleware/auth.js` - JWT authentication and role authorization
 
-We welcome contributions from developers who share our vision of revolutionizing the property rental industry through technology. Please check individual project repositories for specific contribution guidelines.
+```javascript
+// Role Authorization Middleware
+const authorize = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            securityLogger.logSuspiciousActivity(req, 'Unauthorized access attempt');
+            return res.status(403).json({ message: 'Insufficient permissions.' });
+        }
+        next();
+    };
+};
+```
 
-## 📞 Connect With Us
+#### 🔑 OAuth Integration
+- **Google OAuth**: Full integration with Google Sign-In
+- **Deep Linking**: Mobile app support via custom URL scheme (`rentverseclarity://`)
+- **Security Alerts**: Email notifications sent for OAuth logins
 
-Interested in collaboration or learning more about our RentVerse platform? Feel free to explore our repositories and reach out through GitHub issues or discussions.
+#### 🚫 Account Lockout
+- **Max Attempts**: 5 failed login attempts
+- **Lockout Duration**: 15 minutes
+- **Notification**: Account lock alerts sent via email
+
+---
+
+## Module 2: Secure API Gateway
+
+**Description:** Apply HTTPS, JWT tokens, rate-limiting, and access validation.
+
+**Security Focus:** Secure Communication (OWASP M5–M6)
+
+<!-- PLACEHOLDER: Add screenshot of API security here -->
+![API Gateway Security](github/assets/module2-api.png)
+
+### Implementation Details
+
+#### 🔒 JWT Authentication
+- **Token Blacklist**: Tokens can be invalidated on logout
+- **Token Expiry**: Configurable expiration (default: 7 days)
+- **Secure Headers**: Authorization header validation
+
+**Key Files:**
+- `src/middleware/auth.js` - JWT verification with blacklist support
+- `src/services/tokenBlacklist.js` - Token invalidation management
+
+```javascript
+// JWT Verification with Blacklist Check
+if (isBlacklisted(token)) {
+    return res.status(401).json({ message: 'Token has been revoked.' });
+}
+const decoded = jwt.verify(token, process.env.JWT_SECRET);
+```
+
+#### ⏱️ Rate Limiting
+| Limiter Type | Limit | Window | Purpose |
+|--------------|-------|--------|---------|
+| Global | 100 requests | 15 min | DDoS prevention |
+| Auth | 5 attempts | 15 min | Brute force prevention |
+| OTP | 5 attempts | 5 min | OTP abuse prevention |
+| Strict | 3 requests | 1 min | Sensitive operations |
+| API | 2000 requests | 15 min | General API protection |
+
+**Key Files:**
+- `src/middleware/rateLimit.js` - Multiple rate limiters for different endpoints
+
+#### 🛡️ Security Middleware Stack
+- **Helmet.js**: Security headers (XSS, CSP, HSTS)
+- **CORS**: Configurable cross-origin resource sharing
+- **XSS Protection**: Request sanitization via `xss` library
+- **SQL Injection Detection**: Pattern-based detection and logging
+
+**Key Files:**
+- `src/middleware/requestValidator.js` - XSS sanitization and injection detection
+- `src/app.js` - Security middleware configuration
+
+---
+
+## Module 3: Digital Agreement
+
+**Description:** Add secure signature validation and access permissions.
+
+**Security Focus:** Data Integrity & Workflow Validation
+
+<!-- PLACEHOLDER: Add screenshot of digital agreement here -->
+![Digital Agreement](github/assets/module3-agreement.png)
+
+### Implementation Details
+
+#### ✍️ Digital Signature System
+- **SHA-256 Hashing**: Signatures are hashed with timestamp and user info
+- **IP Address Logging**: Signer's IP address recorded for audit
+- **Tamper Detection**: Hash verification for document integrity
+
+**Key Files:**
+- `src/services/digitalAgreement.service.js` - Signature creation and verification
+
+```javascript
+// Signature Hash Creation
+createSignatureHash(signature, timestamp, leaseId, userId) {
+    const data = `${signature}|${timestamp}|${leaseId}|${userId}`;
+    return crypto.createHash('sha256').update(data).digest('hex');
+}
+```
+
+#### 📋 Workflow States
+| Status | Description |
+|--------|-------------|
+| `DRAFT` | Agreement created, not yet initiated |
+| `PENDING_LANDLORD` | Waiting for landlord signature |
+| `PENDING_TENANT` | Landlord signed, awaiting tenant |
+| `COMPLETED` | Both parties signed |
+| `EXPIRED` | Signing deadline passed |
+| `CANCELLED` | Agreement cancelled |
+
+#### 📝 Audit Trail
+- **Full Audit Logging**: Every action logged to `agreement_audit_logs`
+- **Actions Tracked**: CREATED, VIEWED, SIGNED, CANCELLED, DOWNLOADED, etc.
+- **Metadata**: IP address, timestamp, and performer recorded
+
+**Key Files:**
+- `src/routes/agreement.routes.js` - Agreement signing endpoints
+- Prisma model: `AgreementAuditLog`
+
+---
+
+## Module 4: Smart Notification & Alert System
+
+**Description:** Log user activities and alert suspicious login patterns.
+
+**Security Focus:** DevSecOps Monitoring & Incident Detection
+
+<!-- PLACEHOLDER: Add screenshot of notification system here -->
+![Smart Notifications](github/assets/module4-alerts.png)
+
+### Implementation Details
+
+#### 🚨 Security Alert Types
+| Alert Type | Trigger | Email Sent |
+|------------|---------|------------|
+| `NEW_DEVICE` | Login from unrecognized device | ✅ Yes |
+| `MULTIPLE_FAILURES` | 3+ failed logins in 5 minutes | ✅ Yes |
+| `ACCOUNT_LOCKED` | Account locked after max attempts | ✅ Yes |
+| `SUSPICIOUS_TIMING` | Login between 2-5 AM | ❌ No |
+| `PASSWORD_CHANGED` | Password update | ✅ Yes |
+
+**Key Files:**
+- `src/services/securityAlert.service.js` - Alert creation and email dispatch
+
+```javascript
+// New Device Alert
+async function alertNewDevice(userId, deviceInfo) {
+    return createAlert({
+        userId,
+        type: 'NEW_DEVICE',
+        title: 'New Device Login Detected',
+        message: `A new device was used: ${deviceInfo.browser} on ${deviceInfo.os}`,
+        sendEmail: true,
+    });
+}
+```
+
+#### 📊 Risk Scoring
+- **New Device**: +30 points
+- **Recent Failures**: +10 per failure (max 30)
+- **Unusual Time**: +15 points
+- **Suspicious IP**: +25 points (5+ failures from same IP)
+
+**Key Files:**
+- `src/services/suspiciousActivity.service.js` - Risk calculation and pattern detection
+
+#### 📧 Email Notifications
+- **OAuth Login Alerts**: Security alerts with red styling for Google/OAuth logins
+- **OTP Delivery**: Styled OTP emails with countdown timer
+- **MFA Status Changes**: Notifications when MFA is enabled/disabled
+
+---
+
+## Module 5: Activity Log Dashboard
+
+**Description:** Provide admin-level logs for failed logins and critical actions.
+
+**Security Focus:** Threat Visualization & Accountability
+
+<!-- PLACEHOLDER: Add screenshot of security dashboard here -->
+![Activity Log Dashboard](github/assets/module5-dashboard.png)
+
+### Implementation Details
+
+#### 📈 Dashboard Statistics
+- **24h Login Metrics**: Total, successful, failed logins
+- **OAuth vs Email**: Breakdown of login methods
+- **High Risk Logins**: Logins with risk score ≥50
+- **Locked Accounts**: Currently locked user accounts
+- **7-Day Trends**: Daily login success/failure charts
+
+**Key Files:**
+- `src/routes/admin.security.routes.js` - Admin security API endpoints
+
+```javascript
+// Statistics Endpoint
+GET /api/admin/security/statistics
+Response: {
+    totalLogins24h, failedLogins24h, successfulLogins24h,
+    highRiskLogins24h, alertsSent24h, newDevices24h,
+    oauthLogins24h, emailLogins24h, lockedAccounts,
+    failureRate, trends: { daily: [...] }
+}
+```
+
+#### 📋 Login History
+- **Paginated View**: Browse all login attempts
+- **Filters**: By success/failure, high risk, user
+- **Details**: IP address, device type, browser, OS, risk score
+
+#### 🔍 User Investigation
+- **Per-User History**: View specific user's login activity
+- **Device Management**: See registered devices per user
+- **Alert History**: User's security alerts
+
+---
+
+## Module 6: CI/CD Security Testing (Bonus)
+
+**Description:** Integrate GitHub Actions for static code analysis (SAST) and deployment checks.
+
+**Security Focus:** Continuous Testing (DevSecOps)
+
+<!-- PLACEHOLDER: Add screenshot of CI/CD workflow here -->
+![CI/CD Security](github/assets/module6-cicd.png)
+
+### Implementation Details
+
+#### 🔬 Static Application Security Testing (SAST)
+- **ESLint Security Scan**: Code quality and security linting
+- **TypeScript Check**: Type safety verification
+- **npm Audit**: Critical vulnerability detection
+
+**Workflow File:** `.github/workflows/security-scan.yml`
+
+#### 🔍 CodeQL Analysis
+- **Language**: JavaScript/TypeScript
+- **Queries**: `security-extended`, `security-and-quality`
+- **Schedule**: Weekly on Mondays + on every push/PR
+- **SARIF Upload**: Results uploaded to GitHub Security tab
+
+**Workflow File:** `.github/workflows/codeql-analysis.yml`
+
+#### 🕵️ Secret Detection
+- **Tool**: Gitleaks
+- **Scope**: Full repository history scan
+- **Trigger**: Every push and pull request
+
+#### 📦 Dependency Vulnerability Scan
+- **Tool**: Trivy
+- **Severity**: CRITICAL and HIGH
+- **Scope**: Filesystem scan of all dependencies
+
+#### 🏗️ Build Verification
+- **Backend**: Prisma generation + syntax check
+- **Frontend**: Next.js build verification
+
+#### 📊 Security Summary
+After each scan, a summary is generated:
+
+| Check | Status |
+|-------|--------|
+| Backend SAST | ✅ Completed |
+| Frontend SAST | ✅ Completed |
+| Secret Detection | ✅ Completed |
+| Dependency Scan | ✅ Completed |
+| CodeQL Analysis | ✅ Completed |
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend
+- **Runtime**: Node.js 20+
+- **Framework**: Express.js
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT, Passport.js (OAuth)
+- **Email**: Nodemailer / Resend
+
+### Frontend
+- **Framework**: Next.js 15 (React 19)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **State**: Zustand
+- **Maps**: MapTiler SDK
+
+### Mobile
+- **Framework**: Capacitor
+- **Platform**: Android (APK)
+- **Deep Linking**: Custom URL scheme
+
+### DevSecOps
+- **CI/CD**: GitHub Actions
+- **SAST**: ESLint, CodeQL
+- **Secret Scan**: Gitleaks
+- **Dependency Scan**: Trivy
+- **Hosting**: Vercel (Frontend), Render (Backend)
+
+---
+
+## 📚 API Documentation
+
+Interactive API documentation available at:
+- **Swagger UI**: `/docs` endpoint on the backend
 
 ---
 
 <div align="center">
-  <i>Revolutionizing property rentals through innovative technology</i>
+  <p><i>Built with ❤️ by Team ClaRity for UiTM DevOps Challenge</i></p>
+  <p>© 2024 RentVerse. All rights reserved.</p>
 </div>
