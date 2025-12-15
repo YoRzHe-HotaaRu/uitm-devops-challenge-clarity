@@ -24,6 +24,11 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: 'Rentverse',
   description: 'Your rental platform',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    viewportFit: 'cover',
+  },
 }
 
 export default function RootLayout({

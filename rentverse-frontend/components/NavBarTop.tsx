@@ -51,10 +51,13 @@ function NavBarTop({ searchBoxType = 'none', isQuestionnaire = false }: Readonly
     }
   }
   return (
-    <div className={clsx([
-      'w-full fixed z-50',
-      'px-6 py-4 bg-white top-0 list-none border-b border-slate-200',
-    ])}>
+    <div
+      className={clsx([
+        'w-full fixed z-50',
+        'px-6 py-4 bg-white top-0 list-none border-b border-slate-200',
+      ])}
+      style={{ paddingTop: 'max(16px, env(safe-area-inset-top))' }}
+    >
       <div className={clsx([
         'w-full flex items-center justify-between relative',
         searchBoxType === 'full' && 'mb-8',
@@ -82,13 +85,13 @@ function NavBarTop({ searchBoxType = 'none', isQuestionnaire = false }: Readonly
             <li className="relative">
               {isAuthenticated && user ? (
                 <>
-                  <Avatar 
-                    user={user} 
+                  <Avatar
+                    user={user}
                     onClick={toggleDropdown}
                     className="cursor-pointer"
                   />
-                  <UserDropdown 
-                    isOpen={isDropdownOpen} 
+                  <UserDropdown
+                    isOpen={isDropdownOpen}
                     onClose={closeDropdown}
                   />
                 </>
