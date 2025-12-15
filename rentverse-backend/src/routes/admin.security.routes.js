@@ -40,6 +40,8 @@ router.get('/statistics', async (req, res) => {
             alertsSent24h,
             newDevices24h,
             uniqueUsers24h,
+            oauthLogins24h,
+            emailLogins24h,
         ] = await Promise.all([
             prisma.loginHistory.count({
                 where: { createdAt: { gte: last24h } },
@@ -62,6 +64,25 @@ router.get('/statistics', async (req, res) => {
             prisma.loginHistory.groupBy({
                 by: ['userId'],
                 where: { createdAt: { gte: last24h } },
+            }),
+            // OAuth logins (Google, Facebook, etc.)
+            prisma.loginHistory.count({
+                where: {
+                    createdAt: { gte: last24h },
+                    success: true,
+                    loginMethod: { in: ['google', 'facebook', 'github', 'twitter', 'apple'] }
+                },
+            }),
+            // Email/password logins
+            prisma.loginHistory.count({
+                where: {
+                    createdAt: { gte: last24h },
+                    success: true,
+                    OR: [
+                        { loginMethod: 'email' },
+                        { loginMethod: null },
+                    ]
+                },
             }),
         ]);
 
@@ -122,6 +143,9 @@ router.get('/statistics', async (req, res) => {
                     failureRate: totalLogins24h > 0
                         ? Math.round((failedLogins24h / totalLogins24h) * 100)
                         : 0,
+                    // OAuth vs Email login breakdown
+                    oauthLogins24h,
+                    emailLogins24h,
                 },
                 trends: {
                     daily: dailyStats,

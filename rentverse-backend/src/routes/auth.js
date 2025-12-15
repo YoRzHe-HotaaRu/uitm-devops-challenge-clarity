@@ -1075,9 +1075,20 @@ router.get(
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
       );
 
+      // Record login for security dashboard (async - don't wait)
+      const suspiciousActivity = require('../services/suspiciousActivity.service');
+      const userAgent = req.headers['user-agent'] || 'Unknown';
+      const ipAddress = req.ip || req.connection.remoteAddress || '::1';
+      suspiciousActivity.recordLoginAttempt({
+        userId: req.user.id,
+        ipAddress,
+        userAgent,
+        success: true,
+        loginMethod: 'google',
+      }).catch(err => console.error('Failed to record OAuth login:', err));
+
       // Send login notification email (async - don't wait)
       const emailService = require('../services/email.service');
-      const userAgent = req.headers['user-agent'] || 'Unknown';
       const isMobileDevice = userAgent.includes('Android') || userAgent.includes('iPhone');
       emailService.sendOAuthLoginNotification(
         req.user.email,

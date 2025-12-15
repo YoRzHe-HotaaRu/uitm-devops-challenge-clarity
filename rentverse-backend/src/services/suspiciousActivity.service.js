@@ -58,6 +58,7 @@ async function recordLoginAttempt({
     userAgent,
     success,
     failReason = null,
+    loginMethod = 'email', // 'email', 'google', 'facebook', 'github', 'twitter', 'apple'
 }) {
     const { deviceType, browser, os } = parseUserAgent(userAgent);
 
@@ -75,10 +76,11 @@ async function recordLoginAttempt({
             success,
             failReason,
             riskScore,
+            loginMethod, // Track OAuth provider
         },
     });
 
-    console.log(`[LOGIN_HISTORY] Recorded ${success ? 'successful' : 'failed'} login for user ${userId}, risk: ${riskScore}`);
+    console.log(`[LOGIN_HISTORY] Recorded ${success ? 'successful' : 'failed'} ${loginMethod} login for user ${userId}, risk: ${riskScore}`);
 
     return loginHistory;
 }
