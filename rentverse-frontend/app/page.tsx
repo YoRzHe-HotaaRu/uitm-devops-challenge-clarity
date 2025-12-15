@@ -9,9 +9,9 @@ export default function Home() {
     <div>
       <ContentWrapper>
         {/* Hero Section */}
-        <section className="relative min-h-[400px] flex justify-center">
+        <section className="relative min-h-[300px] md:min-h-[400px] flex justify-center">
           {/* Background Image - Fixed height to not overlap with sections below */}
-          <div className="absolute top-0 left-0 right-0 h-[940px] z-0 overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[500px] md:h-[940px] z-0 overflow-hidden">
             {/* Desktop Hero Image */}
             <Image
               width={1440}
@@ -29,7 +29,7 @@ export default function Home() {
           </div>
 
           {/* Content Overlay */}
-          <div className="relative z-10 text-center max-w-4xl mx-auto px-4 mt-10">
+          <div className="relative z-10 text-center max-w-4xl mx-auto px-4 mt-4 md:mt-10">
             <h1
               className="mx-auto font-serif text-4xl md:text-5xl lg:text-6xl text-teal-900 mb-4 max-w-2xl leading-tight">
               The right home is waiting for you
@@ -38,12 +38,13 @@ export default function Home() {
               Explore thousands of apartments, condominiums, and houses for rent across the country.
             </p>
             <SearchBoxProperty />
+            {/* Sample Dashboard - Hidden on mobile */}
             <Image
               src="https://res.cloudinary.com/dqhuvu22u/image/upload/f_webp/v1758186240/rentverse-base/sample-dashboard_h7ez5z.png"
               alt="Search Results Sample on Rentverse"
               width={1080}
               height={720}
-              className="my-20 rounded-lg shadow-lg z-10"
+              className="my-10 md:my-20 rounded-lg shadow-lg z-10 hidden md:block"
             />
           </div>
         </section>

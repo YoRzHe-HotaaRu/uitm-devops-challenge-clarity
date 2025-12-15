@@ -19,8 +19,8 @@ function NavBarBottom() {
   const activeTab = getActiveTab()
 
   return (
-    <nav className="fixed z-50 block md:hidden bottom-0 left-0 right-0 bg-white border-t border-slate-200">
-      <ul className="flex items-center justify-around py-3 px-4">
+    <nav className="fixed z-50 block md:hidden bottom-0 left-0 right-0 bg-white border-t border-slate-200 pb-safe">
+      <ul className="flex items-center justify-around pt-3 pb-4 px-4" style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
         <li>
           <Link
             href='/'
@@ -29,14 +29,14 @@ function NavBarBottom() {
             <Search
               size={24}
               className={`transition-colors duration-200 ${activeTab === 'explore'
-                  ? 'text-teal-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                ? 'text-teal-600'
+                : 'text-slate-400 group-hover:text-slate-600'
                 }`}
             />
             <span
               className={`text-xs font-medium transition-colors duration-200 ${activeTab === 'explore'
-                  ? 'text-teal-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                ? 'text-teal-600'
+                : 'text-slate-400 group-hover:text-slate-600'
                 }`}
             >
               Explore
@@ -51,14 +51,14 @@ function NavBarBottom() {
             <Heart
               size={24}
               className={`transition-colors duration-200 ${activeTab === 'wishlists'
-                  ? 'text-teal-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                ? 'text-teal-600'
+                : 'text-slate-400 group-hover:text-slate-600'
                 }`}
             />
             <span
               className={`text-xs font-medium transition-colors duration-200 ${activeTab === 'wishlists'
-                  ? 'text-teal-600'
-                  : 'text-slate-400 group-hover:text-slate-600'
+                ? 'text-teal-600'
+                : 'text-slate-400 group-hover:text-slate-600'
                 }`}
             >
               Wishlists
@@ -74,14 +74,14 @@ function NavBarBottom() {
               <Menu
                 size={24}
                 className={`transition-colors duration-200 ${activeTab === 'profile'
-                    ? 'text-teal-600'
-                    : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-teal-600'
+                  : 'text-slate-400 group-hover:text-slate-600'
                   }`}
               />
               <span
                 className={`text-xs font-medium transition-colors duration-200 ${activeTab === 'profile'
-                    ? 'text-teal-600'
-                    : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-teal-600'
+                  : 'text-slate-400 group-hover:text-slate-600'
                   }`}
               >
                 Options
@@ -95,14 +95,14 @@ function NavBarBottom() {
               <User
                 size={24}
                 className={`transition-colors duration-200 ${activeTab === 'profile'
-                    ? 'text-teal-600'
-                    : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-teal-600'
+                  : 'text-slate-400 group-hover:text-slate-600'
                   }`}
               />
               <span
                 className={`text-xs font-medium transition-colors duration-200 ${activeTab === 'profile'
-                    ? 'text-teal-600'
-                    : 'text-slate-400 group-hover:text-slate-600'
+                  ? 'text-teal-600'
+                  : 'text-slate-400 group-hover:text-slate-600'
                   }`}
               >
                 Log in

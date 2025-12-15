@@ -49,7 +49,7 @@ function SearchBoxProperty(props: Readonly<React.HTMLAttributes<HTMLDivElement>>
       page: 1,
       limit: 10,
     }
-    
+
     // Perform search and navigate to results page
     await searchProperties(filters)
     router.push('/property/result')
@@ -95,11 +95,11 @@ function SearchBoxProperty(props: Readonly<React.HTMLAttributes<HTMLDivElement>>
   return (
     <div className={clsx(['relative', className])} {...propsRest}>
       <div
-        className="flex items-center bg-white rounded-full shadow-lg border border-slate-200 p-0 max-w-4xl mx-auto overflow-hidden">
+        className="flex flex-col md:flex-row items-stretch bg-white rounded-2xl md:rounded-full shadow-lg border border-slate-200 p-4 md:p-0 max-w-4xl mx-auto overflow-hidden gap-2 md:gap-0">
         {/* Where Section */}
         <div
           className={clsx([
-            'flex-1 pl-8 pr-6 py-5 border-r border-slate-200 cursor-pointer flex flex-col justify-center',
+            'flex-1 px-4 md:pl-8 md:pr-6 py-3 md:py-5 border-b md:border-b-0 md:border-r border-slate-200 cursor-pointer flex flex-col justify-center rounded-xl md:rounded-none',
             'hover:bg-slate-50',
             isWhereOpen && 'bg-slate-50',
           ])}
@@ -125,7 +125,7 @@ function SearchBoxProperty(props: Readonly<React.HTMLAttributes<HTMLDivElement>>
         {/* Duration Section */}
         <div
           className={clsx([
-            'flex-1 px-6 py-5 border-r border-slate-200 cursor-pointer flex flex-col justify-center',
+            'flex-1 px-4 md:px-6 py-3 md:py-5 border-b md:border-b-0 md:border-r border-slate-200 cursor-pointer flex flex-col justify-center rounded-xl md:rounded-none',
             'hover:bg-slate-50',
             isDurationOpen && 'bg-slate-50',
           ])}
@@ -139,7 +139,7 @@ function SearchBoxProperty(props: Readonly<React.HTMLAttributes<HTMLDivElement>>
         {/* Type Section */}
         <div
           className={clsx([
-            'flex-1 px-6 py-5 cursor-pointer flex flex-col justify-center',
+            'flex-1 px-4 md:px-6 py-3 md:py-5 cursor-pointer flex flex-col justify-center rounded-xl md:rounded-none',
             'hover:bg-slate-50',
             isTypeOpen && 'bg-slate-50',
           ])}
@@ -151,11 +151,12 @@ function SearchBoxProperty(props: Readonly<React.HTMLAttributes<HTMLDivElement>>
         </div>
 
         {/* Search Button */}
-        <div className="ml-4 pr-4">
+        <div className="mt-2 md:mt-0 md:ml-4 md:pr-4 flex items-center justify-center md:justify-end">
           <button
             onClick={handleSearch}
-            className="flex items-center justify-center w-12 h-12 bg-teal-600 hover:bg-teal-700 rounded-full transition-colors cursor-pointer">
+            className="flex items-center justify-center w-full md:w-12 h-12 bg-teal-600 hover:bg-teal-700 rounded-xl md:rounded-full transition-colors cursor-pointer gap-2">
             <Search size={20} className="text-white" />
+            <span className="text-white font-medium md:hidden">Search</span>
           </button>
         </div>
       </div>
@@ -212,17 +213,17 @@ function SearchBoxProperty(props: Readonly<React.HTMLAttributes<HTMLDivElement>>
                 location.name.toLowerCase().includes(whereValue.toLowerCase()) ||
                 location.description.toLowerCase().includes(whereValue.toLowerCase()),
               ).length === 0 && (
-                <div className="flex items-center p-3 text-slate-500">
-                  <div
-                    className="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-lg mr-4 flex-shrink-0">
-                    <Search size={20} className="text-slate-400" />
+                  <div className="flex items-center p-3 text-slate-500">
+                    <div
+                      className="w-12 h-12 flex items-center justify-center bg-slate-100 rounded-lg mr-4 flex-shrink-0">
+                      <Search size={20} className="text-slate-400" />
+                    </div>
+                    <div className="flex-1 text-left">
+                      <div className="font-medium text-slate-600 text-left">No locations found</div>
+                      <div className="text-sm text-slate-400 text-left">Try searching for a different location</div>
+                    </div>
                   </div>
-                  <div className="flex-1 text-left">
-                    <div className="font-medium text-slate-600 text-left">No locations found</div>
-                    <div className="text-sm text-slate-400 text-left">Try searching for a different location</div>
-                  </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         )}
