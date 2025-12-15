@@ -8,7 +8,7 @@
 # Will be rewritten and revamp by ClaRity
 ### Team Members:
 - 1. Amir Hafizi
-- 2. Nik Muhammad Haziq
+- 2. Nik Muhammad Haziq bin Nik Hasni
 - 3. Muhammad 'Adli
 
 ### Welcome to Rentverse Ecosystem by ClaRity
