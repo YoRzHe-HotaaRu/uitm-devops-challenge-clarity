@@ -9,6 +9,7 @@ import '@maptiler/sdk/dist/maptiler-sdk.css'
 import clsx from 'clsx'
 import AuthInitializer from '@/components/AuthInitializer'
 import { RateLimitProvider } from '@/components/RateLimitProvider'
+import AppUrlListener from '@/components/AppUrlListener'
 
 const poly = Poly({
   weight: '400',
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body>
         <RateLimitProvider>
           <AuthInitializer />
+          <AppUrlListener />
           {children}
         </RateLimitProvider>
       </body>
