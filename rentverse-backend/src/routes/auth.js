@@ -1059,6 +1059,10 @@ router.get(
   async (req, res) => {
     try {
       if (!req.user) {
+        const isMobile = req.query.state === 'mobile' || req.headers['user-agent']?.includes('Android');
+        if (isMobile) {
+          return res.redirect('rentverseclarity://auth/callback?error=oauth_failed');
+        }
         return res.redirect(
           `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=oauth_failed`
         );
@@ -1071,15 +1075,28 @@ router.get(
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
       );
 
-      // Redirect to frontend with token
-      res.redirect(
-        `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&provider=google`
-      );
+      // Check if request is from mobile app
+      const isMobile = req.query.state === 'mobile' || req.headers['user-agent']?.includes('Android');
+
+      if (isMobile) {
+        // Redirect to mobile app using custom URL scheme
+        res.redirect(`rentverseclarity://auth/callback?token=${token}&provider=google`);
+      } else {
+        // Redirect to web frontend
+        res.redirect(
+          `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${token}&provider=google`
+        );
+      }
     } catch (error) {
       console.error('Google OAuth callback error:', error);
-      res.redirect(
-        `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=oauth_error`
-      );
+      const isMobile = req.query.state === 'mobile' || req.headers['user-agent']?.includes('Android');
+      if (isMobile) {
+        res.redirect('rentverseclarity://auth/callback?error=oauth_error');
+      } else {
+        res.redirect(
+          `${process.env.FRONTEND_URL || 'http://localhost:3000'}/login?error=oauth_error`
+        );
+      }
     }
   }
 );
