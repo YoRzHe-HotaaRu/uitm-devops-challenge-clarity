@@ -8,8 +8,8 @@
 # Will be rewritten and revamp by ClaRity
 ### Team Members:
 - 1. Amir Hafizi
-- 2. Nik Muhammad Haziq
-- 3. Muhammad 'Adli
+- 2. Nik Muhammad Haziq bin Nik Hasni
+- 3. Muhammad 'Adli Bin Mohd Ali
 
 ### Welcome to Rentverse Ecosystem by ClaRity
 We are a dynamic team specializing in modern property rental technology solutions. Our comprehensive RentVerse platform revolutionizes the property rental industry through cutting-edge web technologies, AI-powered services, and user-centric design.
