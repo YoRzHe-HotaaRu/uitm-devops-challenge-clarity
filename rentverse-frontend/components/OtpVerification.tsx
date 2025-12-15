@@ -129,7 +129,7 @@ export default function OtpVerification({
     const isComplete = otp.every(d => d !== '')
 
     return (
-        <div className="flex flex-col items-center p-8 bg-white rounded-2xl shadow-xl max-w-md mx-auto">
+        <div className="flex flex-col items-center p-4 sm:p-8 bg-white rounded-2xl shadow-xl max-w-md mx-auto w-full">
             {/* Header */}
             <div className="flex items-center justify-center w-16 h-16 bg-teal-100 rounded-full mb-6">
                 <Shield className="w-8 h-8 text-teal-600" />
@@ -147,7 +147,7 @@ export default function OtpVerification({
             </p>
 
             {/* OTP Input */}
-            <div className="flex gap-3 mb-6">
+            <div className="flex gap-2 sm:gap-3 mb-6 justify-center w-full">
                 {otp.map((digit, index) => (
                     <input
                         key={index}
@@ -161,7 +161,7 @@ export default function OtpVerification({
                         onPaste={handlePaste}
                         disabled={isLoading || isExpired}
                         className={`
-              w-12 h-14 text-center text-2xl font-bold rounded-lg border-2 
+              w-10 h-12 sm:w-12 sm:h-14 text-center text-xl sm:text-2xl font-bold rounded-lg border-2 
               transition-all duration-200 outline-none
               ${error
                                 ? 'border-red-500 bg-red-50 text-red-600'
