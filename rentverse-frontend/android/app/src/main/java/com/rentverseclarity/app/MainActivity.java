@@ -1,4 +1,4 @@
-package com.rentverse.app;
+package com.rentverseclarity.app;
 
 import com.getcapacitor.BridgeActivity;
 

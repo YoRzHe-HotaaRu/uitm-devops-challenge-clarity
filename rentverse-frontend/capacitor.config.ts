@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.rentverse.app',
+  appId: 'com.rentverseclarity.app',
   appName: 'Rentverse by ClaRity',
   webDir: 'out',
   android: {
