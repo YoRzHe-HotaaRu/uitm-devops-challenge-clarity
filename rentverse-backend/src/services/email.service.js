@@ -508,6 +508,91 @@ If you didn't request this code, you can safely ignore this email.
   }
 
   /**
+   * Send OAuth login notification email
+   * @param {string} email - Recipient email
+   * @param {string} provider - OAuth provider (google, facebook, etc.)
+   * @param {string} userName - User's name
+   * @param {Object} loginInfo - Login information
+   * @returns {Promise<boolean>}
+   */
+  async sendOAuthLoginNotification(email, provider, userName, loginInfo = {}) {
+    const subject = `New ${provider.charAt(0).toUpperCase() + provider.slice(1)} Sign In to RentVerse`;
+
+    const loginTime = new Date().toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">🏠 RentVerse</h1>
+        </div>
+        
+        <div style="background: #f8fafc; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
+          <h2 style="color: #1e293b; margin-top: 0;">New Sign In Detected</h2>
+          
+          <p style="color: #475569;">Hi${userName ? ' ' + userName : ''},</p>
+          
+          <p style="color: #475569;">We noticed a new sign in to your RentVerse account using <strong>${provider.charAt(0).toUpperCase() + provider.slice(1)}</strong>.</p>
+          
+          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; color: #64748b;">Sign In Method:</td>
+                <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${provider.charAt(0).toUpperCase() + provider.slice(1)}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; color: #64748b;">Time:</td>
+                <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${loginTime}</td>
+              </tr>
+              ${loginInfo.device ? `
+              <tr>
+                <td style="padding: 8px 0; color: #64748b;">Device:</td>
+                <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${loginInfo.device}</td>
+              </tr>
+              ` : ''}
+            </table>
+          </div>
+          
+          <p style="color: #475569;">If this was you, you can safely ignore this email.</p>
+          
+          <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin: 20px 0;">
+            <p style="color: #92400e; margin: 0; font-size: 14px;">
+              <strong>⚠️ Wasn't you?</strong><br>
+              If you didn't sign in, please secure your account immediately by changing your password and reviewing your linked accounts.
+            </p>
+          </div>
+          
+          <p style="color: #64748b; font-size: 14px; margin-top: 30px;">
+            Best regards,<br>
+            The RentVerse Team
+          </p>
+        </div>
+        
+        <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
+          <p>© ${new Date().getFullYear()} RentVerse. All rights reserved.</p>
+          <p>This is an automated security notification.</p>
+        </div>
+      </body>
+      </html>
+    `;
+
+    return await this.sendEmail({ to: email, subject, html });
+  }
+
+  /**
    * Strip HTML tags for plain text fallback
    * @param {string} html - HTML content
    * @returns {string} Plain text

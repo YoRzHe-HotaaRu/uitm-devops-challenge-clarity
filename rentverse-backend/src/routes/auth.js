@@ -1075,6 +1075,17 @@ router.get(
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
       );
 
+      // Send login notification email (async - don't wait)
+      const emailService = require('../services/email.service');
+      const userAgent = req.headers['user-agent'] || 'Unknown';
+      const isMobileDevice = userAgent.includes('Android') || userAgent.includes('iPhone');
+      emailService.sendOAuthLoginNotification(
+        req.user.email,
+        'google',
+        req.user.name || req.user.firstName,
+        { device: isMobileDevice ? 'Mobile App' : 'Web Browser' }
+      ).catch(err => console.error('Failed to send login notification email:', err));
+
       // Check if request is from mobile app
       const isMobile = req.query.state === 'mobile' || req.headers['user-agent']?.includes('Android');
 
