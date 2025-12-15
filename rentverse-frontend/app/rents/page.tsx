@@ -123,15 +123,9 @@ function RentsPage() {
       const data = await response.json()
 
       if (data.success && data.data.pdf) {
-        // Create a temporary link element and trigger download
-        const link = document.createElement('a')
-        link.href = data.data.pdf.url
-        link.download = data.data.pdf.fileName
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        console.log('Rental agreement downloaded successfully')
+        // Open PDF in new tab
+        window.open(data.data.pdf.url, '_blank')
+        console.log('Rental agreement opened in new tab')
       } else {
         throw new Error('Failed to get rental agreement PDF')
       }
