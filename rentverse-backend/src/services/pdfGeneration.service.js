@@ -279,12 +279,16 @@ class PDFGenerationService {
     // For both raw and image, try the simplest possible URL
     const baseUrl = `https://res.cloudinary.com/${process.env.CLOUD_NAME}`;
 
+    // Check if publicId already ends with .pdf to avoid double extension
+    const needsExtension = !publicId.endsWith('.pdf');
+    const extension = needsExtension ? '.pdf' : '';
+
     if (resourceType === 'raw') {
       // Direct raw URL without any transformations
-      return `${baseUrl}/raw/upload/${publicId}.pdf`;
+      return `${baseUrl}/raw/upload/${publicId}${extension}`;
     } else {
       // Direct image URL without transformations for PDF
-      return `${baseUrl}/image/upload/${publicId}.pdf`;
+      return `${baseUrl}/image/upload/${publicId}${extension}`;
     }
   }
 
