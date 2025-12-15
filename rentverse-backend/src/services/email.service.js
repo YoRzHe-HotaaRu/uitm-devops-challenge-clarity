@@ -516,7 +516,7 @@ If you didn't request this code, you can safely ignore this email.
    * @returns {Promise<boolean>}
    */
   async sendOAuthLoginNotification(email, provider, userName, loginInfo = {}) {
-    const subject = `New ${provider.charAt(0).toUpperCase() + provider.slice(1)} Sign In to RentVerse`;
+    const subject = `⚠️ Security Alert: New ${provider.charAt(0).toUpperCase() + provider.slice(1)} Sign In Detected`;
 
     const loginTime = new Date().toLocaleString('en-US', {
       weekday: 'long',
@@ -535,55 +535,84 @@ If you didn't request this code, you can safely ignore this email.
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
-      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <div style="background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-          <h1 style="color: white; margin: 0; font-size: 28px;">🏠 RentVerse</h1>
+      <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #1a1a1a;">
+        
+        <!-- Alert Banner -->
+        <div style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+          <div style="font-size: 48px; margin-bottom: 10px;">🚨</div>
+          <h1 style="color: white; margin: 0; font-size: 24px; font-weight: 700;">SECURITY ALERT</h1>
+          <p style="color: #fecaca; margin: 8px 0 0 0; font-size: 14px;">New sign-in to your RentVerse account</p>
         </div>
         
-        <div style="background: #f8fafc; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
-          <h2 style="color: #1e293b; margin-top: 0;">New Sign In Detected</h2>
+        <!-- Main Content -->
+        <div style="background: #ffffff; padding: 30px; border: 2px solid #dc2626; border-top: none;">
           
-          <p style="color: #475569;">Hi${userName ? ' ' + userName : ''},</p>
+          <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 15px; margin-bottom: 25px;">
+            <p style="color: #991b1b; margin: 0; font-weight: 600; font-size: 16px;">
+              Someone just signed in to your account
+            </p>
+          </div>
           
-          <p style="color: #475569;">We noticed a new sign in to your RentVerse account using <strong>${provider.charAt(0).toUpperCase() + provider.slice(1)}</strong>.</p>
+          <p style="color: #374151; font-size: 16px;">Hi${userName ? ' <strong>' + userName + '</strong>' : ''},</p>
           
-          <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 20px 0;">
+          <p style="color: #374151; font-size: 16px;">We detected a new sign-in to your RentVerse account. <strong>If this wasn't you, your account may be compromised.</strong></p>
+          
+          <!-- Login Details Box -->
+          <div style="background: #f9fafb; border: 1px solid #d1d5db; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <h3 style="color: #111827; margin: 0 0 15px 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Sign-In Details</h3>
             <table style="width: 100%; border-collapse: collapse;">
               <tr>
-                <td style="padding: 8px 0; color: #64748b;">Sign In Method:</td>
-                <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${provider.charAt(0).toUpperCase() + provider.slice(1)}</td>
+                <td style="padding: 10px 0; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Sign-In Method</td>
+                <td style="padding: 10px 0; color: #111827; font-weight: 600; font-size: 14px; text-align: right; border-bottom: 1px solid #e5e7eb;">
+                  <span style="background: #dbeafe; color: #1d4ed8; padding: 4px 10px; border-radius: 4px;">${provider.charAt(0).toUpperCase() + provider.slice(1)}</span>
+                </td>
               </tr>
               <tr>
-                <td style="padding: 8px 0; color: #64748b;">Time:</td>
-                <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${loginTime}</td>
+                <td style="padding: 10px 0; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Time</td>
+                <td style="padding: 10px 0; color: #111827; font-weight: 600; font-size: 14px; text-align: right; border-bottom: 1px solid #e5e7eb;">${loginTime}</td>
               </tr>
               ${loginInfo.device ? `
               <tr>
-                <td style="padding: 8px 0; color: #64748b;">Device:</td>
-                <td style="padding: 8px 0; color: #1e293b; font-weight: 500;">${loginInfo.device}</td>
+                <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">Device</td>
+                <td style="padding: 10px 0; color: #111827; font-weight: 600; font-size: 14px; text-align: right;">${loginInfo.device}</td>
               </tr>
               ` : ''}
             </table>
           </div>
           
-          <p style="color: #475569;">If this was you, you can safely ignore this email.</p>
+          <!-- Action Required -->
+          <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <h3 style="color: #92400e; margin: 0 0 10px 0; font-size: 16px;">⚠️ Was this you?</h3>
+            <p style="color: #78350f; margin: 0; font-size: 14px; line-height: 1.6;">
+              <strong>If YES:</strong> You can safely ignore this email.<br>
+              <strong>If NO:</strong> Someone else may have access to your account. Please take immediate action:
+            </p>
+            <ul style="color: #78350f; margin: 10px 0 0 0; padding-left: 20px; font-size: 14px;">
+              <li>Change your password immediately</li>
+              <li>Review your linked ${provider} account</li>
+              <li>Enable two-factor authentication</li>
+              <li>Check for any unauthorized activity</li>
+            </ul>
+          </div>
           
-          <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 15px; margin: 20px 0;">
-            <p style="color: #92400e; margin: 0; font-size: 14px;">
-              <strong>⚠️ Wasn't you?</strong><br>
-              If you didn't sign in, please secure your account immediately by changing your password and reviewing your linked accounts.
+          <!-- Danger Zone -->
+          <div style="background: #fef2f2; border: 2px solid #dc2626; border-radius: 8px; padding: 20px; margin: 25px 0;">
+            <h3 style="color: #991b1b; margin: 0 0 10px 0; font-size: 16px;">🔒 Didn't sign in? Act NOW!</h3>
+            <p style="color: #7f1d1d; margin: 0; font-size: 14px;">
+              If you did not authorize this sign-in, your account security may be at risk. 
+              Change your password and review your account settings immediately.
             </p>
           </div>
           
-          <p style="color: #64748b; font-size: 14px; margin-top: 30px;">
-            Best regards,<br>
-            The RentVerse Team
+          <p style="color: #6b7280; font-size: 13px; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+            This is an automated security notification from RentVerse. We send these alerts to help keep your account safe.
           </p>
         </div>
         
-        <div style="text-align: center; padding: 20px; color: #94a3b8; font-size: 12px;">
-          <p>© ${new Date().getFullYear()} RentVerse. All rights reserved.</p>
-          <p>This is an automated security notification.</p>
+        <!-- Footer -->
+        <div style="background: #111827; padding: 20px; text-align: center; border-radius: 0 0 10px 10px;">
+          <p style="color: #9ca3af; font-size: 12px; margin: 0;">© ${new Date().getFullYear()} RentVerse. All rights reserved.</p>
+          <p style="color: #6b7280; font-size: 11px; margin: 8px 0 0 0;">This is a security notification. Please do not reply to this email.</p>
         </div>
       </body>
       </html>
