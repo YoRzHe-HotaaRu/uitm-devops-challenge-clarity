@@ -158,7 +158,7 @@
 
 ---
 
-# 🛡️ Core Development Modules
+# 🛡️ Core Development Modules (Module 1-6)
 
 ## Module 1: Secure Login & MFA
 
