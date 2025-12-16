@@ -875,7 +875,7 @@ Schedule property viewings with landlords.
       <sub>v24 PDF Gen</sub>
     </td>
     <td align="center" width="100">
-      <img src="https://cdn.simpleicons.org/nodemailer" width="48" height="48"><br>
+      <img src="https://raw.githubusercontent.com/nodemailer/nodemailer/master/assets/nm_logo_200x136.png" width="48" height="48"><br>
       <b>Nodemailer</b><br>
       <sub>v7 Email</sub>
     </td>
@@ -885,7 +885,7 @@ Schedule property viewings with landlords.
       <sub>API Docs</sub>
     </td>
     <td align="center" width="100">
-      <img src="https://cdn.simpleicons.org/helmet" width="48" height="48"><br>
+      <img src="https://helmetjs.github.io/logo.svg" width="48" height="48"><br>
       <b>Helmet.js</b><br>
       <sub>v7 Security</sub>
     </td>
@@ -919,7 +919,7 @@ Schedule property viewings with landlords.
       <sub>v4 Styling</sub>
     </td>
     <td align="center" width="100">
-      <img src="https://cdn.simpleicons.org/zustand" width="48" height="48"><br>
+      <img src="https://raw.githubusercontent.com/pmndrs/zustand/main/docs/favicon.ico" width="48" height="48"><br>
       <b>Zustand</b><br>
       <sub>v5 State</sub>
     </td>
@@ -946,7 +946,7 @@ Schedule property viewings with landlords.
       <sub>v9 Linting</sub>
     </td>
     <td align="center" width="100">
-      <img src="https://turbo.build/images/docs/repo/turbo-benchmark-turbopack.svg" width="48" height="48"><br>
+      <img src="https://turbo.build/images/docs/pack/turbopack-hero-logo-dark.svg" width="48" height="48"><br>
       <b>Turbopack</b><br>
       <sub>Bundler</sub>
     </td>
@@ -1022,28 +1022,13 @@ Schedule property viewings with landlords.
 
 <table>
   <tr>
-    <td align="center" width="100">
+    <td align="center" width="140">
       <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" width="48" height="48"><br>
       <b>Google OAuth</b><br>
       <sub>Social Login</sub>
     </td>
-    <td align="center" width="100">
-      <img src="https://www.vectorlogo.zone/logos/facebook/facebook-icon.svg" width="48" height="48"><br>
-      <b>Facebook</b><br>
-      <sub>Social Login</sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://www.vectorlogo.zone/logos/github/github-icon.svg" width="48" height="48"><br>
-      <b>GitHub</b><br>
-      <sub>Social Login</sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://www.vectorlogo.zone/logos/apple/apple-icon.svg" width="48" height="48"><br>
-      <b>Apple</b><br>
-      <sub>Social Login</sub>
-    </td>
-    <td align="center" width="100">
-      <img src="https://cdn.simpleicons.org/letsencrypt" width="48" height="48"><br>
+    <td align="center" width="140">
+      <img src="https://www.vectorlogo.zone/logos/laboraboraborainc/laboraboraborainc-icon.svg" width="48" height="48"><br>
       <b>HTTPS/TLS</b><br>
       <sub>Encryption</sub>
     </td>
@@ -1062,12 +1047,12 @@ Schedule property viewings with landlords.
       <sub>Property Auto-Review</sub>
     </td>
     <td align="center" width="140">
-      <img src="https://cdn.simpleicons.org/qrcode" width="48" height="48"><br>
+      <img src="https://www.vectorlogo.zone/logos/qikicom/qikicom-icon.svg" width="48" height="48"><br>
       <b>QR Code</b><br>
       <sub>v1.5 Generator</sub>
     </td>
     <td align="center" width="140">
-      <img src="https://cdn.simpleicons.org/adobeacrobatreader" width="48" height="48"><br>
+      <img src="https://www.vectorlogo.zone/logos/adobe_acrobat/adobe_acrobat-icon.svg" width="48" height="48"><br>
       <b>PDF Generation</b><br>
       <sub>Digital Agreements</sub>
     </td>
@@ -1113,7 +1098,7 @@ Schedule property viewings with landlords.
       <sub>Code Formatting</sub>
     </td>
     <td align="center" width="100">
-      <img src="https://cdn.simpleicons.org/husky" width="48" height="48"><br>
+      <img src="https://avatars.githubusercontent.com/u/35137722" width="48" height="48"><br>
       <b>Husky</b><br>
       <sub>Git Hooks</sub>
     </td>
