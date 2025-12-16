@@ -58,6 +58,17 @@
 | 🌐 **Live Website** | [https://rentverse-frontend-nine.vercel.app/](https://rentverse-frontend-nine.vercel.app/) |
 | 📱 **Mobile App (APK)** | [Download RentVerse APK](MobileAppBuild/rentverse-clarity.apk) |
 
+### 🧪 Test Admin Account
+
+> **Note**: MFA is disabled only for this specific account to allow testing of admin functionalities. For non-MFA accounts, you won't be greeted by the Welcome Popup Modal.
+
+| Credential | Value |
+|------------|-------|
+| 📧 **Email** | `admin@rentverse.com` |
+| 🔑 **Password** | `password123` |
+
+> **⚠️ Important**: To test **user** and **landlord** functionalities, you must register with your own **real email address**. Fake emails will not work on this system (both Web and Mobile App) as OTP verification is required.
+
 ---
 
 ## 📸 Platform Preview
