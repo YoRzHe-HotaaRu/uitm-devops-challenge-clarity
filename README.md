@@ -79,7 +79,7 @@
 
 ### Mobile Application
 <!-- PLACEHOLDER: Add screenshot of mobile application here -->
-![Mobile Application](github/assets/mobile-preview.png)
+![Mobile Application](github/assets/PlatformPreviewMobile.gif)
 
 ---
 
