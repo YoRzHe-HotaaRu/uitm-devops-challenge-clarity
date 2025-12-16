@@ -474,7 +474,7 @@ flowchart LR
 **Security Focus:** Authentication & Authorization (OWASP M1–M3)
 
 <!-- PLACEHOLDER: Add screenshot of login/MFA flow here -->
-![MFA Login Flow](github/assets/module1-mfa.png)
+![MFA Login Flow](github/assets/coredevmodule/Module1.jpg)
 
 ### Implementation Details
 
