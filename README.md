@@ -2,23 +2,20 @@
   <sub>📋 <i>This is the original technical documentation created from scratch by Team ClaRity. If you're referencing this for your own project, please carefully review and adapt the content to match your specific system requirements—do not copy directly without modifications.</i></sub>
 </div>
 
+<br>
+
 <div align="center">
-  <table border="0" cellspacing="0" cellpadding="10">
-    <tr>
-      <td align="center" width="200">
-        <img src="github/assets/uitm.png" width="100" height="100"><br>
-        <b>UiTM Tapah</b>
-      </td>
-      <td align="center" width="200">
-        <img src="github/assets/logo.png" width="120" height="120"><br>
-        <i>Building the Future Through Innovation</i>
-      </td>
-      <td align="center" width="200">
-        <img src="github/assets/ClaRityLogo.png" width="100" height="100"><br>
-        <b>ClaRity</b>
-      </td>
-    </tr>
-  </table>
+  <img src="github/assets/uitm.png" width="100" height="100">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="github/assets/logo.png" width="120" height="120">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="github/assets/ClaRityLogo.png" width="100" height="100">
+  <br><br>
+  <b>UiTM Tapah</b>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <i>Building the Future Through Innovation</i>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>ClaRity</b>
 </div>
 
 <h1 align="center">🏠 RentVerse by ClaRity</h1>
@@ -29,28 +26,23 @@
 ## 👥 Team Members
 
 <div align="center">
-  <table border="0" cellspacing="0" cellpadding="15">
-    <tr>
-      <td align="center">
-        <a href="https://github.com/Nomics03">
-          <img src="https://wsrv.nl/?url=https://github.com/Nomics03.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
-          <b>Muhammad 'Adli Bin Mohd Ali</b>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/YoRzHe-HotaaRu">
-          <img src="https://wsrv.nl/?url=https://github.com/YoRzHe-HotaaRu.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
-          <b>Amir Hafizi Bin Musa</b>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/dev-manchae">
-          <img src="https://wsrv.nl/?url=https://github.com/dev-manchae.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
-          <b>Nik Muhammad Haziq bin Nik Hasni</b>
-        </a>
-      </td>
-    </tr>
-  </table>
+  <a href="https://github.com/Nomics03">
+    <img src="https://wsrv.nl/?url=https://github.com/Nomics03.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100">
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/YoRzHe-HotaaRu">
+    <img src="https://wsrv.nl/?url=https://github.com/YoRzHe-HotaaRu.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100">
+  </a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/dev-manchae">
+    <img src="https://wsrv.nl/?url=https://github.com/dev-manchae.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100">
+  </a>
+  <br><br>
+  <a href="https://github.com/Nomics03"><b>Muhammad 'Adli Bin Mohd Ali</b></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/YoRzHe-HotaaRu"><b>Amir Hafizi Bin Musa</b></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/dev-manchae"><b>Nik Muhammad Haziq bin Nik Hasni</b></a>
 </div>
 
 ---
