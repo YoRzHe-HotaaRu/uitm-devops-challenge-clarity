@@ -752,7 +752,7 @@ Additional advanced security features implemented beyond core modules.
 
 ---
 
-### Category 1: Threat Intelligence System
+### 🟡 Category 1: Threat Intelligence System 🛡️
 
 **Description**: A rule-based module that detects unusual access patterns, repeated failed logins, and potential intrusion attempts through intelligent pattern analysis.
 
@@ -803,7 +803,7 @@ async function calculateRiskScore(userId, ipAddress, userAgent) {
 
 ---
 
-### Category 2: Zero-Trust Access Logic
+### 🟪 Category 2: Zero-Trust Access Logic 🔐
 
 **Description**: Implements conditional access controls including device verification, automatic token invalidation, and comprehensive session management.
 
@@ -852,7 +852,7 @@ async function checkDevice(userId, userAgent, ipAddress) {
 
 ---
 
-### Category 3: Adaptive Defense Dashboard
+### 🟩 Category 3: Adaptive Defense Dashboard 💻
 
 **Description**: An interactive admin dashboard that visualizes system risk levels and auto-responds to flagged security events with automated countermeasures.
 
@@ -909,7 +909,7 @@ const usersWithHighRisk = await prisma.loginHistory.groupBy({
 
 ---
 
-### Category 4: Automated Security Testing
+### 🟫 Category 4: Automated Security Testing 🧪
 
 **Description**: Integrated security scanning tools in the CI/CD pipeline that run automatically before each deployment to catch vulnerabilities early.
 
