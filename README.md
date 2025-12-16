@@ -580,7 +580,7 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET);
 #### ⏱️ Rate Limiting
 | Limiter Type | Limit | Window | Purpose |
 |--------------|-------|--------|---------|
-| Global | 100 requests | 15 min | DDoS prevention |
+| Global | 2000 requests | 15 min | DDoS prevention |
 | Auth | 5 attempts | 15 min | Brute force prevention |
 | OTP | 5 attempts | 5 min | OTP abuse prevention |
 | Strict | 3 requests | 1 min | Sensitive operations |
