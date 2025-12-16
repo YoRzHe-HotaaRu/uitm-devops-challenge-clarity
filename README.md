@@ -83,7 +83,40 @@
 
 ---
 
-## 📈 System Flow Diagrams
+## � Table of Contents
+
+| Section | Description |
+|---------|-------------|
+| [👥 Team Members](#-team-members) | Meet the ClaRity team |
+| [🔗 Quick Links](#-quick-links) | Live demo & download links |
+| [📸 Platform Preview](#-platform-preview) | Web & Mobile screenshots |
+| [📈 System Flow Diagrams](#-system-flow-diagrams) | Architecture & flow visualizations |
+| [🔧 Development Platforms](#-development-platforms) | Hosting & services used |
+| **🛡️ Core Development Modules** | |
+| [🟢 Module 1: Secure Login & MFA](#-module-1-secure-login--mfa-) | Authentication & Authorization |
+| [🔵 Module 2: Secure API Gateway](#-module-2-secure-api-gateway-) | HTTPS, JWT, Rate Limiting |
+| [🟣 Module 3: Sensitive Data Handling](#-module-3-sensitive-data-handling-) | Encryption & Secure Storage |
+| [🟠 Module 4: Secure Session Management](#-module-4-secure-session-management-) | Token Lifecycle & Blacklisting |
+| [🩷 Module 5: Input Validation & Defense](#-module-5-input-validation--defense-) | XSS, SQL Injection Prevention |
+| [🔷 Module 6: DevSecOps Integration](#-module-6-devsecops-integration-) | CI/CD Security Pipeline |
+| **🚀 Feature Innovation Pool** | |
+| [🟡 Category 1: Threat Intelligence](#-category-1-threat-intelligence-system-️) | Risk scoring & pattern detection |
+| [🟪 Category 2: Zero-Trust Access](#-category-2-zero-trust-access-logic-) | Device verification & session control |
+| [🟩 Category 3: Adaptive Defense](#-category-3-adaptive-defense-dashboard-) | Security monitoring dashboard |
+| [🟫 Category 4: Automated Testing](#-category-4-automated-security-testing-) | CI/CD security scanning |
+| **✨ Special Features** | |
+| [📝 Digital Rental Agreements](#-digital-rental-agreements) | E-signatures & PDF generation |
+| [🔐 OTP-Based Password Reset](#-otp-based-password-reset) | Secure password recovery |
+| [📧 Smart Email Notifications](#-smart-email-notification-system) | Responsive email templates |
+| [👑 Admin Dashboard](#-admin-dashboard) | Platform administration |
+| [📱 Mobile Application](#-mobile-application) | Android app with Capacitor |
+| [📅 Booking & Viewing System](#-booking--viewing-system) | Property scheduling |
+| [🛠️ Technology Stack](#️-technology-stack) | Backend, Frontend & DevOps tools |
+| [📚 API Documentation](#-api-documentation) | Swagger UI endpoints |
+
+---
+
+## �📈 System Flow Diagrams
 
 ### 🏗️ System Architecture Overview
 
