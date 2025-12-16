@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import ContentWrapper from '@/components/ContentWrapper'
 import useAuthStore from '@/stores/authStore'
+import { createApiUrl } from '@/utils/apiConfig'
 import {
     ArrowLeft,
     Shield,
@@ -14,12 +15,167 @@ import {
     Key,
     Smartphone,
     LogOut,
-    Save,
     Loader2,
     CheckCircle,
     AlertCircle,
-    AlertTriangle
+    AlertTriangle,
+    X
 } from 'lucide-react'
+
+// MFA Toggle Button Component
+function MfaToggleButton({
+    mfaEnabled,
+    onToggle
+}: {
+    mfaEnabled: boolean;
+    onToggle: (enabled: boolean) => void
+}) {
+    const [isLoading, setIsLoading] = useState(false)
+    const [showPasswordModal, setShowPasswordModal] = useState(false)
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
+
+    const handleEnable = async () => {
+        setIsLoading(true)
+        setError('')
+        try {
+            const token = localStorage.getItem('authToken')
+            const response = await fetch(createApiUrl('auth/mfa/enable'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+            const result = await response.json()
+            if (response.ok && result.success) {
+                onToggle(true)
+            } else {
+                setError(result.message || 'Failed to enable MFA')
+            }
+        } catch (err) {
+            setError('Failed to enable MFA. Please try again.')
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleDisable = async () => {
+        if (!password) {
+            setError('Please enter your password')
+            return
+        }
+        setIsLoading(true)
+        setError('')
+        try {
+            const token = localStorage.getItem('authToken')
+            const response = await fetch(createApiUrl('auth/mfa/disable'), {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ password }),
+            })
+            const result = await response.json()
+            if (response.ok && result.success) {
+                setShowPasswordModal(false)
+                setPassword('')
+                onToggle(false)
+            } else {
+                setError(result.message || 'Failed to disable MFA')
+            }
+        } catch (err) {
+            setError('Failed to disable MFA. Please try again.')
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleToggleClick = () => {
+        if (mfaEnabled) {
+            setShowPasswordModal(true)
+            setError('')
+        } else {
+            handleEnable()
+        }
+    }
+
+    return (
+        <>
+            <button
+                onClick={handleToggleClick}
+                disabled={isLoading}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${mfaEnabled
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                        : 'bg-teal-600 text-white hover:bg-teal-700'
+                    } disabled:opacity-50`}
+            >
+                {isLoading ? (
+                    <Loader2 size={16} className="animate-spin" />
+                ) : null}
+                {mfaEnabled ? 'Disable' : 'Enable'}
+            </button>
+
+            {/* Password Confirmation Modal */}
+            {showPasswordModal && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 relative">
+                        <button
+                            onClick={() => {
+                                setShowPasswordModal(false)
+                                setPassword('')
+                                setError('')
+                            }}
+                            className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+                        >
+                            <X size={20} />
+                        </button>
+                        <h3 className="text-lg font-semibold text-slate-900 mb-2">
+                            Disable Two-Factor Authentication
+                        </h3>
+                        <p className="text-slate-500 text-sm mb-4">
+                            Enter your password to confirm disabling MFA.
+                        </p>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Enter your password"
+                            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 mb-4"
+                        />
+                        {error && (
+                            <p className="text-red-600 text-sm mb-4 flex items-center gap-2">
+                                <AlertCircle size={16} />
+                                {error}
+                            </p>
+                        )}
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => {
+                                    setShowPasswordModal(false)
+                                    setPassword('')
+                                    setError('')
+                                }}
+                                className="flex-1 px-4 py-2 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDisable}
+                                disabled={isLoading}
+                                className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center gap-2"
+                            >
+                                {isLoading ? <Loader2 size={16} className="animate-spin" /> : null}
+                                Disable MFA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </>
+    )
+}
 
 function SecuritySettingsPage() {
     const router = useRouter()
@@ -268,7 +424,7 @@ function SecuritySettingsPage() {
                     </div>
                 </form>
 
-                {/* Two-Factor Authentication (Coming Soon) */}
+                {/* Two-Factor Authentication */}
                 <div className="bg-white border border-slate-200 rounded-xl p-6 mt-6">
                     <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                         <Smartphone size={20} className="text-teal-600" />
@@ -277,10 +433,29 @@ function SecuritySettingsPage() {
                     <p className="text-slate-500 mb-4">
                         Add an extra layer of security to your account by requiring a verification code in addition to your password.
                     </p>
-                    <div className="flex items-center gap-2 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-700">
-                        <AlertTriangle size={20} />
-                        <span>Two-factor authentication is coming soon</span>
+
+                    <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                        <div className="flex items-center gap-3">
+                            <div className={`w-3 h-3 rounded-full ${user.mfaEnabled ? 'bg-green-500' : 'bg-slate-300'}`} />
+                            <span className="font-medium text-slate-700">
+                                {user.mfaEnabled ? 'Enabled' : 'Disabled'}
+                            </span>
+                        </div>
+                        <MfaToggleButton
+                            mfaEnabled={user.mfaEnabled || false}
+                            onToggle={async (enabled) => {
+                                // Refresh the user data after toggle
+                                initializeAuth()
+                            }}
+                        />
                     </div>
+
+                    {user.mfaEnabled && (
+                        <p className="text-sm text-green-600 mt-3 flex items-center gap-2">
+                            <CheckCircle size={16} />
+                            Your account is protected with two-factor authentication
+                        </p>
+                    )}
                 </div>
 
                 {/* Active Sessions */}

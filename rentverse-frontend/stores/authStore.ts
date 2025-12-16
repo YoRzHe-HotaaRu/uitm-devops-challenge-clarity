@@ -192,6 +192,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           phone: backendUser.phone || '',
           role: backendUser.role || 'user',
           birthdate: backendUser.dateOfBirth || undefined,
+          mfaEnabled: backendUser.mfaEnabled || false,
         }
 
         // Debug logging for final user object
@@ -266,6 +267,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           phone: backendUser.phone || '',
           role: backendUser.role || 'user',
           birthdate: backendUser.dateOfBirth || undefined,
+          mfaEnabled: backendUser.mfaEnabled || false,
         }
 
         set({
@@ -414,6 +416,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
           phone: backendUser.phone || phone,
           role: backendUser.role || 'user',
           birthdate: backendUser.dateOfBirth || birthdate,
+          mfaEnabled: backendUser.mfaEnabled || false,
         }
 
         set({
@@ -593,6 +596,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             phone: backendUser.phone || '',
             role: backendUser.role || 'user',
             birthdate: backendUser.dateOfBirth || undefined,
+            mfaEnabled: backendUser.mfaEnabled || false,
           }
 
           // Debug logging for final user object
@@ -657,6 +661,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             phone: backendUser.phone || '',
             role: backendUser.role || 'user',
             birthdate: backendUser.dateOfBirth || undefined,
+            mfaEnabled: backendUser.mfaEnabled || false,
           }
 
           set({
