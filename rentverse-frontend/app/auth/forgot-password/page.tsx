@@ -370,8 +370,8 @@ export default function ForgotPasswordPage() {
     }
 
     return (
-        <ContentWrapper withFooter={false}>
-            <div className="h-[calc(100vh-96px)] flex items-center justify-center p-2 sm:p-4">
+        <ContentWrapper>
+            <div className="min-h-[60vh] flex items-center justify-center p-2 sm:p-4">
                 {getCurrentContent()}
             </div>
         </ContentWrapper>
