@@ -885,7 +885,7 @@ Schedule property viewings with landlords.
       <sub>API Docs</sub>
     </td>
     <td align="center" width="100">
-      <img src="https://helmetjs.github.io/logo.svg" width="48" height="48"><br>
+      <img src="https://avatars.githubusercontent.com/u/25641704" width="48" height="48"><br>
       <b>Helmet.js</b><br>
       <sub>v7 Security</sub>
     </td>
@@ -1028,7 +1028,7 @@ Schedule property viewings with landlords.
       <sub>Social Login</sub>
     </td>
     <td align="center" width="140">
-      <img src="https://www.vectorlogo.zone/logos/laboraboraborainc/laboraboraborainc-icon.svg" width="48" height="48"><br>
+      <img src="https://www.vectorlogo.zone/logos/cloudflare/cloudflare-icon.svg" width="48" height="48"><br>
       <b>HTTPS/TLS</b><br>
       <sub>Encryption</sub>
     </td>
@@ -1047,7 +1047,7 @@ Schedule property viewings with landlords.
       <sub>Property Auto-Review</sub>
     </td>
     <td align="center" width="140">
-      <img src="https://www.vectorlogo.zone/logos/qikicom/qikicom-icon.svg" width="48" height="48"><br>
+      <img src="https://api.iconify.design/mdi/qrcode.svg" width="48" height="48"><br>
       <b>QR Code</b><br>
       <sub>v1.5 Generator</sub>
     </td>
