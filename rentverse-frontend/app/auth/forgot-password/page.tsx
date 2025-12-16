@@ -159,13 +159,13 @@ export default function ForgotPasswordPage() {
 
     // Email Step
     const emailContent = (
-        <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-xl">
-            <div className="text-center mb-6 relative">
+        <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+            <div className="text-center mb-4 relative">
                 <Link href="/auth/login">
                     <ArrowLeft size={20} className="absolute left-0 top-1 text-slate-800 cursor-pointer hover:text-slate-600" />
                 </Link>
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <KeyRound className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <KeyRound className="w-7 h-7 text-white" />
                 </div>
                 <h2 className="text-xl font-semibold text-slate-900 mb-2">
                     Forgot Password?
@@ -181,7 +181,7 @@ export default function ForgotPasswordPage() {
                 </div>
             )}
 
-            <form onSubmit={handleRequestReset} className="space-y-6">
+            <form onSubmit={handleRequestReset} className="space-y-4">
                 <div>
                     <label htmlFor="email" className="block text-sm font-medium text-slate-900 mb-2">
                         Email Address
@@ -215,7 +215,7 @@ export default function ForgotPasswordPage() {
 
     // OTP Step
     const otpContent = (
-        <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-xl">
+        <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
             <div className="text-center mb-2 relative">
                 <ArrowLeft
                     onClick={() => setStep('email')}
@@ -239,17 +239,17 @@ export default function ForgotPasswordPage() {
 
     // Password Step
     const passwordContent = (
-        <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-xl">
-            <div className="text-center mb-6 relative">
+        <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+            <div className="text-center mb-4 relative">
                 <ArrowLeft
                     onClick={() => setStep('otp')}
                     size={20}
                     className="absolute left-0 top-1 text-slate-800 cursor-pointer hover:text-slate-600"
                 />
-                <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Lock className="w-8 h-8 text-white" />
+                <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Lock className="w-7 h-7 text-white" />
                 </div>
-                <h2 className="text-xl font-semibold text-slate-900 mb-2">
+                <h2 className="text-xl font-semibold text-slate-900 mb-1">
                     Set New Password
                 </h2>
                 <p className="text-sm text-slate-600">
@@ -263,7 +263,7 @@ export default function ForgotPasswordPage() {
                 </div>
             )}
 
-            <form onSubmit={handleResetPassword} className="space-y-6">
+            <form onSubmit={handleResetPassword} className="space-y-4">
                 <div>
                     <label htmlFor="newPassword" className="block text-sm font-medium text-slate-900 mb-2">
                         New Password
@@ -291,7 +291,7 @@ export default function ForgotPasswordPage() {
                     )}
                 </div>
 
-                <div className="bg-slate-50 rounded-xl p-4">
+                <div className="bg-slate-50 rounded-lg p-3">
                     <p className="text-xs font-medium text-slate-700 mb-2">Password Requirements:</p>
                     <ul className="text-xs text-slate-600 space-y-1">
                         <li className={clsx(newPassword.length >= 8 ? 'text-green-600' : 'text-slate-400')}>
@@ -318,12 +318,12 @@ export default function ForgotPasswordPage() {
 
     // Success Step
     const successContent = (
-        <div className="bg-white rounded-3xl max-w-md w-full p-8 shadow-xl">
-            <div className="text-center py-8">
-                <div className="flex justify-center mb-6">
+        <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
+            <div className="text-center py-4">
+                <div className="flex justify-center mb-4">
                     <div className="relative">
-                        <div className="w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center animate-pulse">
-                            <CheckCircle className="w-12 h-12 text-white" />
+                        <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center animate-pulse">
+                            <CheckCircle className="w-10 h-10 text-white" />
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full animate-ping opacity-20" />
                     </div>
@@ -370,8 +370,8 @@ export default function ForgotPasswordPage() {
     }
 
     return (
-        <ContentWrapper>
-            <div className="min-h-[calc(100vh-180px)] flex items-center justify-center p-4">
+        <ContentWrapper withFooter={false}>
+            <div className="h-[calc(100vh-96px)] flex items-center justify-center p-2 sm:p-4">
                 {getCurrentContent()}
             </div>
         </ContentWrapper>
