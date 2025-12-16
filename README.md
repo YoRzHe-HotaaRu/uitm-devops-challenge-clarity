@@ -666,6 +666,7 @@ createSignatureHash(signature, timestamp, leaseId, userId) {
 | Alert Type | Trigger | Email Sent |
 |------------|---------|------------|
 | `NEW_DEVICE` | Login from unrecognized device | ✅ Yes |
+| `GOOGLE_OAUTH_LOGIN` | Login via Google OAuth | ✅ Yes |
 | `MULTIPLE_FAILURES` | 3+ failed logins in 5 minutes | ✅ Yes |
 | `ACCOUNT_LOCKED` | Account locked after max attempts | ✅ Yes |
 | `SUSPICIOUS_TIMING` | Login between 2-5 AM | ❌ No |
