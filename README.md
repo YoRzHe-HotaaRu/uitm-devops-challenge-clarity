@@ -83,7 +83,7 @@
 
 ---
 
-## � System Flow Diagrams
+## 📈 System Flow Diagrams
 
 ### 🏗️ System Architecture Overview
 
@@ -357,7 +357,7 @@ flowchart LR
 
 ---
 
-## �🔧 Development Platforms
+## �️ Development Platforms
 
 <div align="center">
   <table>
