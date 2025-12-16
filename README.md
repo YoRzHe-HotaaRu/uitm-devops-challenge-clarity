@@ -357,7 +357,7 @@ flowchart LR
 
 ---
 
-## �️ Development Platforms
+## 🔧 Development Platforms
 
 <div align="center">
   <table>
