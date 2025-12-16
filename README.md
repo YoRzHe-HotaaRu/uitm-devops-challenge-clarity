@@ -534,9 +534,18 @@ const authorize = (...roles) => {
 - **Real-time Status**: Visual indicator shows current MFA status
 - **Email Notification**: Users receive email when MFA status changes
 
+**Rate Limiting (OTP/MFA Endpoints):**
+| Endpoint | Rate Limit | Description |
+|----------|-----------|-------------|
+| `/mfa/verify` | 5 per 5 min | OTP verification attempts |
+| `/mfa/resend` | 3 per min | OTP resend requests |
+| `/mfa/enable` | 3 per min | Enable MFA requests |
+| `/mfa/disable` | 3 per min | Disable MFA requests |
+
 **Key Files:**
 - `app/account/security/page.tsx` - MFA toggle UI component
 - `auth.js` - `/mfa/enable` and `/mfa/disable` endpoints
+- `middleware/rateLimit.js` - Rate limiting middleware
 
 ---
 
