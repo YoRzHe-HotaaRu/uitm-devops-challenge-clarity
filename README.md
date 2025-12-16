@@ -759,6 +759,60 @@ Additional advanced security features implemented beyond core modules.
 **Screenshot Placeholder**:
 ![Threat Intelligence](github/assets/innovation-threat-intel.png)
 
+#### Flow Diagram
+
+```mermaid
+flowchart TD
+    subgraph Input["📥 Login Event"]
+        A["User Login Attempt"]
+    end
+
+    subgraph Analysis["🔍 Threat Analysis"]
+        B["Extract User Agent & IP"]
+        C["Generate Device Hash"]
+        D{"Known Device?"}
+        E["Check IP Failure History"]
+        F{"5+ Failures?"}
+        G["Check Login Time"]
+        H{"2-5 AM?"}
+    end
+
+    subgraph Scoring["📊 Risk Scoring"]
+        S1["+0 Points"]
+        S2["+30 Points<br/>New Device"]
+        S3["+25 Points<br/>Suspicious IP"]
+        S4["+15 Points<br/>Unusual Time"]
+        S5["Calculate Total<br/>Risk Score"]
+    end
+
+    subgraph Response["⚡ Response"]
+        R1{"Score >= 50?"}
+        R2["✅ Normal Login"]
+        R3["⚠️ High Risk Alert"]
+        R4["📧 Send Email Alert"]
+        R5["📝 Log to Dashboard"]
+    end
+
+    A --> B --> C --> D
+    D -->|Yes| S1
+    D -->|No| S2
+    S1 --> E
+    S2 --> E
+    E --> F
+    F -->|No| G
+    F -->|Yes| S3
+    S3 --> G
+    G --> H
+    H -->|No| S5
+    H -->|Yes| S4
+    S4 --> S5
+    S5 --> R1
+    R1 -->|No| R2
+    R1 -->|Yes| R3
+    R3 --> R4
+    R3 --> R5
+```
+
 #### Implementation Details
 
 **Risk Score Calculation** ([suspiciousActivity.service.js](rentverse-backend/src/services/suspiciousActivity.service.js)):
@@ -810,6 +864,51 @@ async function calculateRiskScore(userId, ipAddress, userAgent) {
 **Screenshot Placeholder**:
 ![Zero-Trust Access](github/assets/innovation-zero-trust.png)
 
+#### Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph Request["📥 API Request"]
+        A["Incoming Request"]
+        B["Extract JWT Token"]
+    end
+
+    subgraph Validation["🔍 Zero-Trust Validation"]
+        C{"Token Present?"}
+        D{"Token Blacklisted?"}
+        E{"Token Expired?"}
+        F["Decode JWT Payload"]
+        G{"User Active?"}
+    end
+
+    subgraph Device["📱 Device Check"]
+        H["Generate Device Hash"]
+        I{"Known Device?"}
+        J["Register New Device"]
+        K["Send Device Alert"]
+    end
+
+    subgraph Result["✅ Result"]
+        R1["❌ 401 Unauthorized"]
+        R2["❌ 403 Token Revoked"]
+        R3["❌ 401 Token Expired"]
+        R4["❌ 403 Account Disabled"]
+        R5["✅ Access Granted"]
+    end
+
+    A --> B --> C
+    C -->|No| R1
+    C -->|Yes| D
+    D -->|Yes| R2
+    D -->|No| E
+    E -->|Yes| R3
+    E -->|No| F --> G
+    G -->|No| R4
+    G -->|Yes| H --> I
+    I -->|Yes| R5
+    I -->|No| J --> K --> R5
+```
+
 #### Implementation Details
 
 **Device Fingerprinting & Tracking** ([suspiciousActivity.service.js](rentverse-backend/src/services/suspiciousActivity.service.js)):
@@ -858,6 +957,57 @@ async function checkDevice(userId, userAgent, ipAddress) {
 
 **Screenshot Placeholder**:
 ![Adaptive Defense Dashboard](github/assets/innovation-adaptive-dashboard.png)
+
+#### Flow Diagram
+
+```mermaid
+flowchart TD
+    subgraph DataSources["📊 Data Sources"]
+        D1["Login History"]
+        D2["Security Alerts"]
+        D3["User Devices"]
+        D4["Failed Attempts"]
+    end
+
+    subgraph Processing["⚙️ Real-time Processing"]
+        P1["Aggregate 24h Stats"]
+        P2["Calculate Failure Rate"]
+        P3["Identify High-Risk Users"]
+        P4["Generate 7-Day Trends"]
+    end
+
+    subgraph Dashboard["📈 Admin Dashboard"]
+        V1["Statistics Cards"]
+        V2["Login History Table"]
+        V3["Alert Feed"]
+        V4["Trend Charts"]
+        V5["At-Risk Users List"]
+    end
+
+    subgraph Actions["⚡ Admin Actions"]
+        A1["Unlock Account"]
+        A2["Investigate User"]
+        A3["Export Report"]
+        A4["View Device History"]
+    end
+
+    D1 --> P1
+    D2 --> P1
+    D3 --> P1
+    D4 --> P1
+    P1 --> P2
+    P1 --> P3
+    P1 --> P4
+    P2 --> V1
+    P3 --> V5
+    P4 --> V4
+    D1 --> V2
+    D2 --> V3
+    V5 --> A2
+    V2 --> A1
+    V3 --> A4
+    V1 --> A3
+```
 
 #### Implementation Details
 
@@ -915,6 +1065,58 @@ const usersWithHighRisk = await prisma.loginHistory.groupBy({
 
 **Screenshot Placeholder**:
 ![Automated Security Testing](github/assets/innovation-security-testing.png)
+
+#### Flow Diagram
+
+```mermaid
+flowchart LR
+    subgraph Trigger["🚀 Trigger"]
+        T1["Git Push"]
+        T2["Pull Request"]
+        T3["Schedule"]
+    end
+
+    subgraph SAST["🔬 SAST"]
+        S1["ESLint"]
+        S2["TypeScript"]
+        S3["npm Audit"]
+    end
+
+    subgraph Security["🔐 Security"]
+        SEC1["CodeQL"]
+        SEC2["Gitleaks"]
+        SEC3["Trivy"]
+    end
+
+    subgraph Gates["🚦 Quality Gates"]
+        G1{"Critical Issues?"}
+        G2{"Secrets Found?"}
+        G3{"High CVEs?"}
+    end
+
+    subgraph Result["📋 Result"]
+        R1["❌ Build Failed"]
+        R2["✅ Build Passed"]
+        R3["📊 Generate Report"]
+        R4["🚀 Deploy"]
+    end
+
+    T1 --> SAST
+    T2 --> SAST
+    T3 --> Security
+    SAST --> Security
+    S1 --> G1
+    SEC2 --> G2
+    SEC3 --> G3
+    G1 -->|Yes| R1
+    G2 -->|Yes| R1
+    G3 -->|Yes| R1
+    G1 -->|No| G2
+    G2 -->|No| G3
+    G3 -->|No| R2
+    R2 --> R3
+    R3 --> R4
+```
 
 #### Implementation Details
 
