@@ -313,7 +313,7 @@ export default function AgreementSigningPage() {
   return (
     <ContentWrapper>
       {/* Header */}
-      <div className="max-w-4xl mx-auto mb-6">
+      <div className="max-w-4xl mx-auto px-4 md:px-0 mb-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <Link
@@ -335,7 +335,7 @@ export default function AgreementSigningPage() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto px-4 md:px-0">
         <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
           {/* Property Header */}
           <div className="relative h-48 md:h-64">
@@ -388,22 +388,22 @@ export default function AgreementSigningPage() {
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Signing Parties</h3>
               <div className="space-y-4">
                 {/* Landlord */}
-                <div className={`flex items-center justify-between p-4 rounded-xl border-2 transition-colors ${agreement.landlordSigned
+                <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-xl border-2 transition-colors ${agreement.landlordSigned
                   ? 'border-green-200 bg-green-50'
                   : 'border-slate-200 bg-slate-50'
                   }`}>
                   <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${agreement.landlordSigned ? 'bg-green-600' : 'bg-indigo-600'
+                    <div className={`w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center text-white font-semibold ${agreement.landlordSigned ? 'bg-green-600' : 'bg-indigo-600'
                       }`}>
                       {agreement.lease.landlord.name.charAt(0).toUpperCase()}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs text-slate-500 uppercase tracking-wider">Landlord</p>
-                      <p className="font-semibold text-slate-900">{agreement.lease.landlord.name}</p>
-                      <p className="text-sm text-slate-500">{agreement.lease.landlord.email}</p>
+                      <p className="font-semibold text-slate-900 truncate">{agreement.lease.landlord.name}</p>
+                      <p className="text-sm text-slate-500 truncate">{agreement.lease.landlord.email}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right flex-shrink-0">
                     {agreement.landlordSigned ? (
                       <div>
                         <span className="inline-flex items-center space-x-1 px-3 py-1 bg-green-600 text-white text-sm font-medium rounded-full">
@@ -415,7 +415,7 @@ export default function AgreementSigningPage() {
                         )}
                       </div>
                     ) : (
-                      <span className="inline-flex items-center space-x-1 px-3 py-1 bg-amber-500 text-white text-sm font-medium rounded-full">
+                      <span className="inline-flex items-center space-x-1 px-3 py-1.5 bg-amber-500 text-white text-xs sm:text-sm font-medium rounded-full whitespace-nowrap">
                         <Clock size={14} />
                         <span>Pending</span>
                       </span>
@@ -424,22 +424,22 @@ export default function AgreementSigningPage() {
                 </div>
 
                 {/* Tenant */}
-                <div className={`flex items-center justify-between p-4 rounded-xl border-2 transition-colors ${agreement.tenantSigned
+                <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-xl border-2 transition-colors ${agreement.tenantSigned
                   ? 'border-green-200 bg-green-50'
                   : 'border-slate-200 bg-slate-50'
                   }`}>
                   <div className="flex items-center space-x-4">
-                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${agreement.tenantSigned ? 'bg-green-600' : 'bg-teal-600'
+                    <div className={`w-12 h-12 flex-shrink-0 rounded-full flex items-center justify-center text-white font-semibold ${agreement.tenantSigned ? 'bg-green-600' : 'bg-teal-600'
                       }`}>
                       {agreement.lease.tenant.name.charAt(0).toUpperCase()}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs text-slate-500 uppercase tracking-wider">Tenant</p>
-                      <p className="font-semibold text-slate-900">{agreement.lease.tenant.name}</p>
-                      <p className="text-sm text-slate-500">{agreement.lease.tenant.email}</p>
+                      <p className="font-semibold text-slate-900 truncate">{agreement.lease.tenant.name}</p>
+                      <p className="text-sm text-slate-500 truncate">{agreement.lease.tenant.email}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-left sm:text-right flex-shrink-0">
                     {agreement.tenantSigned ? (
                       <div>
                         <span className="inline-flex items-center space-x-1 px-3 py-1 bg-green-600 text-white text-sm font-medium rounded-full">
@@ -451,7 +451,7 @@ export default function AgreementSigningPage() {
                         )}
                       </div>
                     ) : (
-                      <span className="inline-flex items-center space-x-1 px-3 py-1 bg-amber-500 text-white text-sm font-medium rounded-full">
+                      <span className="inline-flex items-center space-x-1 px-3 py-1.5 bg-amber-500 text-white text-xs sm:text-sm font-medium rounded-full whitespace-nowrap">
                         <Clock size={14} />
                         <span>{agreement.landlordSigned ? 'Awaiting' : 'Waiting for Landlord'}</span>
                       </span>
