@@ -93,7 +93,7 @@
         <sub>PostgreSQL Database</sub>
       </td>
       <td align="center" width="120">
-        <img src="https://avatars.githubusercontent.com/u/98297710" width="48" height="48"><br>
+        <img src="https://cdn.simpleicons.org/resend/000000" width="48" height="48"><br>
         <b>Resend</b><br>
         <sub>Email Service</sub>
       </td>
@@ -115,7 +115,7 @@
         <sub>Media Storage</sub>
       </td>
       <td align="center" width="120">
-        <img src="https://avatars.githubusercontent.com/u/19309096" width="48" height="48"><br>
+        <img src="https://cdn.simpleicons.org/maptiler/000000" width="48" height="48"><br>
         <b>MapTiler</b><br>
         <sub>Maps & Geocoding</sub>
       </td>
