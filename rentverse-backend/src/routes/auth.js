@@ -1768,6 +1768,7 @@ router.post(
       }
 
       // Check if account is locked
+      const otpService = require('../services/otp.service');
       const lockStatus = await otpService.checkAccountLock(user.id);
       if (lockStatus.locked) {
         // Still return generic response but log it
@@ -1857,6 +1858,7 @@ router.post(
       }
 
       // Verify OTP
+      const otpService = require('../services/otp.service');
       const verifyResult = await otpService.verifyOtp(user.id, otp, 'PASSWORD_RESET');
 
       if (!verifyResult.success) {
