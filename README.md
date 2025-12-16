@@ -72,6 +72,81 @@
 
 ---
 
+## 🔧 Development Platforms
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="120">
+        <img src="https://assets.vercel.com/image/upload/v1588805858/repositories/vercel/logo.png" width="48" height="48"><br>
+        <b>Vercel</b><br>
+        <sub>Frontend Hosting</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_477db83f729d63210139ec7cd29c1351/render-render.png" width="48" height="48"><br>
+        <b>Render</b><br>
+        <sub>Backend Hosting</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg" width="48" height="48"><br>
+        <b>Supabase</b><br>
+        <sub>PostgreSQL Database</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://resend.com/static/brand/resend-icon-black.svg" width="48" height="48"><br>
+        <b>Resend</b><br>
+        <sub>Email Service</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="120">
+        <img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="48" height="48"><br>
+        <b>Capacitor</b><br>
+        <sub>Mobile App</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" width="48" height="48"><br>
+        <b>Google OAuth</b><br>
+        <sub>Authentication</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://www.vectorlogo.zone/logos/cloudinary/cloudinary-icon.svg" width="48" height="48"><br>
+        <b>Cloudinary</b><br>
+        <sub>Media Storage</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://docs.maptiler.com/sdk-js/assets/maptiler-logo.svg" width="48" height="48"><br>
+        <b>MapTiler</b><br>
+        <sub>Maps & Geocoding</sub>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" width="120">
+        <img src="https://www.vectorlogo.zone/logos/github/github-icon.svg" width="48" height="48"><br>
+        <b>GitHub Actions</b><br>
+        <sub>CI/CD Pipeline</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://www.vectorlogo.zone/logos/prisaborhq/prisaborhq-icon.svg" width="48" height="48"><br>
+        <b>Prisma</b><br>
+        <sub>ORM</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://www.vectorlogo.zone/logos/nodejs/nodejs-icon.svg" width="48" height="48"><br>
+        <b>Node.js</b><br>
+        <sub>Runtime</sub>
+      </td>
+      <td align="center" width="120">
+        <img src="https://www.vectorlogo.zone/logos/nextjs/nextjs-icon.svg" width="48" height="48"><br>
+        <b>Next.js</b><br>
+        <sub>React Framework</sub>
+      </td>
+    </tr>
+  </table>
+</div>
+
+---
+
 # 🛡️ Core Development Modules
 
 ## Module 1: Secure Login & MFA
