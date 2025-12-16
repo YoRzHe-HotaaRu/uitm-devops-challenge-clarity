@@ -434,7 +434,7 @@ flowchart LR
 
 # 🛡️ Core Development Modules (Module 1-6)
 
-## <img src="https://img.shields.io/badge/Module_1-00A8E8?style=flat-square" height="28"> Secure Login & MFA
+## <img src="https://img.shields.io/badge/Module_1-4CAF50?style=flat-square" height="69"> Secure Login & MFA 🔐
 
 **Description:** Create MFA/OTP-based login with role-based access.
 
@@ -497,7 +497,7 @@ const authorize = (...roles) => {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_2-00A8E8?style=flat-square" height="28"> Secure API Gateway
+## <img src="https://img.shields.io/badge/Module_2-2196F3?style=flat-square" height="69"> Secure API Gateway 🔒
 
 **Description:** Apply HTTPS, JWT tokens, rate-limiting, and access validation.
 
@@ -549,7 +549,7 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_3-00A8E8?style=flat-square" height="28"> Digital Agreement
+## <img src="https://img.shields.io/badge/Module_3-9C27B0?style=flat-square" height="69"> Digital Agreement 📝
 
 **Description:** Add secure signature validation and access permissions.
 
@@ -597,7 +597,7 @@ createSignatureHash(signature, timestamp, leaseId, userId) {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_4-00A8E8?style=flat-square" height="28"> Smart Notification & Alert System
+## <img src="https://img.shields.io/badge/Module_4-FF9800?style=flat-square" height="69"> Smart Notification & Alert System 🔔
 
 **Description:** Log user activities and alert suspicious login patterns.
 
@@ -649,7 +649,7 @@ async function alertNewDevice(userId, deviceInfo) {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_5-00A8E8?style=flat-square" height="28"> Activity Log Dashboard
+## <img src="https://img.shields.io/badge/Module_5-E91E63?style=flat-square" height="69"> Activity Log Dashboard 📊
 
 **Description:** Provide admin-level logs for failed logins and critical actions.
 
@@ -693,7 +693,7 @@ Response: {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_6-00A8E8?style=flat-square" height="28"> CI/CD Security Testing (Bonus)
+## <img src="https://img.shields.io/badge/Module_6-00BCD4?style=flat-square" height="69"> CI/CD Security Testing (Bonus) ⚙️
 
 **Description:** Integrate GitHub Actions for static code analysis (SAST) and deployment checks.
 
