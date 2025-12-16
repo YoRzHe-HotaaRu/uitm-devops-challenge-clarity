@@ -93,7 +93,7 @@ function UserDropdown({ isOpen, onClose, className }: Readonly<UserDropdownProps
     <div
       ref={dropdownRef}
       className={clsx([
-        'absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg',
+        'absolute right-0 top-full mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white rounded-lg shadow-lg max-h-[calc(100vh-6rem)] overflow-y-auto',
         'border border-slate-200 py-3 z-50',
         className
       ])}
