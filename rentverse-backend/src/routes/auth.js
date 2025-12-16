@@ -454,6 +454,7 @@ router.post(
  */
 router.post(
   '/mfa/verify',
+  otpLimiter, // Rate limit: 5 attempts per 5 minutes
   [
     body('sessionToken').notEmpty().withMessage('Session token is required'),
     body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits'),
@@ -583,7 +584,7 @@ router.post(
  *       401:
  *         description: Unauthorized
  */
-router.post('/mfa/enable', async (req, res) => {
+router.post('/mfa/enable', strictLimiter, async (req, res) => {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
 
@@ -650,6 +651,7 @@ router.post('/mfa/enable', async (req, res) => {
  */
 router.post(
   '/mfa/disable',
+  strictLimiter, // Rate limit: 3 requests per minute
   [body('password').notEmpty().withMessage('Password is required')],
   async (req, res) => {
     try {
@@ -746,6 +748,7 @@ router.post(
  */
 router.post(
   '/mfa/resend',
+  strictLimiter, // Rate limit: 3 requests per minute
   [body('sessionToken').notEmpty().withMessage('Session token is required')],
   async (req, res) => {
     try {
