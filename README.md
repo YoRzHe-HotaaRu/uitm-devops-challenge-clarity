@@ -643,5 +643,5 @@ Interactive API documentation available at:
 
 <div align="center">
   <p><i>Built with ❤️ by Team ClaRity for UiTM DevOps Challenge</i></p>
-  <p>© 2024 RentVerse. All rights reserved.</p>
+  <p>© 2025 RentVerse. All rights reserved.</p>
 </div>
