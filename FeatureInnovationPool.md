@@ -8,8 +8,7 @@ Additional advanced security features implemented beyond core modules.
 
 **Description**: A rule-based module that detects unusual access patterns, repeated failed logins, and potential intrusion attempts through intelligent pattern analysis.
 
-**Screenshot Placeholder**:
-![Threat Intelligence](github/assets/innovation-threat-intel.png)
+
 
 ### Implementation Details
 
@@ -59,8 +58,7 @@ async function calculateRiskScore(userId, ipAddress, userAgent) {
 
 **Description**: Implements conditional access controls including device verification, automatic token invalidation, and comprehensive session management.
 
-**Screenshot Placeholder**:
-![Zero-Trust Access](github/assets/innovation-zero-trust.png)
+
 
 ### Implementation Details
 
@@ -108,8 +106,7 @@ async function checkDevice(userId, userAgent, ipAddress) {
 
 **Description**: An interactive admin dashboard that visualizes system risk levels and auto-responds to flagged security events with automated countermeasures.
 
-**Screenshot Placeholder**:
-![Adaptive Defense Dashboard](github/assets/innovation-adaptive-dashboard.png)
+
 
 ### Implementation Details
 
@@ -165,8 +162,7 @@ const usersWithHighRisk = await prisma.loginHistory.groupBy({
 
 **Description**: Integrated security scanning tools in the CI/CD pipeline that run automatically before each deployment to catch vulnerabilities early.
 
-**Screenshot Placeholder**:
-![Automated Security Testing](github/assets/innovation-security-testing.png)
+
 
 ### Implementation Details
 

@@ -7,7 +7,7 @@
 **Security Focus:** Authentication & Authorization (OWASP M1–M3)
 
 <!-- PLACEHOLDER: Add screenshot of login/MFA flow here -->
-![MFA Login Flow](github/assets/module1-mfa.png)
+![MFA Login Flow](github/assets/coredevmodule/Module1.jpg)
 
 ### Implementation Details
 
@@ -70,7 +70,7 @@ const authorize = (...roles) => {
 **Security Focus:** Secure Communication (OWASP M5–M6)
 
 <!-- PLACEHOLDER: Add screenshot of API security here -->
-![API Gateway Security](github/assets/module2-api.png)
+![API Gateway Security](github/assets/coredevmodule/Module2.jpg)
 
 ### Implementation Details
 
@@ -94,7 +94,7 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET);
 #### ⏱️ Rate Limiting
 | Limiter Type | Limit | Window | Purpose |
 |--------------|-------|--------|---------|
-| Global | 100 requests | 15 min | DDoS prevention |
+| Global | 2000 requests | 15 min | DDoS prevention |
 | Auth | 5 attempts | 15 min | Brute force prevention |
 | OTP | 5 attempts | 5 min | OTP abuse prevention |
 | Strict | 3 requests | 1 min | Sensitive operations |
@@ -122,7 +122,9 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET);
 **Security Focus:** Data Integrity & Workflow Validation
 
 <!-- PLACEHOLDER: Add screenshot of digital agreement here -->
-![Digital Agreement](github/assets/module3-agreement.png)
+![Digital Agreement](github/assets/coredevmodule/Module3_1.jpg)
+![Digital Agreement](github/assets/coredevmodule/Module3_2.jpg)
+![Digital Agreement](github/assets/coredevmodule/Module3_3.jpg)
 
 ### Implementation Details
 
@@ -170,7 +172,8 @@ createSignatureHash(signature, timestamp, leaseId, userId) {
 **Security Focus:** DevSecOps Monitoring & Incident Detection
 
 <!-- PLACEHOLDER: Add screenshot of notification system here -->
-![Smart Notifications](github/assets/module4-alerts.png)
+![Smart Notifications](github/assets/coredevmodule/Module4_1.jpg)
+![Smart Notifications](github/assets/coredevmodule/Module4_2.jpg)
 
 ### Implementation Details
 
@@ -222,7 +225,8 @@ async function alertNewDevice(userId, deviceInfo) {
 **Security Focus:** Threat Visualization & Accountability
 
 <!-- PLACEHOLDER: Add screenshot of security dashboard here -->
-![Activity Log Dashboard](github/assets/module5-dashboard.png)
+![Activity Log Dashboard](github/assets/coredevmodule/Module5_1.jpg)
+![Activity Log Dashboard](github/assets/coredevmodule/Module5_2.jpg)
 
 ### Implementation Details
 
@@ -266,7 +270,7 @@ Response: {
 **Security Focus:** Continuous Testing (DevSecOps)
 
 <!-- PLACEHOLDER: Add screenshot of CI/CD workflow here -->
-![CI/CD Security](github/assets/module6-cicd.png)
+![CI/CD Security](github/assets/coredevmodule/Module6.jpg)
 
 ### Implementation Details
 
