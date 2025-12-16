@@ -200,6 +200,24 @@ const securityLogger = {
 
         writeLog(SECURITY_LOG_FILE, formatLogEntry(entry));
     },
+
+    /**
+     * Log generic security event
+     */
+    logSecurityEvent(req, eventType, details = {}) {
+        const entry = {
+            type: 'SECURITY_EVENT',
+            eventType,
+            ip: req.ip,
+            path: req.originalUrl,
+            details,
+            userAgent: req.headers['user-agent'],
+            userId: req.user?.id || null,
+        };
+
+        console.log(`[SECURITY] ${eventType} from ${req.ip}`);
+        writeLog(SECURITY_LOG_FILE, formatLogEntry(entry));
+    },
 };
 
 /**

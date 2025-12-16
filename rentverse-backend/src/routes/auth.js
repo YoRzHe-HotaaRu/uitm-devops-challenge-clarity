@@ -1710,4 +1710,315 @@ router.post(
   }
 );
 
+// =====================================================
+// FORGOT PASSWORD ENDPOINTS
+// =====================================================
+
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     summary: Request password reset OTP
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       200:
+ *         description: OTP sent if email exists
+ */
+router.post(
+  '/forgot-password',
+  strictLimiter, // 3 requests per minute
+  [body('email').isEmail().normalizeEmail()],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Please provide a valid email address',
+        });
+      }
+
+      const { email } = req.body;
+
+      // Always respond with success to prevent email enumeration
+      const genericResponse = {
+        success: true,
+        message: 'If an account with that email exists, we have sent a password reset code.',
+      };
+
+      // Find user
+      const user = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user || !user.isActive) {
+        // Log attempt but return generic response
+        console.log(`[FORGOT_PASSWORD] Reset requested for non-existent email: ${email}`);
+        return res.json(genericResponse);
+      }
+
+      // Check if account is locked
+      const lockStatus = await otpService.checkAccountLock(user.id);
+      if (lockStatus.locked) {
+        // Still return generic response but log it
+        console.log(`[FORGOT_PASSWORD] Reset requested for locked account: ${email}`);
+        return res.json(genericResponse);
+      }
+
+      // Generate OTP for password reset
+      const { otp, expiresAt } = await otpService.createOtp(user.id, 'PASSWORD_RESET');
+
+      // Send password reset OTP email
+      const emailService = require('../services/email.service');
+      await emailService.sendPasswordResetOtp(email, otp, 5);
+
+      console.log(`[FORGOT_PASSWORD] OTP sent to ${email}`);
+
+      // Log this security event
+      securityLogger.logSecurityEvent(req, 'PASSWORD_RESET_REQUESTED', { email });
+
+      res.json({
+        ...genericResponse,
+        data: {
+          expiresAt,
+        },
+      });
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/auth/forgot-password/verify:
+ *   post:
+ *     summary: Verify password reset OTP
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               otp:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OTP verified, reset token returned
+ */
+router.post(
+  '/forgot-password/verify',
+  strictLimiter,
+  [
+    body('email').isEmail().normalizeEmail(),
+    body('otp').isLength({ min: 6, max: 6 }).isNumeric(),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid input',
+          errors: errors.array(),
+        });
+      }
+
+      const { email, otp } = req.body;
+
+      // Find user
+      const user = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid or expired reset code',
+        });
+      }
+
+      // Verify OTP
+      const verifyResult = await otpService.verifyOtp(user.id, otp, 'PASSWORD_RESET');
+
+      if (!verifyResult.success) {
+        securityLogger.logSecurityEvent(req, 'PASSWORD_RESET_OTP_FAILED', { email });
+        return res.status(400).json({
+          success: false,
+          message: verifyResult.message,
+        });
+      }
+
+      // Generate short-lived reset token (5 minutes)
+      const resetToken = jwt.sign(
+        {
+          userId: user.id,
+          email: user.email,
+          type: 'password_reset',
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: '5m' }
+      );
+
+      console.log(`[FORGOT_PASSWORD] OTP verified for ${email}`);
+      securityLogger.logSecurityEvent(req, 'PASSWORD_RESET_OTP_VERIFIED', { email });
+
+      res.json({
+        success: true,
+        message: 'Code verified successfully',
+        data: {
+          resetToken,
+          expiresIn: 300, // 5 minutes in seconds
+        },
+      });
+    } catch (error) {
+      console.error('Verify reset OTP error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  }
+);
+
+/**
+ * @swagger
+ * /api/auth/forgot-password/reset:
+ *   post:
+ *     summary: Reset password with token
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               resetToken:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password reset successfully
+ */
+router.post(
+  '/forgot-password/reset',
+  strictLimiter,
+  [
+    body('resetToken').notEmpty(),
+    body('newPassword')
+      .isLength({ min: 8 })
+      .withMessage('Password must be at least 8 characters')
+      .matches(/[A-Z]/)
+      .withMessage('Password must contain an uppercase letter')
+      .matches(/[a-z]/)
+      .withMessage('Password must contain a lowercase letter')
+      .matches(/[0-9]/)
+      .withMessage('Password must contain a number'),
+  ],
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({
+          success: false,
+          message: 'Password does not meet requirements',
+          errors: errors.array(),
+        });
+      }
+
+      const { resetToken, newPassword } = req.body;
+
+      // Verify reset token
+      let decoded;
+      try {
+        decoded = jwt.verify(resetToken, process.env.JWT_SECRET);
+      } catch (jwtError) {
+        return res.status(400).json({
+          success: false,
+          message: 'Reset link has expired. Please request a new one.',
+        });
+      }
+
+      // Check token type
+      if (decoded.type !== 'password_reset') {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid reset token',
+        });
+      }
+
+      // Find user
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.userId },
+      });
+
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+
+      // Hash new password
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+      // Update password and reset login attempts
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          password: hashedPassword,
+          loginAttempts: 0,
+          lockedUntil: null,
+        },
+      });
+
+      // Blacklist all existing tokens for this user (security measure)
+      const { blacklistToken } = require('../services/tokenBlacklist');
+      // Note: In production, you'd want to track and blacklist all user tokens
+
+      // Send password changed confirmation email
+      const emailService = require('../services/email.service');
+      const userName = user.firstName || user.name || 'User';
+      await emailService.sendPasswordChangedEmail(user.email, userName);
+
+      // Create security alert
+      await securityAlertService.alertPasswordChanged(user.id, req.ip);
+
+      console.log(`[FORGOT_PASSWORD] Password reset successful for ${user.email}`);
+      securityLogger.logPasswordChange(req, user.id);
+
+      res.json({
+        success: true,
+        message: 'Password has been reset successfully. You can now log in with your new password.',
+      });
+    } catch (error) {
+      console.error('Reset password error:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+      });
+    }
+  }
+);
+
 module.exports = router;

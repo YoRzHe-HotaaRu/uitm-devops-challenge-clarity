@@ -188,7 +188,7 @@ function ModalLogIn({ isModal = true }: ModalLogInProps) {
           </ButtonFilled>
 
           <div className="text-center">
-            <Link href={'/'} className={'underline text-slate-700 text-sm hover:text-slate-900 transition-colors'}>
+            <Link href={'/auth/forgot-password'} className={'underline text-slate-700 text-sm hover:text-slate-900 transition-colors'}>
               Forgot password?
             </Link>
           </div>

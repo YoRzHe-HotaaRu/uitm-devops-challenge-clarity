@@ -622,6 +622,174 @@ If you didn't request this code, you can safely ignore this email.
   }
 
   /**
+   * Send password reset OTP email
+   * @param {string} email - Recipient email
+   * @param {string} otp - The OTP code
+   * @param {number} expiryMinutes - Minutes until expiry
+   * @returns {Promise<boolean>}
+   */
+  async sendPasswordResetOtp(email, otp, expiryMinutes = 5) {
+    const subject = `🔐 Password Reset Code: ${otp} - RentVerse`;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Password Reset</title>
+      </head>
+      <body style="margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px; margin: 0 auto;">
+          <tr>
+            <td>
+              <table width="100%" cellpadding="0" cellspacing="0" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <!-- Header -->
+                <tr>
+                  <td style="padding: 32px 32px 24px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); text-align: center;">
+                    <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 600;">
+                      🔐 Password Reset Request
+                    </h1>
+                    <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
+                      Use this code to reset your password
+                    </p>
+                  </td>
+                </tr>
+                <!-- OTP Code -->
+                <tr>
+                  <td style="padding: 32px;">
+                    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fecaca; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+                      <p style="margin: 0 0 12px; font-size: 14px; color: #991b1b; font-weight: 600;">
+                        Your Reset Code
+                      </p>
+                      <div style="display: inline-block; background: white; padding: 16px 32px; border-radius: 8px; border: 2px dashed #dc2626;">
+                        <span style="font-family: 'Courier New', monospace; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #dc2626;">
+                          ${otp}
+                        </span>
+                      </div>
+                      <p style="margin: 12px 0 0; font-size: 13px; color: #b91c1c;">
+                        ⏱ Expires in ${expiryMinutes} minutes
+                      </p>
+                    </div>
+                    <!-- Security Warning -->
+                    <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                      <p style="margin: 0; font-size: 13px; color: #92400e; font-weight: 600;">
+                        ⚠️ Security Notice
+                      </p>
+                      <p style="margin: 8px 0 0; font-size: 12px; color: #a16207;">
+                        If you did not request this password reset, please ignore this email and your password will remain unchanged.
+                      </p>
+                    </div>
+                    <p style="margin: 0; font-size: 14px; color: #6b7280; text-align: center;">
+                      Never share this code with anyone.
+                    </p>
+                  </td>
+                </tr>
+                <!-- Footer -->
+                <tr>
+                  <td style="padding: 24px 32px; background-color: #f9fafb; border-radius: 0 0 16px 16px; border-top: 1px solid #e5e7eb;">
+                    <p style="margin: 0; font-size: 12px; color: #9ca3af; text-align: center;">
+                      This is an automated message from RentVerse.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const text = `Password Reset Code: ${otp}\n\nThis code will expire in ${expiryMinutes} minutes.\n\nIf you did not request this, please ignore this email.\n\n- The RentVerse Team`;
+
+    return await this.sendEmail({ to: email, subject, html, text });
+  }
+
+  /**
+   * Send password changed confirmation email
+   * @param {string} email - Recipient email
+   * @param {string} userName - User's name
+   * @returns {Promise<boolean>}
+   */
+  async sendPasswordChangedEmail(email, userName = 'User') {
+    const subject = '✅ Password Successfully Changed - RentVerse';
+    const changeTime = new Date().toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Password Changed</title>
+      </head>
+      <body style="margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f5f5;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px; margin: 0 auto;">
+          <tr>
+            <td>
+              <table width="100%" cellpadding="0" cellspacing="0" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <!-- Header -->
+                <tr>
+                  <td style="padding: 32px 32px 24px; background: linear-gradient(135deg, #059669 0%, #047857 100%); text-align: center;">
+                    <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 600;">
+                      ✅ Password Changed
+                    </h1>
+                  </td>
+                </tr>
+                <!-- Content -->
+                <tr>
+                  <td style="padding: 32px;">
+                    <p style="margin: 0 0 16px; font-size: 16px; color: #374151;">
+                      Hi ${userName},
+                    </p>
+                    <p style="margin: 0 0 24px; font-size: 14px; color: #6b7280;">
+                      Your password was successfully changed on:
+                    </p>
+                    <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 8px; padding: 16px; margin-bottom: 24px; text-align: center;">
+                      <p style="margin: 0; font-size: 14px; color: #047857; font-weight: 600;">
+                        📅 ${changeTime}
+                      </p>
+                    </div>
+                    <!-- Security Warning -->
+                    <div style="background: #fef2f2; border: 2px solid #fecaca; border-radius: 8px; padding: 16px;">
+                      <p style="margin: 0; font-size: 13px; color: #dc2626; font-weight: 600;">
+                        🚨 Didn't make this change?
+                      </p>
+                      <p style="margin: 8px 0 0; font-size: 12px; color: #b91c1c;">
+                        If you did not change your password, your account may be compromised. Please contact support immediately.
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Footer -->
+                <tr>
+                  <td style="padding: 24px 32px; background-color: #f9fafb; border-top: 1px solid #e5e7eb;">
+                    <p style="margin: 0; font-size: 12px; color: #9ca3af; text-align: center;">
+                      This is a security notification from RentVerse.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const text = `Hi ${userName},\n\nYour password was successfully changed on ${changeTime}.\n\nIf you did not make this change, please contact support immediately.\n\n- The RentVerse Team`;
+
+    return await this.sendEmail({ to: email, subject, html, text });
+  }
+
+  /**
    * Strip HTML tags for plain text fallback
    * @param {string} html - HTML content
    * @returns {string} Plain text

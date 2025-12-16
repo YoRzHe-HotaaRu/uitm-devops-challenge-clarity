@@ -10,6 +10,8 @@ interface OtpVerificationProps {
     email?: string
     isLoading?: boolean
     error?: string | null
+    title?: string
+    subtitle?: string
 }
 
 export default function OtpVerification({
@@ -19,6 +21,8 @@ export default function OtpVerification({
     email,
     isLoading = false,
     error = null,
+    title = 'Two-Factor Authentication',
+    subtitle = 'Enter the 6-digit code sent to your email',
 }: OtpVerificationProps) {
     const [otp, setOtp] = useState<string[]>(['', '', '', '', '', ''])
     const [isResending, setIsResending] = useState(false)
@@ -136,11 +140,11 @@ export default function OtpVerification({
             </div>
 
             <h2 className="text-2xl font-bold text-slate-900 mb-2 text-center">
-                Verify Your Identity
+                {title}
             </h2>
 
             <p className="text-slate-600 text-center mb-6">
-                We&apos;ve sent a 6-digit code to{' '}
+                {subtitle}{' '}
                 <span className="font-medium text-slate-900">
                     {email || 'your email'}
                 </span>
