@@ -556,7 +556,7 @@ const authorize = (...roles) => {
 **Security Focus:** Secure Communication (OWASP M5–M6)
 
 <!-- PLACEHOLDER: Add screenshot of API security here -->
-![API Gateway Security](github/assets/module2-api.png)
+![API Gateway Security](github/assets/coredevmodule/Module2.jpg)
 
 ### Implementation Details
 
