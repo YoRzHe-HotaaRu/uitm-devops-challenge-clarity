@@ -472,7 +472,7 @@ After each scan, a summary is generated:
 
 ---
 
-## 🚀 Feature Innovation Pool
+## 🚀 Feature Innovation Pool (Category 1-4)
 
 Additional advanced security features implemented beyond core modules.
 
