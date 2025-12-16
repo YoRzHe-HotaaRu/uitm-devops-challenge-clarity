@@ -610,39 +610,6 @@ Beyond the core security modules, RentVerse includes these unique features that 
 
 ---
 
-### 🤖 AI-Powered Price Prediction
-
-An intelligent machine learning system that predicts rental prices based on property characteristics.
-
-**Technology Stack:**
-- **Backend**: Python FastAPI service
-- **ML Models**: Scikit-learn with trained regression models
-- **Features**: Location, property type, bedrooms, bathrooms, amenities, size
-
-**How It Works:**
-```
-POST /api/prediction/predict
-{
-  "area": "Kuala Lumpur",
-  "property_type": "Apartment",
-  "bedrooms": 3,
-  "bathrooms": 2,
-  "size_sqft": 1200
-}
-
-Response: {
-  "predicted_price": 2450.00,
-  "confidence": 0.92
-}
-```
-
-**Key Files:**
-- `rentverse-ai-service/` - Python FastAPI microservice
-- `rentverse/api/routes/prediction.py` - Prediction endpoints
-- `rentverse/models/` - Trained ML models
-
----
-
 ### 📝 Digital Rental Agreements
 
 Complete digital agreement workflow with legally-binding electronic signatures.
