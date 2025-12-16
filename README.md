@@ -75,7 +75,7 @@
 
 ### Web Application
 <!-- PLACEHOLDER: Add screenshot of web application here -->
-![Web Application](github/assets/web-preview.png)
+![Web Application](github/assets/PlatformPreviewDesktop.gif)
 
 ### Mobile Application
 <!-- PLACEHOLDER: Add screenshot of mobile application here -->
