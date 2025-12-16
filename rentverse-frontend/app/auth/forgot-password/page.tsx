@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import clsx from 'clsx'
 import { ArrowLeft, Mail, KeyRound, CheckCircle, Shield, Lock } from 'lucide-react'
+import ContentWrapper from '@/components/ContentWrapper'
 import BoxError from '@/components/BoxError'
 import InputPassword from '@/components/InputPassword'
 import ButtonFilled from '@/components/ButtonFilled'
@@ -369,8 +370,10 @@ export default function ForgotPasswordPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center p-4">
-            {getCurrentContent()}
-        </div>
+        <ContentWrapper>
+            <div className="min-h-[calc(100vh-180px)] flex items-center justify-center p-4">
+                {getCurrentContent()}
+            </div>
+        </ContentWrapper>
     )
 }
