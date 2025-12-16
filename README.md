@@ -757,7 +757,7 @@ Response: {
 **Security Focus:** Continuous Testing (DevSecOps)
 
 <!-- PLACEHOLDER: Add screenshot of CI/CD workflow here -->
-![CI/CD Security](github/assets/module6-cicd.png)
+![CI/CD Security](github/assets/coredevmodule/Module6.jpg)
 
 ### Implementation Details
 
