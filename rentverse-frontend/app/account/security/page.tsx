@@ -107,8 +107,8 @@ function MfaToggleButton({
                 onClick={handleToggleClick}
                 disabled={isLoading}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${mfaEnabled
-                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                        : 'bg-teal-600 text-white hover:bg-teal-700'
+                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                    : 'bg-teal-600 text-white hover:bg-teal-700'
                     } disabled:opacity-50`}
             >
                 {isLoading ? (
@@ -179,7 +179,7 @@ function MfaToggleButton({
 
 function SecuritySettingsPage() {
     const router = useRouter()
-    const { user, isLoggedIn, initializeAuth, logout } = useAuthStore()
+    const { user, isLoggedIn, initializeAuth, logout, refreshUserData } = useAuthStore()
 
     // Password change form
     const [currentPassword, setCurrentPassword] = useState('')
@@ -443,9 +443,9 @@ function SecuritySettingsPage() {
                         </div>
                         <MfaToggleButton
                             mfaEnabled={user.mfaEnabled || false}
-                            onToggle={async (enabled) => {
-                                // Refresh the user data after toggle
-                                initializeAuth()
+                            onToggle={async () => {
+                                // Refresh the user data from backend after toggle
+                                await refreshUserData()
                             }}
                         />
                     </div>
