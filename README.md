@@ -712,7 +712,8 @@ async function alertNewDevice(userId, deviceInfo) {
 **Security Focus:** Threat Visualization & Accountability
 
 <!-- PLACEHOLDER: Add screenshot of security dashboard here -->
-![Activity Log Dashboard](github/assets/module5-dashboard.png)
+![Activity Log Dashboard](github/assets/coredevmodule/Module5_1.jpg)
+![Activity Log Dashboard](github/assets/coredevmodule/Module5_2.jpg)
 
 ### Implementation Details
 
