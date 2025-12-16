@@ -738,22 +738,6 @@ Native Android app built with Capacitor for on-the-go access.
 
 ---
 
-### ❤️ Property Wishlist
-
-Save favorite properties for later viewing.
-
-**Features:**
-- Add/remove properties from wishlist
-- Persistent across sessions
-- View all saved properties
-- Quick access from property cards
-
-**Key Files:**
-- `app/wishlist/page.tsx` - Wishlist page
-- `stores/wishlistStore.ts` - State management
-
----
-
 ### 📅 Booking & Viewing System
 
 Schedule property viewings with landlords.
