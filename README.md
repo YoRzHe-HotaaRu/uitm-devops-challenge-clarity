@@ -95,10 +95,10 @@
 | **🛡️ Core Development Modules** | |
 | [🟢 Module 1: Secure Login & MFA](#-module-1-secure-login--mfa-) | Authentication & Authorization |
 | [🔵 Module 2: Secure API Gateway](#-module-2-secure-api-gateway-) | HTTPS, JWT, Rate Limiting |
-| [🟣 Module 3: Sensitive Data Handling](#-module-3-sensitive-data-handling-) | Encryption & Secure Storage |
-| [🟠 Module 4: Secure Session Management](#-module-4-secure-session-management-) | Token Lifecycle & Blacklisting |
-| [🩷 Module 5: Input Validation & Defense](#-module-5-input-validation--defense-) | XSS, SQL Injection Prevention |
-| [🔷 Module 6: DevSecOps Integration](#-module-6-devsecops-integration-) | CI/CD Security Pipeline |
+| [🟣 Module 3: Digital Agreement](#-module-3-digital-agreement-) | Signatures & Data Integrity |
+| [🟠 Module 4: Smart Notification & Alert](#-module-4-smart-notification--alert-system-) | DevSecOps Monitoring |
+| [🔴 Module 5: Activity Log Dashboard](#-module-5-activity-log-dashboard-) | Threat Visualization |
+| [🔷 Module 6: CI/CD Security Testing](#-module-6-cicd-security-testing-bonus-️) | DevSecOps Pipeline |
 | **🚀 Feature Innovation Pool** | |
 | [🟡 Category 1: Threat Intelligence](#-category-1-threat-intelligence-system-️) | Risk scoring & pattern detection |
 | [🟪 Category 2: Zero-Trust Access](#-category-2-zero-trust-access-logic-) | Device verification & session control |
