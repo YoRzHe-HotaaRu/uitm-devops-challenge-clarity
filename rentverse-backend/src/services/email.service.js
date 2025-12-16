@@ -639,58 +639,78 @@ If you didn't request this code, you can safely ignore this email.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Password Reset</title>
       </head>
-      <body style="margin: 0; padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px; margin: 0 auto;">
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5;">
+        <!-- Wrapper table for centering -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="min-width: 100%; background-color: #f5f5f5;">
           <tr>
-            <td>
-              <table width="100%" cellpadding="0" cellspacing="0" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-                <!-- Header -->
+            <td align="center" style="padding: 40px 20px;">
+              <!-- Main content table -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 480px; margin: 0 auto;">
                 <tr>
-                  <td style="padding: 32px 32px 24px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); text-align: center;">
-                    <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 600;">
-                      🔐 Password Reset Request
-                    </h1>
-                    <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 14px;">
-                      Use this code to reset your password
-                    </p>
-                  </td>
-                </tr>
-                <!-- OTP Code -->
-                <tr>
-                  <td style="padding: 32px;">
-                    <div style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fecaca; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
-                      <p style="margin: 0 0 12px; font-size: 14px; color: #991b1b; font-weight: 600;">
-                        Your Reset Code
-                      </p>
-                      <div style="display: inline-block; background: white; padding: 16px 32px; border-radius: 8px; border: 2px dashed #dc2626;">
-                        <span style="font-family: 'Courier New', monospace; font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #dc2626;">
-                          ${otp}
-                        </span>
-                      </div>
-                      <p style="margin: 12px 0 0; font-size: 13px; color: #b91c1c;">
-                        ⏱ Expires in ${expiryMinutes} minutes
-                      </p>
-                    </div>
-                    <!-- Security Warning -->
-                    <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
-                      <p style="margin: 0; font-size: 13px; color: #92400e; font-weight: 600;">
-                        ⚠️ Security Notice
-                      </p>
-                      <p style="margin: 8px 0 0; font-size: 12px; color: #a16207;">
-                        If you did not request this password reset, please ignore this email and your password will remain unchanged.
-                      </p>
-                    </div>
-                    <p style="margin: 0; font-size: 14px; color: #6b7280; text-align: center;">
-                      Never share this code with anyone.
-                    </p>
-                  </td>
-                </tr>
-                <!-- Footer -->
-                <tr>
-                  <td style="padding: 24px 32px; background-color: #f9fafb; border-radius: 0 0 16px 16px; border-top: 1px solid #e5e7eb;">
-                    <p style="margin: 0; font-size: 12px; color: #9ca3af; text-align: center;">
-                      This is an automated message from RentVerse.
-                    </p>
+                  <td>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                      <!-- Header -->
+                      <tr>
+                        <td align="center" style="padding: 32px 32px 24px; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">
+                          <h1 style="margin: 0; color: white; font-size: 24px; font-weight: 600; text-align: center;">
+                            🔐 Password Reset Request
+                          </h1>
+                          <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9); font-size: 14px; text-align: center;">
+                            Use this code to reset your password
+                          </p>
+                        </td>
+                      </tr>
+                      <!-- OTP Code -->
+                      <tr>
+                        <td align="center" style="padding: 32px;">
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 2px solid #fecaca; border-radius: 12px;">
+                            <tr>
+                              <td align="center" style="padding: 24px;">
+                                <p style="margin: 0 0 12px; font-size: 14px; color: #991b1b; font-weight: 600; text-align: center;">
+                                  Your Reset Code
+                                </p>
+                                <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                                  <tr>
+                                    <td align="center" style="background: white; padding: 16px 32px; border-radius: 8px; border: 2px dashed #dc2626;">
+                                      <span style="font-family: 'Courier New', Courier, monospace; font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #dc2626;">
+                                        ${otp}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <p style="margin: 12px 0 0; font-size: 13px; color: #b91c1c; text-align: center;">
+                                  ⏱ Expires in ${expiryMinutes} minutes
+                                </p>
+                              </td>
+                            </tr>
+                          </table>
+                          <!-- Security Warning -->
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; margin-top: 24px;">
+                            <tr>
+                              <td style="padding: 16px;">
+                                <p style="margin: 0; font-size: 13px; color: #92400e; font-weight: 600;">
+                                  ⚠️ Security Notice
+                                </p>
+                                <p style="margin: 8px 0 0; font-size: 12px; color: #a16207;">
+                                  If you did not request this password reset, please ignore this email and your password will remain unchanged.
+                                </p>
+                              </td>
+                            </tr>
+                          </table>
+                          <p style="margin: 24px 0 0; font-size: 14px; color: #6b7280; text-align: center;">
+                            Never share this code with anyone.
+                          </p>
+                        </td>
+                      </tr>
+                      <!-- Footer -->
+                      <tr>
+                        <td align="center" style="padding: 24px 32px; background-color: #f9fafb; border-top: 1px solid #e5e7eb;">
+                          <p style="margin: 0; font-size: 12px; color: #9ca3af; text-align: center;">
+                            This is an automated message from RentVerse.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
