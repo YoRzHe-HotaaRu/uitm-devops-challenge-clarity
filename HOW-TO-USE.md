@@ -27,10 +27,13 @@ A comprehensive guide for users, landlords, and administrators.
 3. Verify your email with the OTP code sent to your inbox
 4. Login with your credentials
 
-#### 2. Enable Multi-Factor Authentication (Recommended)
-1. Go to **Account** → **Security**
-2. Click **"Enable MFA"**
-3. You'll receive an OTP via email each time you login for extra security
+#### 2. Multi-Factor Authentication (Auto-Enabled)
+MFA is **automatically enabled** when you create an account. Each time you login:
+1. Enter your email and password
+2. Check your email for a 6-digit OTP code
+3. Enter the OTP to complete login
+
+> **Note**: This adds an extra layer of security to protect your account.
 
 ---
 
@@ -208,11 +211,11 @@ A comprehensive guide for users, landlords, and administrators.
 
 | Action | Description |
 |--------|-------------|
-| **View Users** | See all registered users |
+| **View Users** | See all registered users with details |
 | **Search** | Find users by name or email |
-| **View Details** | See user profile and activity |
-| **Suspend User** | Temporarily disable account |
-| **Delete User** | Permanently remove account |
+| **Filter by Role** | Filter by USER or ADMIN |
+| **Toggle Status** | Activate or deactivate user account |
+| **Unlock Account** | Unlock locked accounts after failed logins |
 
 ---
 
@@ -221,11 +224,10 @@ A comprehensive guide for users, landlords, and administrators.
 
 | Action | Description |
 |--------|-------------|
-| **View All** | See all property listings |
-| **Approve** | Approve pending listings |
-| **Reject** | Reject with reason |
-| **Feature** | Highlight on homepage |
-| **Delete** | Remove inappropriate listings |
+| **View All** | See all property listings with stats |
+| **Search** | Find properties by title or location |
+| **Filter by Status** | Filter by Approved, Pending, Rejected |
+| **Toggle Availability** | Mark property as available or unavailable |
 
 ---
 
@@ -283,7 +285,7 @@ The app supports deep links:
 ## 🔐 Security Best Practices
 
 ### For All Users
-1. **Enable MFA** - Adds extra layer of security
+1. **MFA is Auto-Enabled** - Check email for login OTP codes
 2. **Use Strong Passwords** - At least 8 characters with mixed case and numbers
 3. **Don't Share OTP** - Never share verification codes
 4. **Check Login Alerts** - Review security emails
