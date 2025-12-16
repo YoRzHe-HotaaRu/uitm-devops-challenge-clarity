@@ -658,7 +658,8 @@ createSignatureHash(signature, timestamp, leaseId, userId) {
 **Security Focus:** DevSecOps Monitoring & Incident Detection
 
 <!-- PLACEHOLDER: Add screenshot of notification system here -->
-![Smart Notifications](github/assets/module4-alerts.png)
+![Smart Notifications](github/assets/coredevmodule/Module4_1.jpg)
+![Smart Notifications](github/assets/coredevmodule/Module4_2.jpg)
 
 ### Implementation Details
 
