@@ -831,31 +831,328 @@ Schedule property viewings with landlords.
 
 ## 🛠️ Technology Stack
 
-### Backend
-- **Runtime**: Node.js 20+
-- **Framework**: Express.js
-- **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: JWT, Passport.js (OAuth)
-- **Email**: Nodemailer / Resend
+<div align="center">
 
-### Frontend
-- **Framework**: Next.js 15 (React 19)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS 4
-- **State**: Zustand
-- **Maps**: MapTiler SDK
+### 🖥️ Backend Technologies
 
-### Mobile
-- **Framework**: Capacitor
-- **Platform**: Android (APK)
-- **Deep Linking**: Custom URL scheme
+<table>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/nodejs/nodejs-icon.svg" width="48" height="48"><br>
+      <b>Node.js</b><br>
+      <sub>v20+ Runtime</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/expressjs/expressjs-icon.svg" width="48" height="48"><br>
+      <b>Express.js</b><br>
+      <sub>v4.18 Framework</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/postgresql/postgresql-icon.svg" width="48" height="48"><br>
+      <b>PostgreSQL</b><br>
+      <sub>Database</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://avatars.githubusercontent.com/u/17219288" width="48" height="48"><br>
+      <b>Prisma</b><br>
+      <sub>v5.3 ORM</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/jsonwebtokens" width="48" height="48"><br>
+      <b>JWT</b><br>
+      <sub>Authentication</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/passport" width="48" height="48"><br>
+      <b>Passport.js</b><br>
+      <sub>v0.7 OAuth</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/puppeteer" width="48" height="48"><br>
+      <b>Puppeteer</b><br>
+      <sub>v24 PDF Gen</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/nodemailer" width="48" height="48"><br>
+      <b>Nodemailer</b><br>
+      <sub>v7 Email</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/swagger" width="48" height="48"><br>
+      <b>Swagger</b><br>
+      <sub>API Docs</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/helmet" width="48" height="48"><br>
+      <b>Helmet.js</b><br>
+      <sub>v7 Security</sub>
+    </td>
+  </tr>
+</table>
 
-### DevSecOps
-- **CI/CD**: GitHub Actions
-- **SAST**: ESLint, CodeQL
-- **Secret Scan**: Gitleaks
-- **Dependency Scan**: Trivy
-- **Hosting**: Vercel (Frontend), Render (Backend)
+---
+
+### 🎨 Frontend Technologies
+
+<table>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/nextjs/nextjs-icon.svg" width="48" height="48"><br>
+      <b>Next.js</b><br>
+      <sub>v16 Framework</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/reactjs/reactjs-icon.svg" width="48" height="48"><br>
+      <b>React</b><br>
+      <sub>v19.1 Library</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/typescriptlang/typescriptlang-icon.svg" width="48" height="48"><br>
+      <b>TypeScript</b><br>
+      <sub>v5 Language</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/tailwindcss/tailwindcss-icon.svg" width="48" height="48"><br>
+      <b>Tailwind CSS</b><br>
+      <sub>v4 Styling</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/zustand" width="48" height="48"><br>
+      <b>Zustand</b><br>
+      <sub>v5 State</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/maptiler" width="48" height="48"><br>
+      <b>MapTiler</b><br>
+      <sub>v3.8 Maps</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/swiper" width="48" height="48"><br>
+      <b>Swiper</b><br>
+      <sub>v12 Carousel</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://lucide.dev/logo.light.svg" width="48" height="48"><br>
+      <b>Lucide</b><br>
+      <sub>Icons</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/eslint" width="48" height="48"><br>
+      <b>ESLint</b><br>
+      <sub>v9 Linting</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://turbo.build/images/docs/repo/turbo-benchmark-turbopack.svg" width="48" height="48"><br>
+      <b>Turbopack</b><br>
+      <sub>Bundler</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+### 📱 Mobile Technologies
+
+<table>
+  <tr>
+    <td align="center" width="120">
+      <img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="48" height="48"><br>
+      <b>Capacitor</b><br>
+      <sub>v8 Framework</sub>
+    </td>
+    <td align="center" width="120">
+      <img src="https://www.vectorlogo.zone/logos/android/android-icon.svg" width="48" height="48"><br>
+      <b>Android</b><br>
+      <sub>Native APK</sub>
+    </td>
+    <td align="center" width="120">
+      <img src="https://cdn.simpleicons.org/deepnote" width="48" height="48"><br>
+      <b>Deep Linking</b><br>
+      <sub>URL Scheme</sub>
+    </td>
+    <td align="center" width="120">
+      <img src="https://cdn.simpleicons.org/webauthn" width="48" height="48"><br>
+      <b>Status Bar</b><br>
+      <sub>Native Plugin</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+### ☁️ Cloud Services
+
+<table>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://assets.vercel.com/image/upload/v1588805858/repositories/vercel/logo.png" width="48" height="48"><br>
+      <b>Vercel</b><br>
+      <sub>Frontend Host</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_477db83f729d63210139ec7cd29c1351/render-render.png" width="48" height="48"><br>
+      <b>Render</b><br>
+      <sub>Backend Host</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg" width="48" height="48"><br>
+      <b>Supabase</b><br>
+      <sub>PostgreSQL DB</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://avatars.githubusercontent.com/u/1460763" width="48" height="48"><br>
+      <b>Cloudinary</b><br>
+      <sub>Media CDN</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/resend" width="48" height="48"><br>
+      <b>Resend</b><br>
+      <sub>Email API</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+### 🔐 Security & Authentication
+
+<table>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/google/google-icon.svg" width="48" height="48"><br>
+      <b>Google OAuth</b><br>
+      <sub>Social Login</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/facebook/facebook-icon.svg" width="48" height="48"><br>
+      <b>Facebook</b><br>
+      <sub>Social Login</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/github/github-icon.svg" width="48" height="48"><br>
+      <b>GitHub</b><br>
+      <sub>Social Login</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/apple/apple-icon.svg" width="48" height="48"><br>
+      <b>Apple</b><br>
+      <sub>Social Login</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/letsencrypt" width="48" height="48"><br>
+      <b>HTTPS/TLS</b><br>
+      <sub>Encryption</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+### 🤖 AI & Automation
+
+<table>
+  <tr>
+    <td align="center" width="140">
+      <img src="https://cdn.simpleicons.org/openai" width="48" height="48"><br>
+      <b>RevAI</b><br>
+      <sub>Property Auto-Review</sub>
+    </td>
+    <td align="center" width="140">
+      <img src="https://cdn.simpleicons.org/qrcode" width="48" height="48"><br>
+      <b>QR Code</b><br>
+      <sub>v1.5 Generator</sub>
+    </td>
+    <td align="center" width="140">
+      <img src="https://cdn.simpleicons.org/adobeacrobatreader" width="48" height="48"><br>
+      <b>PDF Generation</b><br>
+      <sub>Digital Agreements</sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+### 🔄 DevSecOps & CI/CD
+
+<table>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://www.vectorlogo.zone/logos/github/github-icon.svg" width="48" height="48"><br>
+      <b>GitHub Actions</b><br>
+      <sub>CI/CD Pipeline</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/eslint" width="48" height="48"><br>
+      <b>ESLint</b><br>
+      <sub>SAST Linting</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/githubactions" width="48" height="48"><br>
+      <b>CodeQL</b><br>
+      <sub>Security Analysis</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/git" width="48" height="48"><br>
+      <b>Gitleaks</b><br>
+      <sub>Secret Detection</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/aqua" width="48" height="48"><br>
+      <b>Trivy</b><br>
+      <sub>Vulnerability Scan</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/prettier" width="48" height="48"><br>
+      <b>Prettier</b><br>
+      <sub>Code Formatting</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/husky" width="48" height="48"><br>
+      <b>Husky</b><br>
+      <sub>Git Hooks</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/pnpm" width="48" height="48"><br>
+      <b>pnpm</b><br>
+      <sub>v10 Package Mgr</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/nodemon" width="48" height="48"><br>
+      <b>Nodemon</b><br>
+      <sub>Dev Server</sub>
+    </td>
+    <td align="center" width="100">
+      <img src="https://cdn.simpleicons.org/typescript" width="48" height="48"><br>
+      <b>TypeScript</b><br>
+      <sub>Type Checking</sub>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+### 📊 Version Summary
+
+| Category | Technology | Version |
+|----------|------------|---------|
+| **Runtime** | Node.js | 20+ |
+| **Backend Framework** | Express.js | 4.18 |
+| **Frontend Framework** | Next.js | 16.0 |
+| **UI Library** | React | 19.1 |
+| **Language** | TypeScript | 5.x |
+| **Styling** | Tailwind CSS | 4.x |
+| **State Management** | Zustand | 5.0 |
+| **Database ORM** | Prisma | 5.3 |
+| **Mobile** | Capacitor | 8.0 |
+| **Maps** | MapTiler SDK | 3.8 |
+| **PDF Generation** | Puppeteer | 24.x |
+| **Email** | Nodemailer | 7.x |
 
 ---
 
