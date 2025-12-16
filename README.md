@@ -4,22 +4,20 @@
 
 <br>
 
-<div align="center">
-  <a href="#">
-    <img src="github/assets/uitm.png" width="100" height="100"><br>
-    <b>UiTM Tapah</b>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#">
-    <img src="github/assets/logo.png" width="120" height="120"><br>
-    <i>Building the Future<br>Through Innovation</i>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#">
-    <img src="github/assets/ClaRityLogo.png" width="100" height="100"><br>
-    <b>ClaRity</b>
-  </a>
-</div>
+<p align="center">
+  <img src="github/assets/uitm.png" width="100" height="100" alt="UiTM">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="github/assets/logo.png" width="120" height="120" alt="RentVerse">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="github/assets/ClaRityLogo.png" width="100" height="100" alt="ClaRity">
+</p>
+<p align="center">
+  <b>UiTM Tapah</b>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <i>Building the Future Through Innovation</i>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <b>ClaRity</b>
+</p>
 
 <h1 align="center">🏠 RentVerse by ClaRity</h1>
 <p align="center"><i>A Secure Property Rental Platform with DevSecOps Integration</i></p>
@@ -28,22 +26,20 @@
 
 ## 👥 Team Members
 
-<div align="center">
-  <a href="https://github.com/Nomics03">
-    <img src="https://wsrv.nl/?url=https://github.com/Nomics03.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
-    <b>Muhammad 'Adli<br>Bin Mohd Ali</b>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/YoRzHe-HotaaRu">
-    <img src="https://wsrv.nl/?url=https://github.com/YoRzHe-HotaaRu.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
-    <b>Amir Hafizi<br>Bin Musa</b>
-  </a>
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/dev-manchae">
-    <img src="https://wsrv.nl/?url=https://github.com/dev-manchae.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
-    <b>Nik Muhammad Haziq<br>bin Nik Hasni</b>
-  </a>
-</div>
+<p align="center">
+  <a href="https://github.com/Nomics03"><img src="https://wsrv.nl/?url=https://github.com/Nomics03.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100" alt="Adli"></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/YoRzHe-HotaaRu"><img src="https://wsrv.nl/?url=https://github.com/YoRzHe-HotaaRu.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100" alt="Amir"></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/dev-manchae"><img src="https://wsrv.nl/?url=https://github.com/dev-manchae.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100" alt="Haziq"></a>
+</p>
+<p align="center">
+  <a href="https://github.com/Nomics03"><b>Muhammad 'Adli Bin Mohd Ali</b></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/YoRzHe-HotaaRu"><b>Amir Hafizi Bin Musa</b></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/dev-manchae"><b>Nik Muhammad Haziq bin Nik Hasni</b></a>
+</p>
 
 ---
 
