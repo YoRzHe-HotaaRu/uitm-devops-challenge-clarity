@@ -434,7 +434,11 @@ flowchart LR
 
 # 🛡️ Core Development Modules (Module 1-6)
 
+<<<<<<< HEAD
 ## 🔐 Module 1: Secure Login & MFA
+=======
+## <img src="https://img.shields.io/badge/Module_1-Secure_Login_&_MFA-4CAF50?style=for-the-badge&logo=shield&logoColor=white" alt="Module 1" height="80">
+>>>>>>> 8587622055b9423e71ecb5b4c4ecab588087ad26
 
 **Description:** Create MFA/OTP-based login with role-based access.
 
