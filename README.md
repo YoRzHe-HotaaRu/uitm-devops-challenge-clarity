@@ -116,7 +116,7 @@
 
 ---
 
-## �📈 System Flow Diagrams
+## 📈 System Flow Diagrams
 
 ### 🏗️ System Architecture Overview
 
