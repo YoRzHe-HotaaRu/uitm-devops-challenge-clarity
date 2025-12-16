@@ -82,7 +82,7 @@ function AccountPage() {
     },
     {
       title: 'Payments',
-      description: 'Manage payment methods',
+      description: 'View your payment history',
       href: '/account/payments',
       icon: CreditCard,
       color: 'text-green-600 bg-green-100'
