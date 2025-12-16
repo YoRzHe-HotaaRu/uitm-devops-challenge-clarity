@@ -1,5 +1,9 @@
 <div align="center">
-  <table>
+  <sub>📋 <i>This is the original technical documentation created from scratch by Team ClaRity. If you're referencing this for your own project, please carefully review and adapt the content to match your specific system requirements—do not copy directly without modifications.</i></sub>
+</div>
+
+<div align="center">
+  <table border="0" cellspacing="0" cellpadding="10">
     <tr>
       <td align="center" width="200">
         <img src="github/assets/uitm.png" width="100" height="100"><br>
@@ -25,23 +29,23 @@
 ## 👥 Team Members
 
 <div align="center">
-  <table>
+  <table border="0" cellspacing="0" cellpadding="15">
     <tr>
       <td align="center">
         <a href="https://github.com/Nomics03">
-          <img src="https://github.com/Nomics03.png" width="100" height="100" style="border-radius: 50%"><br>
+          <img src="https://wsrv.nl/?url=https://github.com/Nomics03.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
           <b>Muhammad 'Adli Bin Mohd Ali</b>
         </a>
       </td>
       <td align="center">
         <a href="https://github.com/YoRzHe-HotaaRu">
-          <img src="https://github.com/YoRzHe-HotaaRu.png" width="100" height="100" style="border-radius: 50%"><br>
+          <img src="https://wsrv.nl/?url=https://github.com/YoRzHe-HotaaRu.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
           <b>Amir Hafizi Bin Musa</b>
         </a>
       </td>
       <td align="center">
         <a href="https://github.com/dev-manchae">
-          <img src="https://github.com/dev-manchae.png" width="100" height="100" style="border-radius: 50%"><br>
+          <img src="https://wsrv.nl/?url=https://github.com/dev-manchae.png&w=100&h=100&fit=cover&mask=circle" width="100" height="100"><br>
           <b>Nik Muhammad Haziq bin Nik Hasni</b>
         </a>
       </td>
@@ -1685,6 +1689,6 @@ Interactive API documentation available at:
 ---
 
 <div align="center">
-  <p><i>Built with ❤️ by Team ClaRity for UiTM DevOps Challenge</i></p>
+  <p><i>Built with precision by ClaRity for UiTM DevOps Challenge</i></p>
   <p>© 2025 RentVerse. All rights reserved.</p>
 </div>
