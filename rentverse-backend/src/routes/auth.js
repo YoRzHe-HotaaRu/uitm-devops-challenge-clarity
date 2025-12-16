@@ -901,6 +901,7 @@ router.get('/me', async (req, res) => {
         phone: true,
         role: true,
         isActive: true,
+        mfaEnabled: true,
         createdAt: true,
       },
     });
