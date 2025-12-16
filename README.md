@@ -434,7 +434,7 @@ flowchart LR
 
 # 🛡️ Core Development Modules (Module 1-6)
 
-## <img src="https://img.shields.io/badge/Module_1-Secure_Login_&_MFA-4CAF50?style=for-the-badge&logo=shield&logoColor=white" alt="Module 1">
+## <img src="https://img.shields.io/badge/Module_1-Secure_Login_&_MFA-4CAF50?style=for-the-badge&logo=shield&logoColor=white" alt="Module 1" height="40">
 
 **Description:** Create MFA/OTP-based login with role-based access.
 
@@ -497,7 +497,7 @@ const authorize = (...roles) => {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_2-Secure_API_Gateway-2196F3?style=for-the-badge&logo=fastapi&logoColor=white" alt="Module 2">
+## <img src="https://img.shields.io/badge/Module_2-Secure_API_Gateway-2196F3?style=for-the-badge&logo=fastapi&logoColor=white" alt="Module 2" height="40">
 
 **Description:** Apply HTTPS, JWT tokens, rate-limiting, and access validation.
 
@@ -549,7 +549,7 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_3-Digital_Agreement-9C27B0?style=for-the-badge&logo=adobe&logoColor=white" alt="Module 3">
+## <img src="https://img.shields.io/badge/Module_3-Digital_Agreement-9C27B0?style=for-the-badge&logo=adobe&logoColor=white" alt="Module 3" height="40">
 
 **Description:** Add secure signature validation and access permissions.
 
@@ -597,7 +597,7 @@ createSignatureHash(signature, timestamp, leaseId, userId) {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_4-Smart_Notification_&_Alert_System-FF9800?style=for-the-badge&logo=bell&logoColor=white" alt="Module 4">
+## <img src="https://img.shields.io/badge/Module_4-Smart_Notification_&_Alert_System-FF9800?style=for-the-badge&logo=bell&logoColor=white" alt="Module 4" height="40">
 
 **Description:** Log user activities and alert suspicious login patterns.
 
@@ -649,7 +649,7 @@ async function alertNewDevice(userId, deviceInfo) {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_5-Activity_Log_Dashboard-E91E63?style=for-the-badge&logo=grafana&logoColor=white" alt="Module 5">
+## <img src="https://img.shields.io/badge/Module_5-Activity_Log_Dashboard-E91E63?style=for-the-badge&logo=grafana&logoColor=white" alt="Module 5" height="40">
 
 **Description:** Provide admin-level logs for failed logins and critical actions.
 
@@ -693,7 +693,7 @@ Response: {
 
 ---
 
-## <img src="https://img.shields.io/badge/Module_6-CI/CD_Security_Testing_(Bonus)-00BCD4?style=for-the-badge&logo=githubactions&logoColor=white" alt="Module 6">
+## <img src="https://img.shields.io/badge/Module_6-CI/CD_Security_Testing_(Bonus)-00BCD4?style=for-the-badge&logo=githubactions&logoColor=white" alt="Module 6" height="40">
 
 **Description:** Integrate GitHub Actions for static code analysis (SAST) and deployment checks.
 
