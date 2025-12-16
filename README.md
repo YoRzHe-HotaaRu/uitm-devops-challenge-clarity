@@ -83,7 +83,7 @@
 
 ---
 
-## � Table of Contents
+## 📚 Table of Contents
 
 | Section | Description |
 |---------|-------------|
