@@ -112,10 +112,14 @@ export default function OtpVerification({
         setResendSuccess(false)
         try {
             await onResend()
+            // Only show success if onResend didn't throw
             setResendSuccess(true)
             setOtp(['', '', '', '', '', ''])
             inputRefs.current[0]?.focus()
             setTimeout(() => setResendSuccess(false), 3000)
+        } catch {
+            // Error is handled by parent component, don't show success message
+            setResendSuccess(false)
         } finally {
             setIsResending(false)
         }

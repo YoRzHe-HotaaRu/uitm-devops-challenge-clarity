@@ -309,7 +309,7 @@ const useAuthStore = create<AuthStore>((set, get) => ({
 
     if (!mfaSessionToken) {
       setError('No MFA session found. Please login again.')
-      return
+      throw new Error('No MFA session found')
     }
 
     try {
@@ -337,11 +337,19 @@ const useAuthStore = create<AuthStore>((set, get) => ({
             mfaEmail: null,
           })
         }
-        setError(result.message || 'Failed to resend OTP.')
+        const errorMessage = result.message || 'Failed to resend OTP.'
+        setError(errorMessage)
+        throw new Error(errorMessage)
       }
     } catch (error) {
       console.error('MFA resend error:', error)
-      setError('Failed to resend OTP. Please try again.')
+      if (error instanceof Error && error.message !== 'No MFA session found') {
+        // Only set error if not already set
+        if (!error.message.includes('Failed to resend') && !error.message.includes('Too many')) {
+          setError('Failed to resend OTP. Please try again.')
+        }
+      }
+      throw error
     }
   },
 
