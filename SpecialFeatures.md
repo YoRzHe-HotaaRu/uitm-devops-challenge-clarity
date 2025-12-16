@@ -62,6 +62,39 @@ Secure forgot password flow with email OTP verification.
 
 ---
 
+## 🔄 MFA Toggle Control
+
+Users can enable or disable Two-Factor Authentication directly from their Security Settings.
+
+**Features:**
+| Feature | Description |
+|---------|-------------|
+| ✅ **One-Click Enable** | Instantly enable MFA from Security Settings |
+| 🔐 **Password-Protected Disable** | Requires password confirmation to disable |
+| 🔵 **Status Indicator** | Real-time visual indicator (Enabled/Disabled) |
+| 📧 **Email Notifications** | User notified when MFA status changes |
+| 🔄 **Instant Sync** | UI updates immediately after toggle |
+
+**Security Flow:**
+```
+Enable MFA:
+1. User clicks "Enable" → API call
+2. MFA enabled immediately → UI updates
+3. Next login requires OTP verification
+
+Disable MFA:
+1. User clicks "Disable" → Password prompt
+2. Password verified → MFA disabled
+3. Next login is password-only
+```
+
+**Key Files:**
+- `app/account/security/page.tsx` - MFA toggle UI component
+- `auth.js` - `/mfa/enable` and `/mfa/disable` endpoints
+- `otp.service.js` - MFA enable/disable logic
+
+---
+
 ## 📧 Smart Email Notification System
 
 Beautiful, responsive email templates for all platform events.

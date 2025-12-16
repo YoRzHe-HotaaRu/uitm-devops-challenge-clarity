@@ -495,6 +495,16 @@ const authorize = (...roles) => {
 - **Lockout Duration**: 15 minutes
 - **Notification**: Account lock alerts sent via email
 
+#### 🔄 MFA Toggle (User-Controlled)
+- **Enable MFA**: One-click enable from Security Settings
+- **Disable MFA**: Requires password confirmation for security
+- **Real-time Status**: Visual indicator shows current MFA status
+- **Email Notification**: Users receive email when MFA status changes
+
+**Key Files:**
+- `app/account/security/page.tsx` - MFA toggle UI component
+- `auth.js` - `/mfa/enable` and `/mfa/disable` endpoints
+
 ---
 
 ## 🔵 Module 2: Secure API Gateway 🔒
