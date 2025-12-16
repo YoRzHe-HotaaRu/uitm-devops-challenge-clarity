@@ -81,11 +81,11 @@
 
 ### Web Application
 <!-- PLACEHOLDER: Add screenshot of web application here -->
-![Web Application](github/assets/PlatformPreviewDesktop.gif)
+![Web Application](github/assets/PlatformPreviewDesktopOptimized.gif)
 
 ### Mobile Application
 <!-- PLACEHOLDER: Add screenshot of mobile application here -->
-![Mobile Application](github/assets/PlatformPreviewMobile.gif)
+![Mobile Application](github/assets/PlatformPreviewMobileOptimized.gif)
 
 ---
 
