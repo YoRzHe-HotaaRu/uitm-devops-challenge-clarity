@@ -608,7 +608,9 @@ const decoded = jwt.verify(token, process.env.JWT_SECRET);
 **Security Focus:** Data Integrity & Workflow Validation
 
 <!-- PLACEHOLDER: Add screenshot of digital agreement here -->
-![Digital Agreement](github/assets/module3-agreement.png)
+![Digital Agreement](github/assets/coredevmodule/Module3_1.jpg)
+![Digital Agreement](github/assets/coredevmodule/Module3_2.jpg)
+![Digital Agreement](github/assets/coredevmodule/Module3_3.jpg)
 
 ### Implementation Details
 
