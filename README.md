@@ -93,7 +93,7 @@
         <sub>PostgreSQL Database</sub>
       </td>
       <td align="center" width="120">
-        <img src="https://resend.com/static/brand/resend-icon-black.svg" width="48" height="48"><br>
+        <img src="https://avatars.githubusercontent.com/u/98297710" width="48" height="48"><br>
         <b>Resend</b><br>
         <sub>Email Service</sub>
       </td>
@@ -110,12 +110,12 @@
         <sub>Authentication</sub>
       </td>
       <td align="center" width="120">
-        <img src="https://www.vectorlogo.zone/logos/cloudinary/cloudinary-icon.svg" width="48" height="48"><br>
+        <img src="https://avatars.githubusercontent.com/u/1460763" width="48" height="48"><br>
         <b>Cloudinary</b><br>
         <sub>Media Storage</sub>
       </td>
       <td align="center" width="120">
-        <img src="https://docs.maptiler.com/sdk-js/assets/maptiler-logo.svg" width="48" height="48"><br>
+        <img src="https://avatars.githubusercontent.com/u/19309096" width="48" height="48"><br>
         <b>MapTiler</b><br>
         <sub>Maps & Geocoding</sub>
       </td>
@@ -127,7 +127,7 @@
         <sub>CI/CD Pipeline</sub>
       </td>
       <td align="center" width="120">
-        <img src="https://www.vectorlogo.zone/logos/prisaborhq/prisaborhq-icon.svg" width="48" height="48"><br>
+        <img src="https://avatars.githubusercontent.com/u/17219288" width="48" height="48"><br>
         <b>Prisma</b><br>
         <sub>ORM</sub>
       </td>
