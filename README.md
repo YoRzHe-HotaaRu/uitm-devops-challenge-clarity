@@ -96,7 +96,8 @@
 | [👥 Team Members](#-team-members) | Meet the ClaRity team |
 | [🔗 Quick Links](#-quick-links) | Live demo & download links |
 | [📸 Platform Preview](#-platform-preview) | Web & Mobile screenshots |
-| [📈 System Flow Diagrams](#-system-flow-diagrams) | Architecture & flow visualizations |
+| [� Project Structure](#-project-structure) | Codebase organization |
+| [�📈 System Flow Diagrams](#-system-flow-diagrams) | Architecture & flow visualizations |
 | [🔧 Development Platforms](#-development-platforms) | Hosting & services used |
 | **🛡️ Core Development Modules** | |
 | [🟢 Module 1: Secure Login & MFA](#-module-1-secure-login--mfa-) | Authentication & Authorization |
@@ -119,6 +120,54 @@
 | [📅 Booking & Viewing System](#-booking--viewing-system) | Property scheduling |
 | [🛠️ Technology Stack](#️-technology-stack) | Backend, Frontend & DevOps tools |
 | [📚 API Documentation](#-api-documentation) | Swagger UI endpoints |
+
+---
+
+## 📁 Project Structure
+
+```
+uitm-devops-challenge-clarity/
+├── 📂 .github/                    # GitHub Actions & CI/CD workflows
+│   └── workflows/                 # Security scanning, CodeQL, deployment
+│
+├── 📂 rentverse-backend/          # Node.js + Express.js Backend
+│   ├── prisma/                    # Database schema & migrations
+│   └── src/
+│       ├── config/                # Database, Passport, Swagger configs
+│       ├── middleware/            # Auth, rate limiting, validation
+│       ├── modules/               # Feature modules (bookings, maps, etc.)
+│       ├── routes/                # API route handlers
+│       ├── services/              # Business logic (OTP, email, security)
+│       └── utils/                 # Helper functions
+│
+├── 📂 rentverse-frontend/         # Next.js 16 Frontend
+│   ├── app/                       # App Router pages
+│   │   ├── account/               # User account & settings
+│   │   ├── admin/                 # Admin dashboard pages
+│   │   ├── agreements/            # Digital agreement signing
+│   │   ├── auth/                  # Login, signup, forgot password
+│   │   └── property/              # Property listings & details
+│   ├── components/                # Reusable UI components
+│   └── stores/                    # Zustand state management
+│
+├── 📂 rentverse-ai-service/       # Python AI/ML Service
+│   └── (AI-powered property features)
+│
+├── 📂 rentverse-datasets/         # Property data & scraping tools
+│
+├── 📂 MobileAppBuild/             # Android APK builds
+├── 📂 MobileAppIntegration/       # Capacitor mobile setup
+│
+├── 📂 SETUP/                      # Setup guides & documentation
+├── 📂 SecurityModuleInfo/         # Security module documentation
+│
+├── 📄 README.md                   # Main documentation (this file)
+├── 📄 CoreDevelopmentModules.md   # Detailed module documentation
+├── 📄 FeatureInnovationPool.md    # Innovation pool documentation
+├── 📄 SpecialFeatures.md          # Special features documentation
+├── 📄 SECURITY.md                 # Security policy
+└── 📄 HOW-TO-USE.md               # Usage instructions
+```
 
 ---
 
