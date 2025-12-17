@@ -96,8 +96,8 @@
 | [👥 Team Members](#-team-members) | Meet the ClaRity team |
 | [🔗 Quick Links](#-quick-links) | Live demo & download links |
 | [📸 Platform Preview](#-platform-preview) | Web & Mobile screenshots |
-| [� Project Structure](#-project-structure) | Codebase organization |
-| [�📈 System Flow Diagrams](#-system-flow-diagrams) | Architecture & flow visualizations |
+| [📁 Project Structure](#-project-structure) | Codebase organization |
+| [📈 System Flow Diagrams](#-system-flow-diagrams) | Architecture & flow visualizations |
 | [🔧 Development Platforms](#-development-platforms) | Hosting & services used |
 | **🛡️ Core Development Modules** | |
 | [🟢 Module 1: Secure Login & MFA](#-module-1-secure-login--mfa-) | Authentication & Authorization |
