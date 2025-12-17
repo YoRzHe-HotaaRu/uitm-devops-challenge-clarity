@@ -130,6 +130,11 @@ uitm-devops-challenge-clarity/
 ├── 📂 .github/                    # GitHub Actions & CI/CD workflows
 │   └── workflows/                 # Security scanning, CodeQL, deployment
 │
+├── 📂 api_backup/                 # API route backups & versions
+├── 📂 FeatureInnovation/          # Feature innovation documentation
+├── 📂 github/                     # GitHub assets (images, screenshots)
+│   └── assets/                    # README images & previews
+│
 ├── 📂 rentverse-backend/          # Node.js + Express.js Backend
 │   ├── prisma/                    # Database schema & migrations
 │   └── src/
@@ -161,6 +166,7 @@ uitm-devops-challenge-clarity/
 ├── 📂 SETUP/                      # Setup guides & documentation
 ├── 📂 SecurityModuleInfo/         # Security module documentation
 │
+├── 📄 .gitignore                  # Git ignore rules
 ├── 📄 README.md                   # Main documentation (this file)
 ├── 📄 CoreDevelopmentModules.md   # Detailed module documentation
 ├── 📄 FeatureInnovationPool.md    # Innovation pool documentation
