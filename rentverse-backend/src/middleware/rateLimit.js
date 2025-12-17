@@ -6,8 +6,11 @@
 const rateLimit = require('express-rate-limit');
 
 // Shared options for all rate limiters
+// In production (behind Render's reverse proxy), we need to trust the proxy
 const sharedOptions = {
-    validate: { trustProxy: false }, // Suppress IPv6 warning in development
+    validate: {
+        trustProxy: process.env.NODE_ENV === 'production'
+    },
 };
 
 /**
