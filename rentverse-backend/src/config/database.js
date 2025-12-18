@@ -75,9 +75,9 @@ async function pingDatabase() {
   }
 }
 
-// Start keep-alive interval (ping every 4 minutes)
+// Start keep-alive interval (ping every 1 minute)
 let keepAliveInterval = null;
-const KEEP_ALIVE_INTERVAL_MS = 4 * 60 * 1000; // 4 minutes
+const KEEP_ALIVE_INTERVAL_MS = 1 * 60 * 1000; // 1 minute
 
 function startKeepAlive() {
   if (keepAliveInterval) {
