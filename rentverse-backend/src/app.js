@@ -390,18 +390,27 @@ app.post('/cors-test', (req, res) => {
  */
 app.get('/health', async (req, res) => {
   try {
-    const { prisma } = require('./config/database');
+    const { prisma, pingDatabase } = require('./config/database');
 
-    // Test database connection
-    await prisma.$queryRaw`SELECT 1`;
+    // Test database connection with retry capability
+    const dbStatus = await pingDatabase();
 
-    res.json({
-      status: 'OK',
-      timestamp: new Date().toISOString(),
-      database: 'Connected',
-      uptime: process.uptime(),
-      environment: process.env.NODE_ENV || 'development',
-    });
+    if (dbStatus) {
+      res.json({
+        status: 'OK',
+        timestamp: new Date().toISOString(),
+        database: 'Connected',
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development',
+      });
+    } else {
+      res.status(503).json({
+        status: 'DEGRADED',
+        timestamp: new Date().toISOString(),
+        database: 'Reconnecting',
+        uptime: process.uptime(),
+      });
+    }
   } catch (error) {
     res.status(503).json({
       status: 'ERROR',
