@@ -63,6 +63,7 @@
 |----------|------|
 | 🌐 **Live Website** | [https://rentverse-frontend-nine.vercel.app/](https://rentverse-frontend-nine.vercel.app/) |
 | 📱 **Mobile App (APK)** | [Download RentVerse APK](MobileAppBuild/rentverse-clarity.apk) |
+| 📊 **Status Page** | [https://rentverse-clarity-status.pages.dev/](https://rentverse-clarity-status.pages.dev/) |
 
 > **⚡ Database Wake-Up Notice**: This project uses **Supabase Free Tier** for the database. If the site hasn't been accessed for a while, the database may be in "sleep mode" and the first request might take **5-10 seconds** to wake up. If you see a loading error, please **refresh the page once or twice** and it will work normally. This is a limitation of free hosting services, not a bug in the application.
 
